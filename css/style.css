@@ -1,0 +1,317 @@
+/**
+* Home page
+*/
+#reportBtnTop {
+    background-color: #ED873E;
+}
+
+.report-wrapper .input-group .btn {
+    white-space: nowrap;
+}
+
+.report-wrapper .col-12.input-group .btn {
+    min-width: 85px;
+}
+
+/**
+* History page
+*/
+.data-table td > button {
+    border: none;
+    background: transparent;
+}
+
+.data-table tr .action {
+    width: 50px;
+}
+
+/**
+* Data Tables
+*/
+.data-table tr td {
+    text-align: right;
+}
+
+.data-table tr td:first-child {
+    text-align: left;
+}
+
+/* table search filter */
+.footable-filtering-search .form-control:focus,
+.footable-filtering-search .btn.focus, 
+.footable-filtering-search .btn:focus {
+    -webkit-box-shadow: none;
+            box-shadow: none;
+}
+
+.input-group .form-control:first-child, 
+.input-group-addon:first-child, 
+.input-group-btn:first-child > .btn, 
+.input-group-btn:first-child > .btn-group > .btn, 
+.input-group-btn:first-child > .dropdown-toggle, 
+.input-group-btn:last-child > .btn-group:not(:last-child) > .btn, 
+.input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .form-control:last-child, 
+.input-group-addon:last-child, 
+.input-group-btn:first-child > .btn-group:not(:first-child) > .btn, 
+.input-group-btn:first-child > .btn:not(:first-child), 
+.input-group-btn:last-child > .btn, 
+.input-group-btn:last-child > .btn-group > .btn, 
+.input-group-btn:last-child > .dropdown-toggle {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group-btn:last-child > .btn, 
+.input-group-btn:last-child > .btn-group {
+    z-index: 2;
+    margin-left: -1px;
+}
+
+.input-group-btn {
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
+    font-size: 0;
+    white-space: nowrap;
+}
+
+.btn-default {
+    text-shadow: 0 1px 0 #fff;
+    background-image: -webkit-gradient(linear,left top, left bottom,color-stop(0, #fff),to(#e0e0e0));
+    background-image: -o-linear-gradient(top,#fff 0,#e0e0e0 100%);
+    background-image: linear-gradient(to bottom,#fff 0,#e0e0e0 100%);
+    background-repeat: repeat-x;
+    border-color: #ccc;
+}
+
+.footable-filtering-search .input-group {
+    -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+}
+
+input[type=checkbox], input[type=radio] {
+    margin: 4px 0 0;
+    line-height: normal;
+}
+
+.open > .dropdown-menu {
+    display: block;
+}
+
+.footable-filtering-search .dropdown-menu > li {
+    min-height: 22px;
+}
+
+.dropdown-menu > li > a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.dropdown-menu > li > a:focus, 
+.dropdown-menu > li > a:hover {
+    color: #262626;
+    text-decoration: none;
+    background-color: #e8e8e8;
+    background-image: -webkit-gradient(linear,left top, left bottom,color-stop(0, #f5f5f5),to(#e8e8e8));
+    background-image: -o-linear-gradient(top,#f5f5f5 0,#e8e8e8 100%);
+    background-image: linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%);
+    background-repeat: repeat-x;
+}
+
+.checkbox label, 
+.radio label {
+    min-height: 20px;
+    padding-left: 20px;
+    margin-bottom: 0;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+/* table pagination */
+.data-table .pagination {
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination > li {
+    display: inline;
+}
+
+.pagination > li > a, 
+.pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.pagination > li:first-child > a, 
+.pagination > li:first-child > span {
+    margin-left: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pagination > li:last-child > a, 
+.pagination > li:last-child > span {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.pagination > .disabled > a, 
+.pagination > .disabled > a:focus, 
+.pagination > .disabled > a:hover, 
+.pagination > .disabled > span, 
+.pagination > .disabled > span:focus, 
+.pagination > .disabled > span:hover {
+    color: #777;
+    cursor: not-allowed;
+    background-color: #fff;
+    border-color: #ddd;
+}
+
+.pagination > .active > a, 
+.pagination > .active > a:focus, 
+.pagination > .active > a:hover, 
+.pagination > .active > span, 
+.pagination > .active > span:focus, 
+.pagination > .active > span:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.pagination > li > a:focus, 
+.pagination > li > a:hover, 
+.pagination > li > span:focus, 
+.pagination > li > span:hover {
+    z-index: 2;
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.data-table .label {
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+
+.data-table .label-default {
+    background-color: #777;
+}
+
+/**
+* Report page
+*/
+.all-reports .months {
+    display: -ms-grid;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+/**
+* Form page
+*/
+.form-group label {
+    min-width: 70px;
+}
+
+form.not-editable input:not([type="checkbox"]) {
+    background-color: #eaecf4;
+    pointer-events: none;
+}
+
+/**
+* Import page
+*/
+.import-content-wrapper {
+    min-height: 50vh;
+}
+
+/**
+* FooTable plugin icon fix
+*/
+.fooicon {
+    font-family: "Font Awesome 5 Free" !important;
+    font-weight: 900;
+}
+.fooicon-loader:before {
+    /*Old Glyph - content: "\e030";*/
+    content: "\f01e" !important;
+}
+.fooicon-plus:before {
+    /*Old Glyph - content: "\2b";*/
+    content: "\f067" !important;
+}
+.fooicon-minus:before {
+    /*Old Glyph - content: "\2212";*/
+    content: "\f068" !important;
+}
+.fooicon-search:before {
+    /*Old Glyph - content: "\e003";*/
+    content: "\f002" !important;
+}
+.fooicon-remove:before {
+    /*Old Glyph - content: "\e014";*/
+    content: "\f00d" !important;
+}
+.fooicon-sort:before {
+    /*Old Glyph - content: "\e150";*/
+    content: "\f0dc" !important;
+}
+.fooicon-sort-asc:before {
+    /*Old Glyph - content: "\e155";*/
+    content: "\f0de" !important;
+}
+.fooicon-sort-desc:before {
+    /*Old Glyph - content: "\e156";*/
+    content: "\f0dd" !important;
+}
+.fooicon-pencil:before {
+    /*Old Glyph - content: "\270f";*/
+    content: "\f040" !important;
+}
+.fooicon-trash:before {
+    /*Old Glyph - content: "\e020";*/
+    content: "\f1f8" !important;
+}
+.fooicon-eye-close:before {
+    /*Old Glyph - content: "\e106";*/
+    content: "\f070" !important;
+}
+.fooicon-flash:before {
+    /*Old Glyph - content: "\e162";*/
+    content: "\f0e7" !important;
+}
+.fooicon-cog:before {
+    /*Old Glyph - content: "\e019";*/
+    content: "\f013" !important;
+}
