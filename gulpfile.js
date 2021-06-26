@@ -38,7 +38,7 @@ const banner = ['/*!\n',
 function browserSync(done) {
   browsersync.init({
     proxy: 'https://fe-activity-app-staging.herokuapp.com/',
-    host: 'https://fe-activity-app-staging.herokuapp.com',
+    host: 'fe-activity-app-staging.herokuapp.com',
     open: 'external',
     server: {
       baseDir: "./"
