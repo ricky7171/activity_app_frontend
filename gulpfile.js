@@ -40,15 +40,15 @@ function browserSync(done) {
     server: {
       baseDir: "./"
     },
-    port: process.env.PORT || 8080
+    port: 3000
   });
   done();
 }
 
 // BrowserSync reload
 function browserSyncReload(done) {
-  //browsersync.reload();
-  //done();
+  browsersync.reload();
+  done();
 }
 
 // Clean vendor
@@ -110,8 +110,8 @@ function css() {
       suffix: ".min"
     }))
     .pipe(cleanCSS())
-    .pipe(gulp.dest("./css"));
-    //.pipe(browsersync.stream());
+    .pipe(gulp.dest("./css"))
+    .pipe(browsersync.stream());
 }
 
 // JS task
