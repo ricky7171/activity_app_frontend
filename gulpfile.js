@@ -6,12 +6,19 @@ const browsersync = require("browser-sync").create();
 const cleanCSS = require("gulp-clean-css");
 const del = require("del");
 const gulp = require("gulp");
+const glob = require('glob');
 const header = require("gulp-header");
 const merge = require("merge-stream");
 const plumber = require("gulp-plumber");
 const rename = require("gulp-rename");
 const sass = require("gulp-sass");
 const uglify = require("gulp-uglify");
+const browserify = require('browserify');
+const babelify = require('babelify');
+var fs = require("fs");
+var sourcemaps = require('gulp-sourcemaps');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
 
 // Load package.json for banner
 const pkg = require('./package.json');
@@ -24,6 +31,8 @@ const banner = ['/*!\n',
   ' */\n',
   '\n'
 ].join('');
+
+
 
 // BrowserSync
 function browserSync(done) {
@@ -60,10 +69,10 @@ function modules() {
     .pipe(gulp.dest('./vendor/chart.js'));
   // dataTables
   var dataTables = gulp.src([
-      './node_modules/datatables.net/js/*.js',
-      './node_modules/datatables.net-bs4/js/*.js',
-      './node_modules/datatables.net-bs4/css/*.css'
-    ])
+    './node_modules/datatables.net/js/*.js',
+    './node_modules/datatables.net-bs4/js/*.js',
+    './node_modules/datatables.net-bs4/css/*.css'
+  ])
     .pipe(gulp.dest('./vendor/datatables'));
   // Font Awesome
   var fontAwesome = gulp.src('./node_modules/@fortawesome/**/*')
@@ -73,9 +82,9 @@ function modules() {
     .pipe(gulp.dest('./vendor/jquery-easing'));
   // jQuery
   var jquery = gulp.src([
-      './node_modules/jquery/dist/*',
-      '!./node_modules/jquery/dist/core.js'
-    ])
+    './node_modules/jquery/dist/*',
+    '!./node_modules/jquery/dist/core.js'
+  ])
     .pipe(gulp.dest('./vendor/jquery'));
   return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing);
 }
@@ -107,20 +116,36 @@ function css() {
 
 // JS task
 function js() {
-  return gulp
-    .src([
-      './js/*.js',
-      '!./js/*.min.js',
-    ])
-    .pipe(uglify())
-    .pipe(header(banner, {
-      pkg: pkg
-    }))
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest('./js'))
-    .pipe(browsersync.stream());
+  var files = glob.sync("./js/app/**/*.js");
+  return merge(files.map(function(file) {
+    var b = browserify(file)
+      .transform("babelify", { presets: ['@babel/preset-env'] });
+    return b.bundle()
+      .pipe(source(file))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest('./public/'));
+  }));
+  
+  // browserify({
+  //   entries: jsFiles,
+  //   debug: true,
+  //   transform: [babelify.configure({
+  //     presets: ['es2015']
+  //   })]
+  // });
+
+  // return b.bundle()
+  //   .pipe(uglify())
+  //   .pipe(header(banner, {
+  //     pkg: pkg
+  //   }))
+  //   .pipe(rename({
+  //     suffix: '.min'
+  //   }))
+  //   .pipe(gulp.dest('./js'))
+  //   .pipe(browsersync.stream());
 }
 
 // Watch files

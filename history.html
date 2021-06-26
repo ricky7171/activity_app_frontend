@@ -142,30 +142,8 @@
                                     <th class="action">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1 Apr 2021</td>
-                                    <td>17:00</td>
-                                    <td>Leg up</td>
-                                    <td>50</td>
-                                    <td class="action">
-                                        <button>Rewoke</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="action"></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="action"></td>
-                                </tr>
+                            <tbody class="list-history">
+                                <!-- template row history -->
                             </tbody>
                         </table>
                     </div>
@@ -192,6 +170,19 @@
     </div>
     <!-- End of Page Wrapper -->
 
+    <!-- Template -->
+    <script type="text/template" data-template="row-history">
+        <tr>
+            <td>${date}</td>
+            <td>${time}</td>
+            <td>${activity_title}</td>
+            <td>${value}</td>
+            <td class="action">
+                <button class="btn-delete-history" historyId="${history_id}">Delete</button>
+            </td>
+        </tr>
+    </script>
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
@@ -212,6 +203,9 @@
 
     <!-- Main Custom Script -->
     <script src="js/main.js"></script>
+
+    <!-- script for this page -->
+    <script src="public/js/app/pages/history.js"></script>
 
 </body>
 

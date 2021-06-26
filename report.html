@@ -132,17 +132,7 @@
 
                     <!-- Report -->
                     <div class="all-reports">
-                        <div class="yearly mb-5">
-                            <h2 class="h3 mb-3 text-gray-800">2021</h2>
-                            <ul class="months list-unstyled text-center">
-                                <li><a href="report-list.html" class="d-block btn btn-primary">May</a></li>
-                                <li><a href="report-list.html" class="d-block btn btn-primary">Apr</a></li>
-                                <li><a href="report-list.html" class="d-block btn btn-primary">Mar</a></li>
-                            </ul>
-                        </div>
-                        <div class="yearly mb-5">
-                            <h2 class="h3 mb-3 text-gray-800">2020</h2>
-                        </div>
+                        <!-- template year with month -->
                     </div>
 
                 </div>
@@ -167,6 +157,20 @@
     </div>
     <!-- End of Page Wrapper -->
 
+    <!-- template -->
+    <script type="text/template" data-template="year-data">
+        <div class="yearly mb-5">
+            <h2 class="h3 mb-3 text-gray-800">${year}</h2>
+            <ul class="months list-unstyled text-center">
+                ${months_data_html}
+            </ul>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="month-data">
+        <li><a href="report-list.html?year=${year_number}&month=${month_number}" class="d-block btn btn-primary">${month_text}</a></li>
+    </script>
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
@@ -184,6 +188,9 @@
 
     <!-- Main Custom Script -->
     <script src="js/main.js"></script>
+
+    <!-- script for this page -->
+    <script src="public/js/app/pages/report.js"></script>
 
 </body>
 

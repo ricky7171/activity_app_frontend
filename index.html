@@ -132,78 +132,7 @@
 
                     <!-- Report -->
                     <div class="report-wrapper">
-                        <div class="row mb-3">
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">1</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Toilet</a>
-                                </div>
-                            </div>
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">50</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Sit Up</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">1</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Cliam</a>
-                                </div>
-                            </div>
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">50</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Leg Up</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">1</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Eat</a>
-                                </div>
-                            </div>
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">50</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Sit Up</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">1</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Toilet</a>
-                                </div>
-                            </div>
-                            <div class="col-6 px-1 input-group flex-nowrap text-center">
-                                <p class="form-control border border-0 bg-gray-200 w-50">50</p>
-                                <div class="input-group-append w-50">
-                                    <a href="#" class="btn btn-primary w-100" role="button">Sit Up</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-12 px-1 input-group flex-nowrap text-center">
-                                <input type="text" class="form-control border border-0 bg-gray-200" placeholder="Text Field" aria-label="Text Field" aria-describedby="learnBtn">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button" id="learnBtn">Learn</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-12 px-1 input-group flex-nowrap text-center">
-                                <input type="text" class="form-control border border-0 bg-gray-200" placeholder="Text Field" aria-label="Text Field" aria-describedby="cryptoBtn">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button" id="cryptoBtn">Crypto</button>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- template row activity -->
                     </div>
 
                 </div>
@@ -226,6 +155,44 @@
         <!-- End of Content Wrapper -->
 
     </div>
+
+    <!-- Template -->
+    <script type="text/template" data-template="row-activity-float">
+        <div class="row mb-3 row-activity-float">
+            <div class="left-side col-6 px-1 input-group flex-nowrap text-center input-activity-group">
+                ${value_activity_left_side_html}
+                <div class="input-group-append w-50">
+                    <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title_left_side}</a>
+                </div>
+            </div>
+            <div class="right-side col-6 px-1 input-group flex-nowrap text-center input-activity-group">
+                ${value_activity_right_side_html}
+                <div class="input-group-append w-50">
+                    <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title_right_side}</a>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="row-activity-textfield">
+        <div class="row mb-3 row-activity-textfield">
+            <div class="col-12 px-1 input-group flex-nowrap text-center input-activity-group">
+                <input type="text" class="form-control border border-1 input-activity-value" activityId='${activity_id}' placeholder="Text Field" aria-label="Text Field">
+                <div class="input-group-append">
+                    <button class="btn btn-primary btn-add-value" type="button">${title}</button>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="editable-value-activity-template">
+        <input class="form-control border border-0 bg-white text-center w-50 input-activity-value" activityId='${activity_id}' value='${value}' type="number">
+    </script>
+
+    <script type="text/template" data-template="disabled-value-activity-template">
+        <p class="form-control border border-0 bg-gray-200 w-50 input-activity-value" activityId='${activity_id}' value='${value}'>${value}</p>
+    </script>
+
     <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
@@ -245,6 +212,12 @@
 
     <!-- Main Custom Script -->
     <script src="js/main.js"></script>
+
+    <!-- script for this page -->
+    <script src="public/js/app/pages/index.js"></script>
+    
+
+    
 
 </body>
 

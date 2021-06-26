@@ -237,6 +237,10 @@ input[type=checkbox], input[type=radio] {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
 
+.data-activity-summary a {
+    cursor: pointer;
+}
+
 /**
 * Form page
 */

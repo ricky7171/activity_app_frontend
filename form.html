@@ -129,25 +129,32 @@
 
                     <!-- Form -->
                     <div class="form-wrapper">
-                        <form action="" id="demo_form" class="form not-editable">
+                        <div id="demo_form" class="form">
                             <div class="form-group d-flex flex-nowrap align-items-center">
                                 <label for="title">Title</label>
-                                <input type="text" name="title" id="title" class="form-control" placeholder="Toilet" value="Toilet">
+                                <input type="text" name="title" id="title" class="form-control" placeholder="Activity Title" value="Toilet">
                             </div>
                             <div class="form-group d-flex flex-nowrap align-items-center">
                                 <label for="value">Value</label>
-                                <input type="text" name="value" id="value" class="form-control" placeholder="1" value="1">
+                                <input type="text" name="value" id="value" class="form-control" placeholder="Activity Default Value" value="50">
                             </div>
                             <div class="form-group d-flex flex-nowrap align-items-center">
                                 <label for="target">Target</label>
-                                <input type="number" name="target" id="target" class="form-control" min="50" placeholder="50" value="50">
+                                <input type="number" name="target" id="target" class="form-control" min="50" placeholder="Activity Target" value="100">
                             </div>
                             <div class="form-group form-check form-check-inline checkbox-lg">
                                 <input type="checkbox" name="is_editable" id="is_editable" class="form-check-input">
                                 <label class="form-check-label" for="is_editable">Can change value</label>
                             </div>
+                            <div class="form-group form-check form-check-inline checkbox-lg">
+                                <input type="checkbox" name="is_use_textfield" id="is_use_textfield" class="form-check-input">
+                                <label class="form-check-label" for="is_use_textfield">Use textfield</label>
+                            </div>
+                            <div class="form-group d-flex flex-nowrap align-items-center">
+                                <label>If you check "Use textfield", then the target will be count of your histories</label>
+                            </div>
                             <div class="form-group text-right">
-                                <button type="submit" class="btn btn-primary ml-auto">Submit</button>
+                                <button id="submit-btn" class="btn btn-primary ml-auto">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -191,6 +198,9 @@
 
     <!-- Main Custom Script -->
     <script src="js/main.js"></script>
+
+    <!-- script for this page -->
+    <script src="public/js/app/pages/form.js"></script>
 
 </body>
 
