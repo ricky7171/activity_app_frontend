@@ -157,6 +157,8 @@ function js() {
 
 // SERVE task
 function serve() {
+  console.log("check port");
+  console.log(process.env.PORT);
   return connect.server({
     root: "./",
     port: process.env.PORT || 8000, // localhost:8000
