@@ -19,6 +19,7 @@ var fs = require("fs");
 var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
+var connect = require('gulp-connect');
 
 // Load package.json for banner
 const pkg = require('./package.json');
@@ -156,7 +157,7 @@ function js() {
 
 // SERVE task
 function serve() {
-  gulp.task('serveprod', function() {
+  gulp.task('serve', function() {
     connect.server({
       root: "./",
       port: process.env.PORT || 8000, // localhost:8000
