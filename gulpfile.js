@@ -157,12 +157,10 @@ function js() {
 
 // SERVE task
 function serve() {
-  gulp.task('serve', function() {
-    connect.server({
-      root: "./",
-      port: process.env.PORT || 8000, // localhost:8000
-      livereload: false
-    });
+  return connect.server({
+    root: "./",
+    port: process.env.PORT || 8000, // localhost:8000
+    livereload: false
   });
 }
 
@@ -175,7 +173,7 @@ function watchFiles() {
 
 // Define complex tasks
 const vendor = gulp.series(clean, modules);
-const build = gulp.series(vendor, gulp.parallel(css, js, serve));
+const build = gulp.series(vendor, gulp.parallel(css, js), serve);
 //const watch = gulp.series(build, gulp.parallel(watchFiles, browserSync));
 
 // Export tasks

@@ -63,11 +63,8 @@
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0",
         "gulp-connect": "^5.7.0"
-
     },
-    "devDependencies": {
-        
-    },
+    "devDependencies": {},
     "@babel": {
         "presets": [
             "env"
