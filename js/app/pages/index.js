@@ -2,6 +2,7 @@ import * as activityRepository from './../../../js/app/data/activity_repository'
 import * as historyRepository from './../../../js/app/data/history_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as alertHelper from "./../core/alert_helper";
+import * as dateTimeHelper from "./../core/datetime_helper";
 
 
 async function loadActivitiesData() {
@@ -108,18 +109,18 @@ function showActivitiesData(activities) {
     //render list activity that use textfield
     $(".report-wrapper").append(tempActivityRowTextfieldHtml);
 
-    
-
 }
 
 
+function changeReportTextToCurrentMonth()
+{
+    var dateObject = new Date();
+    var currentMonth = dateObject.getMonth() + 1;
+    var currentYear = dateObject.getFullYear();
+    $("#reportBtnTop").html("See " + dateTimeHelper.getCurrentMonth() + " Report").attr("href", "/report-list.html?year=" + currentYear + "&month=" + currentMonth);
+}
 
-jQuery(async function () {
-    var activitiesData = await loadActivitiesData();
-    if(activitiesData['success']) { 
-        showActivitiesData(activitiesData['response']['data']);
-    }
-
+function addEventHandler() {
     //event handler
     $("body").on('click', '.row-activity-float .btn-add-value, .row-activity-textfield .btn-add-value', async function() {
         //get activity id and input value
@@ -145,6 +146,18 @@ jQuery(async function () {
             alertHelper.showSnackBar("Successfully added !", 1);
         }
     })
+}
+
+jQuery(async function () {
+
+    changeReportTextToCurrentMonth();
+
+    var activitiesData = await loadActivitiesData();
+    if(activitiesData['success']) { 
+        showActivitiesData(activitiesData['response']['data']);
+    }
+
+    addEventHandler();
 
 })
 
