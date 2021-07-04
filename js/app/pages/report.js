@@ -27,7 +27,7 @@ function showHistoryRange(ranges) {
                 "month_number" : history["month"],
                 "month_text" : dateTimeHelper.monthToText(history['month']),
             });
-        });
+        }).join('');
         yearDataHtml += templateHelper.render(yearDataTpl, {
             "year" : year,
             "months_data_html" : monthsDataHtml
