@@ -24,3 +24,9 @@ export function getTimeStandartFormat() {
 export function monthToText(month) {
     return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][month - 1];
 }
+
+export function getCurrentMonth() {
+    var dateObject = new Date();
+    var currentMonth = dateObject.getMonth();
+    return monthToText(currentMonth);
+}
