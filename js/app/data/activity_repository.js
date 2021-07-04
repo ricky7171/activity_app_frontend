@@ -52,3 +52,20 @@ export async function addActivity(title = "title", value = 50, target = 100, can
     result = api.processResponse(response);
     return result;
 }
+
+export async function deleteActivity(activityId) {
+    //prepare variable to store response & result
+    var result = null;
+    var response = null;
+
+    //call to api
+    try {
+        response = await api.requestApi("activity.delete", null, "/" + activityId);    
+    } catch (error) {
+        console.log("error !", error);
+        response = false;  
+    }
+    //proccess response
+    result = api.processResponse(response);
+    return result;
+}
