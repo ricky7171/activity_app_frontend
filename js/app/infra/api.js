@@ -3,7 +3,7 @@ const message =
     "connection": "Check your internet connection !"
 };
 
-const server = "http://localhost:8000";
+const server = "https://activity-app-database.herokuapp.com";
 
 var listApi = {
     "activity.get": {
@@ -182,7 +182,7 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         url: url + additionalUrl,
         data: dataRequest,
         type: method,
-        crossDomain: false,
+        crossDomain: true,
         dataType: 'json', // added data type
     });
 }
