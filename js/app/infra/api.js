@@ -21,6 +21,11 @@ var listApi = {
         url: server + "/api/activities",
         withToken: false,
     },
+    "activity.delete" : {
+        method : "DELETE",
+        url: server + "/api/activities",
+        withToken: false,
+    },
     "history.get": {
         method: "GET",
         url : server + "/api/histories",
@@ -177,7 +182,7 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         url: url + additionalUrl,
         data: dataRequest,
         type: method,
-        crossDomain: true,
+        crossDomain: false,
         dataType: 'json', // added data type
     });
 }
