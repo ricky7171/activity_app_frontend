@@ -1,0 +1,43 @@
+{% extends "templates/index.njk" %}
+{% block title %}History{% endblock title %}
+
+{% block content %}
+<!-- Data Talbe New -->
+<div class="table-responsive">
+    <table class="table data-table table-bordered" id="history_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th data-breakpoints="xs">Name</th>
+                <th data-breakpoints="xs">Value</th>
+                <th class="action">Action</th>
+            </tr>
+        </thead>
+        <tbody class="list-history">
+            <!-- template row history -->
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+{% block header %}
+<!-- Page level plugin style -->
+<link href="vendor/footable-bootstrap/css/footable.bootstrap.min.css" rel="stylesheet">
+{% endblock header %}
+
+{% block footer %}
+<script type="text/template" data-template="row-history">
+    <tr>
+        <td>${date}</td>
+        <td>${time}</td>
+        <td>${activity_title}</td>
+        <td>${value}</td>
+        <td class="action">
+            <button class="btn-delete-history" historyId="${history_id}">Delete</button>
+        </td>
+    </tr>
+</script>
+<script src="vendor/footable-bootstrap/js/footable.min.js"></script>
+<script src="js/app/pages/history.js"></script>
+{% endblock footer %}

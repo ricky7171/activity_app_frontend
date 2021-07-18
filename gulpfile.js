@@ -41,12 +41,12 @@ const banner = ['/*!\n',
 
 // BrowserSync
 function browserSync(done) {
-  browsersync.init({
-    proxy: 'https://fe-activity-app-staging.herokuapp.com/',
-    host: 'fe-activity-app-staging.herokuapp.com',
-    open: 'external',
+  return browsersync.init({
+    // proxy: config.PROXY,
+    // host: config.HOST,
+    // open: 'external',
     server: {
-      baseDir: "./"
+      baseDir: config.DESTINATION_PATH
     },
     port: process.env.PORT || 8080
   });
@@ -56,6 +56,8 @@ function browserSync(done) {
 // BrowserSync reload
 function browserSyncReload(done) {
   browsersync.reload();
+  console.log('asdasd', browserSync.reload)
+  
   done();
 }
 
@@ -161,25 +163,28 @@ function js() {
 
 // SERVE task
 function serve() {
-  // console.log("check port");
-  // console.log(process.env.PORT);
-  // return connect.server({
-  //   root: "./",
-  //   port: process.env.PORT || 8000, // localhost:8000
-  //   livereload: false
-  // });
+  console.log("check port");
+  console.log(process.env.PORT);
+  return connect.server({
+    root: "./",
+    port: process.env.PORT || 8000, // localhost:8000
+    livereload: false
+  });
 }
 
 // Watch files
 function watchFiles() {
+  console.log('🚀 ~ file: gulpfile.js ~ line 185 ~ watchFiles', config.VIEW_PATH+'**/*')
   gulp.watch("./scss/**/*", css);
   gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
   gulp.watch("./**/*.html", browserSyncReload);
+  gulp.watch(config.VIEW_PATH+"**/*", compileNunjucks)
 }
 
 // Compile nunjucks file
 function compileNunjucks() {
-  var PAGE_PATH = 'js/app/views/pages/';
+  var PAGE_PATH = config.PAGE_PATH;
+  console.log("🚀 ~ file: gulpfile.js ~ line 186 ~ compileNunjucks ~ PAGE_PATH", PAGE_PATH)
   var opts = {
     env:  new nunjucks.Environment(new nunjucks.FileSystemLoader('js/app/views/'))
   }
@@ -207,8 +212,10 @@ function compileNunjucks() {
 }
 
 // Define complex tasks
-const build = gulp.series(clean, modules, gulp.parallel(css, js, compileNunjucks), serve);
-//const watch = gulp.series(build, gulp.parallel(watchFiles, browserSync));
+const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, compileNunjucks));
+const build = gulp.series(buildTask, serve);
+const watch = gulp.series(buildTask, gulp.parallel(watchFiles, browserSync));
+// const watch = gulp.series(watchFiles);
 
 // Export tasks
 exports.css = css;
@@ -216,6 +223,7 @@ exports.js = js;
 exports.clean = clean;
 // exports.vendor = vendor;
 exports.build = build;
-//exports.watch = watch;
+exports.watch = watch;
 exports.default = build;
 exports.compile = compileNunjucks;
+exports.serve = serve;
