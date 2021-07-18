@@ -51,7 +51,17 @@ var listApi = {
         method : "POST",
         url : server + "/api/histories/bulkStore",
         withToken : false,
-    }
+    },
+    "setting.get": {
+        method: 'GET',
+        url: server + "/api/setting",
+        withToken: false,
+    },
+    "setting.save": {
+        method: 'POST',
+        url: server + "/api/setting",
+        withToken: false,
+    },
 };
 
 //this function will process message to readable message (not object)
