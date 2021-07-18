@@ -126,7 +126,7 @@ function css() {
 
 // JS task
 function js() {
-  var files = glob.sync("./js/app/**/*.js");
+  var files = glob.sync("./js/**/*.js");
   return merge(files.map(function(file) {
     var b = browserify(file)
       .transform("babelify", { presets: ['@babel/preset-env'] });
@@ -177,7 +177,8 @@ function watchFiles() {
   console.log('🚀 ~ file: gulpfile.js ~ line 185 ~ watchFiles', config.VIEW_PATH+'**/*')
   gulp.watch("./scss/**/*", css);
   gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
-  gulp.watch("./**/*.html", browserSyncReload);
+  // gulp.watch("./**/*.html", browserSyncReload);
+  gulp.watch("./dist/**/*", browserSyncReload);
   gulp.watch(config.VIEW_PATH+"**/*", compileNunjucks)
 }
 

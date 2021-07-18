@@ -3,7 +3,8 @@ const message =
     "connection": "Check your internet connection !"
 };
 
-const server = "https://activity-app-database.herokuapp.com";
+// const server = "https://activity-app-database.herokuapp.com";
+const server = "https://activity_app_backend.test";
 
 var listApi = {
     "activity.get": {

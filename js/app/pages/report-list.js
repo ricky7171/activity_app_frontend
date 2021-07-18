@@ -160,10 +160,33 @@ function showDetailActivity(detailActivity) {
         "target" : detailActivity["target"],
         "left" : detailActivity["left"]
     }));
+
+    // change button back action
+    $('#btnBack').on('click', function(e){
+        console.log('clickkkk')
+        e.preventDefault();
+
+        $(".report-summary-activity").show();
+        $(".report-detail-activity").hide();
+
+        $('#btnBack').off();
+    })
 }
 
+function changeReportTitleToCurrentMonth()
+{
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const currentMonth = urlParams.get('month');
+    const currentYear = urlParams.get('year');
+
+    $("#titleContent").html("Report of " + dateTimeHelper.monthToText(currentMonth) + " " + currentYear);
+}
 
 jQuery(async function () {
+    //change "report" text to current month
+    changeReportTitleToCurrentMonth();
+
     var dataMonthAndYear = getMonthAndYearFromUrlParameter();
     var result = await loadActivityByMonthAndYear(dataMonthAndYear["month"], dataMonthAndYear["year"]);
     if(result['success']) { 

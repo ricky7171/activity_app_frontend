@@ -37,19 +37,7 @@ function showHistoryRange(ranges) {
     
 }
 
-function changeReportTextToCurrentMonth()
-{
-    var dateObject = new Date();
-    var currentMonth = dateObject.getMonth() + 1;
-    var currentYear = dateObject.getFullYear();
-    $("#reportBtnTop").html("See " + dateTimeHelper.getCurrentMonth() + " Report").attr("href", "/report-list.html?year=" + currentYear + "&month=" + currentMonth);
-}
-
-
 jQuery(async function () {
-    //change "report" text to current month
-    changeReportTextToCurrentMonth();
-
     var rangeData = await loadHistoryRange();
     if(rangeData['success']) { 
         showHistoryRange(rangeData['response']['data']);

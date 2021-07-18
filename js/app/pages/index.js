@@ -150,7 +150,7 @@ function addEventHandler() {
 
 jQuery(async function () {
 
-    changeReportTextToCurrentMonth();
+    // changeReportTextToCurrentMonth();
 
     var activitiesData = await loadActivitiesData();
     if(activitiesData['success']) { 
