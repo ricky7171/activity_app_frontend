@@ -1,0 +1,24 @@
+{% extends "templates/index.njk" %}
+{% block title %}Import{% endblock title %}
+
+{% block content %}
+<!-- Import field -->
+<div class="import-field">
+    <select name="importer" id="importer" class="form-control bg-gray-200">
+        <!-- template activity option -->
+    </select>
+</div>
+
+<!-- Import content -->
+<div>
+    <textarea class="import-content-wrapper bg-gray-200 rounded p-4 mt-3 w-100" name="histories" placeholder="ex : 2021-06-06, 09:00:00, laravel"></textarea>
+    <button id="submit-btn" class="btn btn-primary ml-auto">Submit</button>    
+</div>
+{% endblock content %}
+
+{% block footer %}
+<script type="text/template" data-template="option-activity">
+    <option value="${id}" useTextfield=${useTextfield}>${title}</option>
+</script>
+<script src="js/app/pages/import.js"></script>
+{% endblock footer %}

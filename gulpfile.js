@@ -20,6 +20,10 @@ var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var connect = require('gulp-connect');
+// var nunjucks = require('./js/app/infra/nunjucks');
+var nunjucks = require('nunjucks');
+var gnunjucks = require('gulp-nunjucks');
+var config = require('./config')
 
 // Load package.json for banner
 const pkg = require('./package.json');
@@ -37,12 +41,12 @@ const banner = ['/*!\n',
 
 // BrowserSync
 function browserSync(done) {
-  browsersync.init({
-    proxy: 'https://fe-activity-app-staging.herokuapp.com/',
-    host: 'fe-activity-app-staging.herokuapp.com',
-    open: 'external',
+  return browsersync.init({
+    // proxy: config.PROXY,
+    // host: config.HOST,
+    // open: 'external',
     server: {
-      baseDir: "./"
+      baseDir: config.DESTINATION_PATH
     },
     port: process.env.PORT || 8080
   });
@@ -52,51 +56,53 @@ function browserSync(done) {
 // BrowserSync reload
 function browserSyncReload(done) {
   browsersync.reload();
+  console.log('asdasd', browserSync.reload)
+  
   done();
 }
 
 // Clean vendor
 function clean() {
-  return del(["./vendor/"]);
+  return del(config.DESTINATION_PATH + '/**', {force:true});
 }
 
 // Bring third party dependencies from node_modules into vendor directory
 function modules() {
   // Bootstrap JS
   var bootstrapJS = gulp.src('./node_modules/bootstrap/dist/js/*')
-    .pipe(gulp.dest('./vendor/bootstrap/js'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/bootstrap/js'));
   // Bootstrap SCSS
   var bootstrapSCSS = gulp.src('./node_modules/bootstrap/scss/**/*')
-    .pipe(gulp.dest('./vendor/bootstrap/scss'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/bootstrap/scss'));
   // ChartJS
   var chartJS = gulp.src('./node_modules/chart.js/dist/*.js')
-    .pipe(gulp.dest('./vendor/chart.js'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/chart.js'));
   // dataTables
   var dataTables = gulp.src([
     './node_modules/datatables.net/js/*.js',
     './node_modules/datatables.net-bs4/js/*.js',
     './node_modules/datatables.net-bs4/css/*.css'
   ])
-    .pipe(gulp.dest('./vendor/datatables'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/datatables'));
   // Font Awesome
   var fontAwesome = gulp.src('./node_modules/@fortawesome/**/*')
-    .pipe(gulp.dest('./vendor'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor'));
   // jQuery Easing
   var jqueryEasing = gulp.src('./node_modules/jquery.easing/*.js')
-    .pipe(gulp.dest('./vendor/jquery-easing'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/jquery-easing'));
   // jQuery
   var jquery = gulp.src([
     './node_modules/jquery/dist/*',
     '!./node_modules/jquery/dist/core.js'
   ])
-    .pipe(gulp.dest('./vendor/jquery'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/jquery'));
   return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing);
 }
 
 // CSS task
 function css() {
   return gulp
-    .src("./scss/**/*.scss")
+    .src(["./scss/**/*.scss", "./css/**/*.css"])
     .pipe(plumber())
     .pipe(sass({
       outputStyle: "expanded",
@@ -109,12 +115,12 @@ function css() {
     .pipe(header(banner, {
       pkg: pkg
     }))
-    .pipe(gulp.dest("./css"))
+    // .pipe(gulp.dest("./css"))
     .pipe(rename({
       suffix: ".min"
     }))
     .pipe(cleanCSS())
-    .pipe(gulp.dest("./css"))
+    .pipe(gulp.dest(config.DESTINATION_PATH+"/css"))
     .pipe(browsersync.stream());
 }
 
@@ -129,7 +135,7 @@ function js() {
       .pipe(buffer())
       .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./public/'));
+      .pipe(gulp.dest(config.DESTINATION_PATH));
   }));
 
   
@@ -168,21 +174,56 @@ function serve() {
 
 // Watch files
 function watchFiles() {
+  console.log('🚀 ~ file: gulpfile.js ~ line 185 ~ watchFiles', config.VIEW_PATH+'**/*')
   gulp.watch("./scss/**/*", css);
   gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
   gulp.watch("./**/*.html", browserSyncReload);
+  gulp.watch(config.VIEW_PATH+"**/*", compileNunjucks)
+}
+
+// Compile nunjucks file
+function compileNunjucks() {
+  var PAGE_PATH = config.PAGE_PATH;
+  console.log("🚀 ~ file: gulpfile.js ~ line 186 ~ compileNunjucks ~ PAGE_PATH", PAGE_PATH)
+  var opts = {
+    env:  new nunjucks.Environment(new nunjucks.FileSystemLoader('js/app/views/'))
+  }
+  var extensions = '**/*.+(html|njk|nunj|nunjucks)';
+  var listPath = [
+    `${PAGE_PATH}${extensions}`,
+    `!${PAGE_PATH}*/components/${extensions}`,
+  ]
+
+  return gulp.src(listPath)
+  // Renders template with nunjucks
+  // .pipe(nunjucksRender({
+  //     data: nunjucksData,
+  //     path: ['app/templates/'] // String or Array
+  // }))
+  // .pipe(gulpif(isProd, htmlmin()))
+  // output files in app folder
+  .pipe(gnunjucks.compile({name: 'Sindre'}, opts))
+  .pipe(rename(function(path){
+    if(path.dirname == 'home') {
+      path.dirname = '.';
+    }
+  }))
+  .pipe(gulp.dest(config.DESTINATION_PATH));
 }
 
 // Define complex tasks
-const vendor = gulp.series(clean, modules);
-const build = gulp.series(vendor, gulp.parallel(css, js), serve);
-//const watch = gulp.series(build, gulp.parallel(watchFiles, browserSync));
+const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, compileNunjucks));
+const build = gulp.series(buildTask, serve);
+const watch = gulp.series(buildTask, gulp.parallel(watchFiles, browserSync));
+// const watch = gulp.series(watchFiles);
 
 // Export tasks
 exports.css = css;
 exports.js = js;
 exports.clean = clean;
-exports.vendor = vendor;
+// exports.vendor = vendor;
 exports.build = build;
-//exports.watch = watch;
+exports.watch = watch;
 exports.default = build;
+exports.compile = compileNunjucks;
+exports.serve = serve;

@@ -1,0 +1,24 @@
+{% extends "templates/index.njk" %}
+{% block title %}Setting{% endblock title %}
+
+{% block content %}
+<h3>Delete Activity</h3>
+<!-- activity selection -->
+<div class="activity-field">
+    <select name="activity-list" id="activity-list" class="form-control bg-gray-200">
+        <!-- template activity option -->
+    </select>
+</div>
+
+<!-- delete activity button -->
+<div class="mt-2">
+    <button id="delete-btn" class="btn btn-primary ml-auto">Delete</button>    
+</div>
+{% endblock content %}
+
+{% block footer %}
+<script type="text/template" data-template="option-activity">
+    <option value="${id}" useTextfield=${useTextfield}>${title}</option>
+</script>
+<script src="js/app/pages/setting.js"></script>
+{% endblock footer %}
