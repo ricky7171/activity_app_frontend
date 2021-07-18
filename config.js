@@ -1,0 +1,1 @@
+exports.DESTINATION_PATH = 'dist';
