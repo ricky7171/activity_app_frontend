@@ -1,0 +1,66 @@
+    <!-- Template -->
+    <script type="text/template" data-template="row-activity-float">
+        <div class="row mb-3 row-activity-float">
+            <div class="left-side col-6 px-1 input-group flex-nowrap text-center input-activity-group">
+                ${value_activity_left_side_html}
+                <div class="input-group-append w-50">
+                    <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title_left_side}</a>
+                </div>
+            </div>
+            <div class="right-side col-6 px-1 input-group flex-nowrap text-center input-activity-group">
+                ${value_activity_right_side_html}
+                <div class="input-group-append w-50">
+                    <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title_right_side}</a>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="row-activity-textfield">
+        <div class="row mb-3 row-activity-textfield">
+            <div class="col-12 px-1 input-group flex-nowrap text-center input-activity-group">
+                <input type="text" class="form-control border border-1 input-activity-value" activityId='${activity_id}' placeholder="Text Field" aria-label="Text Field">
+                <div class="input-group-append">
+                    <button class="btn btn-primary btn-add-value" type="button">${title}</button>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="editable-value-activity-template">
+        <input class="form-control border border-0 bg-white text-center w-50 input-activity-value" activityId='${activity_id}' value='${value}' type="number">
+    </script>
+
+    <script type="text/template" data-template="disabled-value-activity-template">
+        <p class="form-control border border-0 bg-gray-200 w-50 input-activity-value" activityId='${activity_id}' value='${value}'>${value}</p>
+    </script>
+
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Main Custom Script -->
+    <script src="js/main.js"></script>
+
+    <!-- script for this page -->
+    <script src="public/js/app/pages/index.js"></script>
+    
+
+    
+
+</body>
+
+</html>
