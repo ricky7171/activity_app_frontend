@@ -3,6 +3,7 @@ import * as historyRepository from './../../../js/app/data/history_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as alertHelper from "./../core/alert_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
+import * as mediaHelper from "./../core/media_helper";
 
 
 async function loadActivitiesData() {
@@ -123,6 +124,9 @@ function changeReportTextToCurrentMonth()
 function addEventHandler() {
     //event handler
     $("body").on('click', '.row-activity-float .btn-add-value, .row-activity-textfield .btn-add-value', async function() {
+        if(window.setting.beep_sound == 1) {
+            mediaHelper.playBeepSound();
+        }
         //get activity id and input value
         var elInput = $(this).parents(".input-activity-group").find(".input-activity-value");
         var activityId = elInput.attr("activityId");
