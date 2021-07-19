@@ -1,3 +1,5 @@
+import * as alertHelper from "./../core/\alert_helper";
+
 const message =
 {
     "connection": "Check your internet connection !"
@@ -112,7 +114,7 @@ export function processResponse(r, ignoreAlert) {
         result['success'] = false;
         result['message'] = message.connection;
         if (!ignoreAlert) {
-            alert('Failed ! ' + message.connection);
+            alertHelper.showError('Failed ! ' + message.connection);
             result['already_display_alert'] = true;
         }
         return result;
@@ -133,7 +135,7 @@ export function processResponse(r, ignoreAlert) {
     if (r.message) {
         result['message'] = processMessage(r.message);
         if (!ignoreAlert) {
-            alert('Failed ! ' + result['message']);
+            alertHelper.showError('Failed ! ' + result['message']);
             result['already_display_alert'] = true;
         }
     }
@@ -142,7 +144,7 @@ export function processResponse(r, ignoreAlert) {
         result['success'] = false;
         result['message'] = message.connection;
         if (!ignoreAlert) {
-            alert('Failed ! ' + message.connection);
+            alertHelper.showError('Failed ! ' + message.connection);
             result['already_display_alert'] = true;
         }
     }
@@ -180,7 +182,7 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
     //2. request GET / POST / PUT / DELETE
     if (!(["GET", "POST", "PATCH", "UPDATE", "DELETE"].includes(method.toUpperCase()))) {
         if (!ignoreAlert) {
-            alert("Failed ! Error Api.js (1) ! Method is wrong !");
+            alertHelper.showError("Failed ! Error Api.js (1) ! Method is wrong !");
             resultReturn['already_display_alert'] = true;
         }
         return resultReturn;

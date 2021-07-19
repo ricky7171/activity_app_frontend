@@ -21,7 +21,7 @@ jQuery(async function () {
          //validate if user use textfield, then it SHOULD EDITABLE
          //if user use textfield, but not use editable, it will return error
          if($("#is_use_textfield:checked").length > 0 && $("#is_editable:checked").length == 0) {
-            alert("If you want to use textfield, then you should check 'is editable' !");
+            alertHelper.showError("If you want to use textfield, then you should check 'is editable' !");
             return;
          }
 
@@ -32,7 +32,7 @@ jQuery(async function () {
             useTextfield = 1;
          }
          if(title == "" || title == null || value == "" || value == null || target == "" || target == null || target <= 0) {
-             alert("Failed to add activity, please fill all the fields !");
+             alertHelper.showError("Failed to add activity, please fill all the fields !");
          }
          var result = await addActivity(title, value, target, canChange, useTextfield);
          if(result['success']) {

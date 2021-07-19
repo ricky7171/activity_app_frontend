@@ -61,6 +61,7 @@
         "jquery.easing": "^1.4.1",
         "merge-stream": "^2.0.0",
         "nunjucks": "^3.2.3",
+        "sweetalert2": "^11.0.19",
         "vinyl": "^2.2.1",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"

@@ -124,9 +124,6 @@ function changeReportTextToCurrentMonth()
 function addEventHandler() {
     //event handler
     $("body").on('click', '.row-activity-float .btn-add-value, .row-activity-textfield .btn-add-value', async function() {
-        if(window.setting.beep_sound == 1) {
-            mediaHelper.playBeepSound();
-        }
         //get activity id and input value
         var elInput = $(this).parents(".input-activity-group").find(".input-activity-value");
         var activityId = elInput.attr("activityId");
@@ -141,13 +138,16 @@ function addEventHandler() {
         }
 
         if(inputValue == null || inputValue == "") {
-            alert("Please fill the value !");
+            alertHelper.showError("Please fill the value !");
             return;
         }
         
         var result = await addHistory(activityId, inputValue, useTextfield);
         if(result['success']) {
             alertHelper.showSnackBar("Successfully added !", 1);
+            if(window.setting.beep_sound == 1) {
+                mediaHelper.playBeepSound();
+            }
         }
     })
 }

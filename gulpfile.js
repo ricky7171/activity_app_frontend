@@ -96,7 +96,10 @@ function modules() {
     '!./node_modules/jquery/dist/core.js'
   ])
     .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/jquery'));
-  return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing);
+  // Sweetalert JS
+  var sweetalert2 = gulp.src('./node_modules/sweetalert2/dist/**/*')
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/sweetalert2'));
+  return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing, sweetalert2);
 }
 
 // CSS task

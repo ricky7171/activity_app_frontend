@@ -59,14 +59,14 @@ jQuery(async function () {
         var activityId = $("#activity-list").find(":selected").val();
 
         if(!activityId) {
-            alert("Please select your activity that you want to delete");
+            alertHelper.showError("Please select your activity that you want to delete");
             return;
         }
         
         var result = await deleteActivityData(activityId);
         if(result['success']) {
             await loadData();
-            alert("successfully deleted !");
+            alertHelper.showSuccess("successfully deleted !");
         }
         
     });
