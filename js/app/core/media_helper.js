@@ -1,3 +1,5 @@
+import { BEEP_SOUND } from "../../../config";
+
 export function playAudio(path) {
     var audio = new Audio;
     audio.pause();
@@ -7,5 +9,5 @@ export function playAudio(path) {
 }
 
 export function playBeepSound() {
-    return playAudio('/assets/beep_sound.mp3');
+    return playAudio(BEEP_SOUND);
 }

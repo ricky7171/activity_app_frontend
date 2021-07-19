@@ -12,3 +12,8 @@ exports.HOST = 'localhost';
 exports.DESTINATION_PATH = 'dist';
 exports.VIEW_PATH = 'js/app/views/';
 exports.PAGE_PATH = 'js/app/views/pages/';
+
+/**
+ * Media Configuration
+ */
+exports.BEEP_SOUND = '/assets/beep_sound.mp3';
