@@ -1,6 +1,7 @@
 import * as historyRepository from './../../../js/app/data/history_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
+import * as loadingHelper from "./../core/loading_helper";
 
 async function loadHistoryRange() {
     var result = await historyRepository.getHistoryRange();
@@ -38,9 +39,11 @@ function showHistoryRange(ranges) {
 }
 
 jQuery(async function () {
+    loadingHelper.toggleLoading(true);
     var rangeData = await loadHistoryRange();
     if(rangeData['success']) { 
         showHistoryRange(rangeData['response']['data']);
+        loadingHelper.toggleLoading(false);
     }
 
 })

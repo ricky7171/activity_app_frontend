@@ -14,7 +14,7 @@ async function setSettingObject()
 {
     var result = await settingRepository.getSetting()
 
-    if(result.response.data) {
+    if(result.response && result.response.data) {
         window.setting = result.response.data;
     }
 } 

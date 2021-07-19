@@ -29,6 +29,32 @@
       href="https://upload.wikimedia.org/wikipedia/commons/6/63/Fitness_logo_watchos.png">
 {% block header %}
 {% endblock header %}
+    <style>
+    #content .container-fluid {
+        position: relative;
+    }
+    #loading-container {
+        width: 100%;
+        height: 500px;
+        position: absolute;
+        background-color: #f8f9fc;
+        z-index: 999;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: #b3b2b2;
+    }
+
+    #loading-container .loading-icon {
+        font-size: 40px;
+    }
+
+    #loading-container .loading-caption {
+        font-size: 30px;
+    }
+    </style>
 </head>
 
 <body id="page-top">
@@ -61,7 +87,14 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
+                    <div id="loading-container" style="display:none">
+                        <div class="loading-icon">
+                            <i class="fa fa-spin fa-spinner"></i>
+                        </div>
+                        <div class="loading-caption">
+                            Fetching Data
+                        </div>
+                    </div>
                     {% block content %}
                     {% endblock content %}
 

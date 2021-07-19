@@ -1,6 +1,7 @@
 import * as activityRepository from './../../../js/app/data/activity_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
+import * as loadingHelper from "./../core/loading_helper";
 
 async function loadActivityByMonthAndYear($month, $year) {
     var result = await activityRepository.getActivitiesByMonthAndYear($month, $year);
@@ -183,6 +184,7 @@ function changeReportTitleToCurrentMonth()
     $("#titleContent").html("Report of " + dateTimeHelper.monthToText(currentMonth) + " " + currentYear);
 }
 
+loadingHelper.toggleLoading(true);
 jQuery(async function () {
     //change "report" text to current month
     changeReportTitleToCurrentMonth();
@@ -192,6 +194,8 @@ jQuery(async function () {
     if(result['success']) { 
         var activitiesSummary = getActivitiesSummaryFromResult(result["response"]["data"]);
         showActivitiesSummary(activitiesSummary);
+        loadingHelper.toggleLoading(false);
+        $('.report-summary-activity').show();
     }
 
     //event handler

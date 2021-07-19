@@ -19,3 +19,11 @@ export function showSuccess(text) {
         icon: 'success',
     });
 }
+
+export function showWarning(text) {
+    return Swal.fire({
+        title: 'Warning',
+        text: text,
+        icon: 'warning'
+    })
+}

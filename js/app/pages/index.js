@@ -4,6 +4,7 @@ import * as templateHelper from "./../core/template_helper";
 import * as alertHelper from "./../core/alert_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
 import * as mediaHelper from "./../core/media_helper";
+import * as loadingHelper from "./../core/loading_helper";
 
 
 async function loadActivitiesData() {
@@ -156,9 +157,11 @@ jQuery(async function () {
 
     // changeReportTextToCurrentMonth();
 
+    loadingHelper.toggleLoading(true);
     var activitiesData = await loadActivitiesData();
     if(activitiesData['success']) { 
         showActivitiesData(activitiesData['response']['data']);
+        loadingHelper.toggleLoading(false);
     }
 
     addEventHandler();
