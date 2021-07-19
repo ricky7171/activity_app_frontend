@@ -196,13 +196,6 @@ function compileNunjucks() {
   ]
 
   return gulp.src(listPath)
-  // Renders template with nunjucks
-  // .pipe(nunjucksRender({
-  //     data: nunjucksData,
-  //     path: ['app/templates/'] // String or Array
-  // }))
-  // .pipe(gulpif(isProd, htmlmin()))
-  // output files in app folder
   .pipe(gnunjucks.compile({name: 'Sindre'}, opts))
   .pipe(rename(function(path){
     if(path.dirname == 'home') {
@@ -212,8 +205,14 @@ function compileNunjucks() {
   .pipe(gulp.dest(config.DESTINATION_PATH));
 }
 
+// copy assets
+function copyAssets() {
+  return gulp.src('./assets/**/*')
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/assets'));
+}
+
 // Define complex tasks
-const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, compileNunjucks));
+const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
 const build = gulp.series(buildTask, serve);
 const watch = gulp.series(buildTask, gulp.parallel(watchFiles, browserSync));
 // const watch = gulp.series(watchFiles);
