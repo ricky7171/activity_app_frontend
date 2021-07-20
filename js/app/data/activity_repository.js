@@ -70,3 +70,30 @@ export async function deleteActivity(activityId) {
     result = api.processResponse(response);
     return result;
 }
+
+export async function updateActivity(id = 0, title = "title", value = 50, target = 100, canChange = 0, useTextField = 0, color = '') {
+    //prepare variable to store response & result
+    var result = null;
+    var response = null;
+
+    //prepare body
+    //- fill to body
+    var body = {
+        "title" : title,
+        "default_value" : value,
+        "target" : target,
+        "can_change" : canChange,
+        "use_textfield" : useTextField,
+        "color" : color,
+    };
+    //call to api
+    try {
+        response = await api.requestApi("activity.update", body, '/'+id);    
+    } catch (error) {
+        console.log("error !", error);
+        response = false;  
+    }
+    //proccess response
+    result = api.processResponse(response);
+    return result;
+}

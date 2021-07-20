@@ -29,6 +29,11 @@ var listApi = {
         url: server + "/api/activities",
         withToken: false,
     },
+    "activity.update" : {
+        method : "PATCH",
+        url: server + "/api/activities",
+        withToken: false,
+    },
     "history.get": {
         method: "GET",
         url : server + "/api/histories",
