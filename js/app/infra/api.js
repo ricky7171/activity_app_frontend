@@ -6,7 +6,7 @@ const message =
 };
 
 // const server = "https://activity-app-database.herokuapp.com";
-const server = "https://activity_app_backend.test";
+const server = "http://activity_app_backend.test";
 
 var listApi = {
     "activity.get": {

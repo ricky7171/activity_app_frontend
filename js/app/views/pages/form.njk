@@ -17,6 +17,10 @@
             <label for="target">Target</label>
             <input type="number" name="target" id="target" class="form-control" min="50" placeholder="Activity Target" value="100">
         </div>
+        <div class="form-group d-flex flex-nowrap align-items-center">
+            <label for="target">Color</label>
+            <input type="hidden" name="color" id="color" class="form-control" placeholder="Color" value="#4e73df">
+        </div>
         <div class="form-group form-check form-check-inline checkbox-lg">
             <input type="checkbox" name="is_editable" id="is_editable" class="form-check-input">
             <label class="form-check-label" for="is_editable">Can change value</label>
@@ -31,10 +35,16 @@
         <div class="form-group text-right">
             <button id="submit-btn" class="btn btn-primary ml-auto">Create Activity</button>
         </div>
-    </form>
+    </div>
+    {# </form> #}
 </div>
 {% endblock content %}
 
+{% block header %}
+<link href="/vendor/spectrum-colorpicker/spectrum.css" rel="stylesheet" type="text/css">
+{% endblock header %}
+
 {% block footer %}
-<script src="js/app/pages/form.js"></script>
+<script src="/vendor/spectrum-colorpicker/spectrum.js"></script>
+<script src="/js/app/pages/form.js"></script>
 {% endblock footer %}

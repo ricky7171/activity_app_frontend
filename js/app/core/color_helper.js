@@ -1,0 +1,5 @@
+import tinycolor from 'tinycolor2';
+
+export function isDark(colorPallete) {
+    return tinycolor(colorPallete).isDark();
+}

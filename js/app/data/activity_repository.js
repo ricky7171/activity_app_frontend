@@ -26,7 +26,7 @@ export async function getActivitiesByMonthAndYear(month, year) {
     return result;
 }
 
-export async function addActivity(title = "title", value = 50, target = 100, canChange = 0, useTextField = 0) {
+export async function addActivity(title = "title", value = 50, target = 100, canChange = 0, useTextField = 0, color = '') {
     //prepare variable to store response & result
     var result = null;
     var response = null;
@@ -39,6 +39,7 @@ export async function addActivity(title = "title", value = 50, target = 100, can
         "target" : target,
         "can_change" : canChange,
         "use_textfield" : useTextField,
+        "color" : color,
     };
 
     //call to api

@@ -99,7 +99,14 @@ function modules() {
   // Sweetalert JS
   var sweetalert2 = gulp.src('./node_modules/sweetalert2/dist/**/*')
     .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/sweetalert2'));
-  return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing, sweetalert2);
+  // Colorpicker JS
+  var colorPicker = gulp.src('./node_modules/spectrum-colorpicker/**/*')
+  .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/spectrum-colorpicker'));
+  // Tinycolor JS
+  var tinyColor = gulp.src('./node_modules/tinycolor2/dist/**/*')
+  .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/tinycolor2'));
+
+  return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing, sweetalert2, tinyColor);
 }
 
 // CSS task
@@ -169,7 +176,7 @@ function serve() {
   console.log("check port");
   console.log(process.env.PORT);
   return connect.server({
-    root: "./",
+    root: "./dist",
     port: process.env.PORT || 8000, // localhost:8000
     livereload: false
   });

@@ -5,6 +5,7 @@ import * as alertHelper from "./../core/alert_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
 import * as mediaHelper from "./../core/media_helper";
 import * as loadingHelper from "./../core/loading_helper";
+import * as colorHelper from "./../core/color_helper";
 
 
 async function loadActivitiesData() {
@@ -47,6 +48,16 @@ function showActivitiesData(activities) {
     var tempActivityRowFloatHtml = "";
     var tempActivityRowTextfieldHtml = "";
 
+    function changeColorBtnActivity(color, el) {
+        if(color) {
+            el.find('.btn-add-value').css('background-color', color);
+            el.find('.btn-add-value').css('color', colorHelper.isDark(color) ? '#ffffff' : '#000000');
+        } else {
+            el.find('.btn-add-value').css('background-color', '');
+            el.find('.btn-add-value').css('color', '');
+        }
+    }
+    
     var indexActivityRowFloat = -1;
     $(".report-wrapper").append(activities.map(function(activityData, i) {
 
@@ -74,22 +85,34 @@ function showActivitiesData(activities) {
             } else {
                 activityValueHtml = templateHelper.render(disabledValueActivityTpl, contentActivityValue);
             }
-    
+
+            rowActivityFloatTpl = $(rowActivityFloatTpl);
             //fill contentActivityRowFloat
             if(contentActivityRowFloat["value_activity_left_side_html"] != "") { //it means, it should fill right side, after that, insert to report-wrapper
+                changeColorBtnActivity(activityData['color'], rowActivityFloatTpl.find('.right-side'));
+                rowActivityFloatTpl = rowActivityFloatTpl[0].outerHTML;
+        
                 contentActivityRowFloat["value_activity_right_side_html"] = activityValueHtml;
                 contentActivityRowFloat["title_right_side"] = activityData["title"];
                 tempActivityRowFloatHtml += templateHelper.render(rowActivityFloatTpl, contentActivityRowFloat);
             }
-    
+            
             if(contentActivityRowFloat["value_activity_left_side_html"] == "") { //it means, it should fill left side first
+                changeColorBtnActivity(activityData['color'], rowActivityFloatTpl.find('.left-side'));
+                rowActivityFloatTpl = rowActivityFloatTpl[0].outerHTML;
+
                 contentActivityRowFloat["value_activity_left_side_html"] = activityValueHtml;
                 contentActivityRowFloat["title_left_side"] = activityData["title"];
             } 
             
+            console.log("🚀 ~ file: index.js ~ line 96 ~ $ ~ contentActivityRowFloat", contentActivityRowFloat)
         } else { //if this activity USE textfield, then save on the temporary variable, and render it later
             contentActivityRowTextfield["title"] = activityData["title"];
             contentActivityRowTextfield["activity_id"] = activityData["id"];
+
+            rowActivityTextfieldTpl = $(rowActivityTextfieldTpl);
+            changeColorBtnActivity(activityData['color'], rowActivityTextfieldTpl);
+            rowActivityTextfieldTpl = rowActivityTextfieldTpl[0].outerHTML;
             tempActivityRowTextfieldHtml += templateHelper.render(rowActivityTextfieldTpl, contentActivityRowTextfield);
             return null;
         }
