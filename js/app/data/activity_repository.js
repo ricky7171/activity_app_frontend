@@ -14,6 +14,19 @@ export async function getActivities() {
     
 }
 
+export async function getActivitiesSortByPosition() {
+    var result = null;
+    var response = null;
+    try {
+        response = await api.requestApi("activity.get", {}, '?sortbyposition=true');    
+    } catch (error) {
+        response = false;  
+    }
+    result = api.processResponse(response);
+    return result;
+    
+}
+
 export async function getActivitiesByMonthAndYear(month, year) {
     var result = null;
     var response = null;
@@ -89,6 +102,28 @@ export async function updateActivity(id = 0, title = "title", value = 50, target
     //call to api
     try {
         response = await api.requestApi("activity.update", body, '/'+id);    
+    } catch (error) {
+        console.log("error !", error);
+        response = false;  
+    }
+    //proccess response
+    result = api.processResponse(response);
+    return result;
+}
+
+export async function updatePosition(position) {
+    //prepare variable to store response & result
+    var result = null;
+    var response = null;
+
+    //prepare body
+    //- fill to body
+    var body = {
+        "position" : position,
+    };
+    //call to api
+    try {
+        response = await api.requestApi("activity.updatePosition", body);    
     } catch (error) {
         console.log("error !", error);
         response = false;  

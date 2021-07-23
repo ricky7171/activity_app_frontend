@@ -3,35 +3,93 @@
 {% block content %}
 <!-- Report -->
 <div class="report-wrapper">
+    <div id="float-wrapper" class="row">
+    </div>
+    <div id="text-wrapper">
+    </div>
     <!-- template row activity -->
 </div>
 {% endblock content %}
 
+{%block header %}
+<style>
+.changepos-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+.changepos-btn-wrapper .btn-up,
+.changepos-btn-wrapper .btn-down {
+    cursor: pointer;
+}
+
+.changepos-btn-wrapper i:hover {
+    color: black;
+}
+.changepos-btn-wrapper i:focus {
+    color: #dddddd;
+}
+#float-wrapper {
+    gap: 8px 0;
+    margin-bottom: 8px;
+}
+</style>
+{%endblock header %}
+
 {% block footer %}
 <!-- Template -->
-<script type="text/template" data-template="row-activity-float">
-    <div class="row mb-3 row-activity-float">
+{# <script type="text/template" data-template="row-activity-float">
+    <div class="row col-6 mb-3 row-activity-float">
         <div class="left-side col-6 px-1 input-group flex-nowrap text-center input-activity-group">
+            <div class="changepos-btn-wrapper" activityId='${activity_id}'>
+                <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+            </div>
             ${value_activity_left_side_html}
             <div class="input-group-append w-50">
                 <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title_left_side}</a>
             </div>
         </div>
         <div class="right-side col-6 px-1 input-group flex-nowrap text-center input-activity-group">
+            <div class="changepos-btn-wrapper">
+                <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+            </div>
             ${value_activity_right_side_html}
             <div class="input-group-append w-50">
                 <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title_right_side}</a>
             </div>
         </div>
     </div>
+</script> #}
+
+<script type="text/template" data-template="row-activity-float">
+    <div class="col-md-6 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
+        <div class="input-group flex-nowrap text-center input-activity-group">
+            ${value_activity_html}
+            <div class="input-group-append w-50">
+                <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title}</a>
+            </div>
+            <div class="changepos-btn-wrapper">
+                <i class="btn-up fa fa-caret-left" aria-hidden="true"></i>
+                <i class="btn-down fa fa-caret-right" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
 </script>
 
 <script type="text/template" data-template="row-activity-textfield">
-    <div class="row mb-3 row-activity-textfield">
-        <div class="col-12 px-1 input-group flex-nowrap text-center input-activity-group">
-            <input type="text" class="form-control border border-1 input-activity-value" activityId='${activity_id}' placeholder="Text Field" aria-label="Text Field">
-            <div class="input-group-append">
-                <button class="btn btn-primary btn-add-value" type="button">${title}</button>
+    <div class="row mb-3 row-activity row-activity-textfield">
+        <div class="col-12"  style="padding-left: 0; padding-right: 0">
+            <div class="input-group flex-nowrap text-center input-activity-group"> 
+                <input type="text" class="form-control border border-1 input-activity-value" activityId='${activity_id}' placeholder="Text Field" aria-label="Text Field">
+                <div class="input-group-append">
+                    <button class="btn btn-primary btn-add-value" type="button">${title}</button>
+                </div>
+                <div class="changepos-btn-wrapper">
+                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                </div>
             </div>
         </div>
     </div>
