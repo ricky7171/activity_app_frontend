@@ -21,8 +21,9 @@ function showHistoryRange(ranges) {
 
     //generate year & month data, then put it on .all-reports
     var yearDataHtml = "";
-    for(var year in ranges) {
-        var monthsDataHtml = ranges[year].map(function(history, i) {
+    for(var index in ranges) {
+        var dataRange = ranges[index];
+        var monthsDataHtml = dataRange.range.map(function(history, i) {
             return templateHelper.render(monthDataTpl, {
                 "year_number" : history["year"],
                 "month_number" : history["month"],
@@ -30,7 +31,7 @@ function showHistoryRange(ranges) {
             });
         }).join('');
         yearDataHtml += templateHelper.render(yearDataTpl, {
-            "year" : year,
+            "year" : dataRange.year,
             "months_data_html" : monthsDataHtml
         });
     }
