@@ -9,12 +9,18 @@ async function loadHistoriesData() {
 }
 
 function showHistoriesData(histories) {
-    console.log("check data");
+    console.log("check dataaaa");
     console.log(histories);
 
     //clear histories
     $(".list-history").empty();
 
+    if(!histories.length) {
+        var rowEmptyContentTpl = $('script[data-template="row-empty-content"').text();
+        $('.list-history').html(rowEmptyContentTpl);
+        $('.list-history').find('.empty-content').show();
+    }
+    
     //prepare template
     var rowHistoriesTpl = $('script[data-template="row-history"').text();
 
@@ -67,9 +73,10 @@ jQuery(async function () {
 
     $('body').on('click', '.table-responsive td', function(){
         var content = $(this).html();
-        var isEditable = $(this).data('editable') == 'true';
-        console.log("🚀 ~ file: history.js ~ line 71 ~ $ ~ isEditable", isEditable)
-        console.log("🚀 ~ file: history.js ~ line 70 ~ $ ~ content", content)
+        var isEditable = $(this).data('editable');
+        if(isEditable) {
+
+        }
         
     })
 })

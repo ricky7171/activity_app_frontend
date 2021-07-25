@@ -22,6 +22,11 @@ function showActivitiesData(activities) {
     console.log("check data ");
     console.log(activities);
 
+    if(!activities.length) {
+        $('.empty-content').show();
+    } else {
+        $('.empty-content').hide();
+    }
     //clear activities 
     // $(".report-wrapper").empty();
 

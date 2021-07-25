@@ -4,6 +4,7 @@
 
 {% block content %}
 <!-- Data Talbe New -->
+
 <div class="table-responsive" style="display:none">
     <table class="table data-table table-bordered" id="history_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
         <thead>
@@ -36,6 +37,13 @@
         <td data-editable="true">${value}</td>
         <td class="action">
             <button class="btn-delete-history" historyId="${history_id}">Delete</button>
+        </td>
+    </tr>
+</script>
+<script type="text/template" data-template="row-empty-content">
+    <tr>
+        <td colspan="5">
+            {% include "templates/components/empty-box.njk" %}
         </td>
     </tr>
 </script>

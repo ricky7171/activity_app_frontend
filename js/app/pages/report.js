@@ -12,6 +12,12 @@ function showHistoryRange(ranges) {
     console.log("check data");
     console.log(ranges);
 
+    if(!ranges.length) {
+        $('.empty-content').show();
+    } else {
+        $('.empty-content').hide();
+    }
+
     //clear histories
     $(".all-reports").empty();
 

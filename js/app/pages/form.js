@@ -16,6 +16,12 @@ function showActivitiesData(activities) {
     //clear activities
     $(".list-activity").empty();
 
+    if(!activities.length) {
+        var rowEmptyContentTpl = $('script[data-template="row-empty-content"').text();
+        $('.list-activity').html(rowEmptyContentTpl);
+        $('.list-activity').find('.empty-content').show();
+    }
+    
     //prepare template
     var rowActivitiesTpl = $('script[data-template="row-activity"').text();
 
