@@ -72,6 +72,14 @@ jQuery(async function () {
         maxSelectionSize: 10,
         preferredFormat: "hex",
     });
+
+    var defaultValue = {
+        title: '',
+        value: '',
+        target: '',
+        color: '#4e73df'
+    };
+    
     //event handler
     $("#submit-btn").on('click', async function(e) {
          //get title, value, target, canchange
@@ -101,6 +109,11 @@ jQuery(async function () {
          if(result['success']) {
              alertHelper.showSnackBar("Successfully added !", 1);
              fetchActivities();
+
+            $("#title").val(defaultValue.title);
+            $("#value").val(defaultValue.value);
+            $("#target").val(defaultValue.target);
+            $("#color").val(defaultValue.color);
          }
     });
 
