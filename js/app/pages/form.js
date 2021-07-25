@@ -113,7 +113,7 @@ jQuery(async function () {
             $("#title").val(defaultValue.title);
             $("#value").val(defaultValue.value);
             $("#target").val(defaultValue.target);
-            $("#color").val(defaultValue.color);
+            colorHelper.updateColorOfInput('#color', defaultValue.color);
          }
     });
 
@@ -149,7 +149,7 @@ jQuery(async function () {
         modalEdit.find('#title2').val(activityData.title);
         modalEdit.find('#value2').val(activityData.default_value);
         modalEdit.find('#target2').val(activityData.target);
-        modalEdit.find('#color2').val(activityData.color);
+        colorHelper.updateColorOfInput(modalEdit.find('#color2'), activityData.color);
         modalEdit.find('#is_editable2').prop('checked', activityData.can_change == 1);
         modalEdit.find('#is_use_textfield2').prop('checked', activityData.use_textfield == 1);
         modalEdit.find('input[name=activity_id]').val(activityData.id);
