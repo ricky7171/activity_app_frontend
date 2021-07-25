@@ -29,10 +29,10 @@
 {% block footer %}
 <script type="text/template" data-template="row-history">
     <tr>
-        <td>${date}</td>
-        <td>${time}</td>
+        <td data-editable="true">${date}</td>
+        <td data-editable="true">${time}</td>
         <td>${activity_title}</td>
-        <td>${value}</td>
+        <td data-editable="true">${value}</td>
         <td class="action">
             <button class="btn-delete-history" historyId="${history_id}">Delete</button>
         </td>

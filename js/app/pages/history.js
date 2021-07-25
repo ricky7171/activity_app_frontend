@@ -65,4 +65,11 @@ jQuery(async function () {
         }
     });
 
+    $('body').on('click', '.table-responsive td', function(){
+        var content = $(this).html();
+        var isEditable = $(this).data('editable') == 'true';
+        console.log("🚀 ~ file: history.js ~ line 71 ~ $ ~ isEditable", isEditable)
+        console.log("🚀 ~ file: history.js ~ line 70 ~ $ ~ content", content)
+        
+    })
 })
