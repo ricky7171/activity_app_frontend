@@ -56,7 +56,6 @@ function browserSync(done) {
 // BrowserSync reload
 function browserSyncReload(done) {
   browsersync.reload();
-  console.log('asdasd', browserSync.reload)
   
   done();
 }
@@ -184,7 +183,6 @@ function serve() {
 
 // Watch files
 function watchFiles() {
-  console.log('🚀 ~ file: gulpfile.js ~ line 185 ~ watchFiles', config.VIEW_PATH+'**/*')
   gulp.watch("./scss/**/*", css);
   gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
   // gulp.watch("./**/*.html", browserSyncReload);
@@ -195,7 +193,6 @@ function watchFiles() {
 // Compile nunjucks file
 function compileNunjucks() {
   var PAGE_PATH = config.PAGE_PATH;
-  console.log("🚀 ~ file: gulpfile.js ~ line 186 ~ compileNunjucks ~ PAGE_PATH", PAGE_PATH)
   var opts = {
     env:  new nunjucks.Environment(new nunjucks.FileSystemLoader('js/app/views/'))
   }
@@ -222,10 +219,10 @@ function copyAssets() {
 }
 
 // Define complex tasks
-const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
-const build = gulp.series(buildTask, serve);
-const watch = gulp.series(buildTask, gulp.parallel(watchFiles, browserSync));
-// const watch = gulp.series(watchFiles);
+const build = gulp.series(clean, modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
+const watch = gulp.series(build, gulp.parallel(watchFiles, browserSync));
+const dev = gulp.series(build, gulp.parallel(watchFiles, serve));
+// const watch = gulp.series(watchFiles)
 
 // Export tasks
 exports.css = css;
@@ -237,3 +234,4 @@ exports.watch = watch;
 exports.default = build;
 exports.compile = compileNunjucks;
 exports.serve = serve;
+exports.dev = dev;
