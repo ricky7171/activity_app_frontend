@@ -66,10 +66,12 @@
 
 <script type="text/template" data-template="row-activity-float">
     <div class="col-md-6 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
-        <div class="input-group flex-nowrap text-center input-activity-group">
-            ${value_activity_html}
-            <div class="input-group-append w-50">
-                <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title}</a>
+        <div class="d-flex flex-nowrap text-center">
+            <div class="input-group input-activity-group">
+                ${value_activity_html}
+                <div class="input-group-append w-50">
+                    <a href="#" class="btn btn-primary w-100 btn-add-value" role="button">${title}</a>
+                </div>
             </div>
             <div class="changepos-btn-wrapper">
                 <i class="btn-up fa fa-caret-left" aria-hidden="true"></i>
@@ -82,10 +84,12 @@
 <script type="text/template" data-template="row-activity-textfield">
     <div class="row mb-3 row-activity row-activity-textfield">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
-            <div class="input-group flex-nowrap text-center input-activity-group"> 
-                <input type="text" class="form-control border border-1 input-activity-value" activityId='${activity_id}' placeholder="Text Field" aria-label="Text Field">
-                <div class="input-group-append">
-                    <button class="btn btn-primary btn-add-value" type="button">${title}</button>
+            <div class="d-flex flex-nowrap text-center"> 
+                <div class="input-group input-activity-group">
+                    <input type="text" class="form-control border border-1 input-activity-value" activityId='${activity_id}' placeholder="Text Field" aria-label="Text Field">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary btn-add-value" type="button">${title}</button>
+                    </div>
                 </div>
                 <div class="changepos-btn-wrapper">
                     <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
