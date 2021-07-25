@@ -1,5 +1,7 @@
 import * as historyRepository from './../../../js/app/data/history_repository';
 import * as templateHelper from "./../core/template_helper";
+import * as alertHelper from "./../core/alert_helper";
+import * as loadingHelper from "./../core/loading_helper";
 
 async function loadHistoriesData() {
     var result = await historyRepository.getHistories();
@@ -43,16 +45,19 @@ async function deleteHistory(id) {
 }
 
 jQuery(async function () {
+    loadingHelper.toggleLoading(true);
     var historiesData = await loadHistoriesData();
     if(historiesData['success']) { 
         showHistoriesData(historiesData['response']['data']);
+        loadingHelper.toggleLoading(false);
+        $('.table-responsive').show();
     }
 
     //event handler
     $("body").on('click','.btn-delete-history', async function() {
         var result = await deleteHistory($(this).attr("historyId"));
         if(result['success']) {
-            alert("successfully deleted !");
+            alertHelper.showSuccess("successfully deleted !");
             var historiesData = await loadHistoriesData();
             if(historiesData['success']) { 
                 showHistoriesData(historiesData['response']['data']);

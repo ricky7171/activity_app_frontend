@@ -1,9 +1,12 @@
+import * as alertHelper from "./../core/\alert_helper";
+
 const message =
 {
     "connection": "Check your internet connection !"
 };
 
-const server = "https://activity-app-database.herokuapp.com";
+// const server = "https://activity-app-database.herokuapp.com";
+const server = "http://activity_app_backend.test";
 
 var listApi = {
     "activity.get": {
@@ -24,6 +27,16 @@ var listApi = {
     "activity.delete" : {
         method : "DELETE",
         url: server + "/api/activities",
+        withToken: false,
+    },
+    "activity.update" : {
+        method : "PATCH",
+        url: server + "/api/activities",
+        withToken: false,
+    },
+    "activity.updatePosition" : {
+        method : "PATCH",
+        url: server + "/api/activities/updatePosition",
         withToken: false,
     },
     "history.get": {
@@ -50,7 +63,17 @@ var listApi = {
         method : "POST",
         url : server + "/api/histories/bulkStore",
         withToken : false,
-    }
+    },
+    "setting.get": {
+        method: 'GET',
+        url: server + "/api/setting",
+        withToken: false,
+    },
+    "setting.save": {
+        method: 'POST',
+        url: server + "/api/setting",
+        withToken: false,
+    },
 };
 
 //this function will process message to readable message (not object)
@@ -101,7 +124,7 @@ export function processResponse(r, ignoreAlert) {
         result['success'] = false;
         result['message'] = message.connection;
         if (!ignoreAlert) {
-            alert('Failed ! ' + message.connection);
+            alertHelper.showError('Failed ! ' + message.connection);
             result['already_display_alert'] = true;
         }
         return result;
@@ -122,7 +145,7 @@ export function processResponse(r, ignoreAlert) {
     if (r.message) {
         result['message'] = processMessage(r.message);
         if (!ignoreAlert) {
-            alert('Failed ! ' + result['message']);
+            alertHelper.showError('Failed ! ' + result['message']);
             result['already_display_alert'] = true;
         }
     }
@@ -131,7 +154,7 @@ export function processResponse(r, ignoreAlert) {
         result['success'] = false;
         result['message'] = message.connection;
         if (!ignoreAlert) {
-            alert('Failed ! ' + message.connection);
+            alertHelper.showError('Failed ! ' + message.connection);
             result['already_display_alert'] = true;
         }
     }
@@ -169,7 +192,7 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
     //2. request GET / POST / PUT / DELETE
     if (!(["GET", "POST", "PATCH", "UPDATE", "DELETE"].includes(method.toUpperCase()))) {
         if (!ignoreAlert) {
-            alert("Failed ! Error Api.js (1) ! Method is wrong !");
+            alertHelper.showError("Failed ! Error Api.js (1) ! Method is wrong !");
             resultReturn['already_display_alert'] = true;
         }
         return resultReturn;

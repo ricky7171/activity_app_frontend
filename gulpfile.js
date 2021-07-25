@@ -96,7 +96,17 @@ function modules() {
     '!./node_modules/jquery/dist/core.js'
   ])
     .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/jquery'));
-  return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing);
+  // Sweetalert JS
+  var sweetalert2 = gulp.src('./node_modules/sweetalert2/dist/**/*')
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/sweetalert2'));
+  // Colorpicker JS
+  var colorPicker = gulp.src('./node_modules/spectrum-colorpicker/**/*')
+  .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/spectrum-colorpicker'));
+  // Tinycolor JS
+  var tinyColor = gulp.src('./node_modules/tinycolor2/dist/**/*')
+  .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/tinycolor2'));
+
+  return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing, sweetalert2, tinyColor);
 }
 
 // CSS task
@@ -126,7 +136,7 @@ function css() {
 
 // JS task
 function js() {
-  var files = glob.sync("./js/app/**/*.js");
+  var files = glob.sync("./js/**/*.js");
   return merge(files.map(function(file) {
     var b = browserify(file)
       .transform("babelify", { presets: ['@babel/preset-env'] });
@@ -166,7 +176,7 @@ function serve() {
   console.log("check port");
   console.log(process.env.PORT);
   return connect.server({
-    root: "./",
+    root: "./dist",
     port: process.env.PORT || 8000, // localhost:8000
     livereload: false
   });
@@ -177,7 +187,8 @@ function watchFiles() {
   console.log('🚀 ~ file: gulpfile.js ~ line 185 ~ watchFiles', config.VIEW_PATH+'**/*')
   gulp.watch("./scss/**/*", css);
   gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
-  gulp.watch("./**/*.html", browserSyncReload);
+  // gulp.watch("./**/*.html", browserSyncReload);
+  gulp.watch("./dist/**/*", browserSyncReload);
   gulp.watch(config.VIEW_PATH+"**/*", compileNunjucks)
 }
 
@@ -195,13 +206,6 @@ function compileNunjucks() {
   ]
 
   return gulp.src(listPath)
-  // Renders template with nunjucks
-  // .pipe(nunjucksRender({
-  //     data: nunjucksData,
-  //     path: ['app/templates/'] // String or Array
-  // }))
-  // .pipe(gulpif(isProd, htmlmin()))
-  // output files in app folder
   .pipe(gnunjucks.compile({name: 'Sindre'}, opts))
   .pipe(rename(function(path){
     if(path.dirname == 'home') {
@@ -211,8 +215,14 @@ function compileNunjucks() {
   .pipe(gulp.dest(config.DESTINATION_PATH));
 }
 
+// copy assets
+function copyAssets() {
+  return gulp.src('./assets/**/*')
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/assets'));
+}
+
 // Define complex tasks
-const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, compileNunjucks));
+const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
 const build = gulp.series(buildTask, serve);
 const watch = gulp.series(buildTask, gulp.parallel(watchFiles, browserSync));
 // const watch = gulp.series(watchFiles);

@@ -3,10 +3,13 @@ import * as historyRepository from './../../../js/app/data/history_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as alertHelper from "./../core/alert_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
+import * as mediaHelper from "./../core/media_helper";
+import * as loadingHelper from "./../core/loading_helper";
+import * as colorHelper from "./../core/color_helper";
 
 
 async function loadActivitiesData() {
-    var result = await activityRepository.getActivities();
+    var result = await activityRepository.getActivitiesSortByPosition();
     return result;
 }
 
@@ -20,7 +23,7 @@ function showActivitiesData(activities) {
     console.log(activities);
 
     //clear activities 
-    $(".report-wrapper").empty();
+    // $(".report-wrapper").empty();
 
     // prepare template
     var rowActivityFloatTpl = $('script[data-template="row-activity-float"]').text();
@@ -30,10 +33,9 @@ function showActivitiesData(activities) {
 
     //prepare content activity row for float value
     var contentActivityRowFloat = {
-        "value_activity_left_side_html" : "",
-        "title_left_side" : "",
-        "value_activity_right_side_html" : "",
-        "title_right_side" : ""
+        "value_activity_html" : "",
+        "title" : "",
+        "activity_id" : "",
     };
 
     //prepare content activity row for textfield value
@@ -45,8 +47,19 @@ function showActivitiesData(activities) {
     var tempActivityRowFloatHtml = "";
     var tempActivityRowTextfieldHtml = "";
 
+    function changeColorBtnActivity(color, el) {
+        if(color) {
+            el.find('.btn-add-value').css('background-color', color);
+            el.find('.btn-add-value').css('color', colorHelper.isDark(color) ? '#ffffff' : '#000000');
+        } else {
+            el.find('.btn-add-value').css('background-color', '');
+            el.find('.btn-add-value').css('color', '');
+        }
+    }
+    
     var indexActivityRowFloat = -1;
-    $(".report-wrapper").append(activities.map(function(activityData, i) {
+    (activities.map(function(activityData, i) {
+        contentActivityRowTextfield["activity_id"] = activityData["id"];
 
         //if this activity NOT use textfield, then render it on report-wrapper first
         if(activityData["use_textfield"] == false) {
@@ -72,22 +85,23 @@ function showActivitiesData(activities) {
             } else {
                 activityValueHtml = templateHelper.render(disabledValueActivityTpl, contentActivityValue);
             }
-    
-            //fill contentActivityRowFloat
-            if(contentActivityRowFloat["value_activity_left_side_html"] != "") { //it means, it should fill right side, after that, insert to report-wrapper
-                contentActivityRowFloat["value_activity_right_side_html"] = activityValueHtml;
-                contentActivityRowFloat["title_right_side"] = activityData["title"];
-                tempActivityRowFloatHtml += templateHelper.render(rowActivityFloatTpl, contentActivityRowFloat);
-            }
-    
-            if(contentActivityRowFloat["value_activity_left_side_html"] == "") { //it means, it should fill left side first
-                contentActivityRowFloat["value_activity_left_side_html"] = activityValueHtml;
-                contentActivityRowFloat["title_left_side"] = activityData["title"];
-            } 
+
+            rowActivityFloatTpl = $(rowActivityFloatTpl);
+            rowActivityFloatTpl.find('.changepos-btn-wrapper').attr('data-activityId', activityData['id']);
+            changeColorBtnActivity(activityData['color'], rowActivityFloatTpl);
+            rowActivityFloatTpl = rowActivityFloatTpl[0].outerHTML;
             
+            //fill contentActivityRowFloat
+            contentActivityRowFloat["value_activity_html"] = activityValueHtml;
+            contentActivityRowFloat["title"] = activityData["title"];
+
+            tempActivityRowFloatHtml += templateHelper.render(rowActivityFloatTpl, contentActivityRowFloat);
         } else { //if this activity USE textfield, then save on the temporary variable, and render it later
             contentActivityRowTextfield["title"] = activityData["title"];
-            contentActivityRowTextfield["activity_id"] = activityData["id"];
+            rowActivityTextfieldTpl = $(rowActivityTextfieldTpl);
+            rowActivityTextfieldTpl.find('.changepos-btn-wrapper').attr('data-activityId', activityData['id']);
+            changeColorBtnActivity(activityData['color'], rowActivityTextfieldTpl);
+            rowActivityTextfieldTpl = rowActivityTextfieldTpl[0].outerHTML;
             tempActivityRowTextfieldHtml += templateHelper.render(rowActivityTextfieldTpl, contentActivityRowTextfield);
             return null;
         }
@@ -96,18 +110,9 @@ function showActivitiesData(activities) {
 
     //render list activity that use float
     
-    //check whether last iteration is even or odd, if odd, then remove last element
-    if(contentActivityRowFloat["value_activity_right_side_html"] == "" && contentActivityRowFloat["title_right_side"] == "" && contentActivityRowFloat["value_activity_left_side_html"] != "" && contentActivityRowFloat["title_left_side"] != "") { 
-        tempActivityRowFloatHtml += templateHelper.render(rowActivityFloatTpl, contentActivityRowFloat);
-        $(".report-wrapper").append(tempActivityRowFloatHtml);
-        $(".report-wrapper .right-side").last().remove();
-    } else {
-        $(".report-wrapper").append(tempActivityRowFloatHtml);
-    }
-
-
+    $(".report-wrapper").find('#float-wrapper').append(tempActivityRowFloatHtml);
     //render list activity that use textfield
-    $(".report-wrapper").append(tempActivityRowTextfieldHtml);
+    $(".report-wrapper").find('#text-wrapper').append(tempActivityRowTextfieldHtml);
 
 }
 
@@ -137,28 +142,94 @@ function addEventHandler() {
         }
 
         if(inputValue == null || inputValue == "") {
-            alert("Please fill the value !");
+            alertHelper.showError("Please fill the value !");
             return;
         }
         
         var result = await addHistory(activityId, inputValue, useTextfield);
         if(result['success']) {
             alertHelper.showSnackBar("Successfully added !", 1);
+            if(window.setting.beep_sound == 1) {
+                mediaHelper.playBeepSound();
+            }
         }
     })
 }
 
+function changePosition(direction = 'up', currentEl = null, parentEl = null) {
+    var children = $(parentEl).children();
+    var currentIndex = currentEl.index();
+    var newIndex = direction == 'up' ? currentIndex-1 : currentIndex+1;
+    var totalIndex = children.length-1;
+    if(newIndex > totalIndex || newIndex < 0) {
+        return;
+    } 
+    else {
+        var temp = children[newIndex];
+        children[newIndex] = children[currentIndex];
+        children[currentIndex] = temp;
+    }
+    $(parentEl).html(children);
+
+    handleChangePosition();
+}
+
+function getValuePositionOfActivities() {
+    var values = $('.row-activity').map(function(){
+        var btnPos = $(this).find('.changepos-btn-wrapper');
+        var activityId = btnPos.data('activityid');
+
+        return activityId;
+    }).toArray();
+
+    return values;
+}
+
+function handleChangePosition() {
+    var value = getValuePositionOfActivities();
+    activityRepository.updatePosition(value);
+}
+
 jQuery(async function () {
 
-    changeReportTextToCurrentMonth();
+    // changeReportTextToCurrentMonth();
 
+    loadingHelper.toggleLoading(true);
     var activitiesData = await loadActivitiesData();
     if(activitiesData['success']) { 
         showActivitiesData(activitiesData['response']['data']);
+        loadingHelper.toggleLoading(false);
     }
 
     addEventHandler();
 
+    $(document).on('click', '.btn-up', function() {
+        var floatEl = $(this).closest('.row-activity-float');
+        var textfieldEl = $(this).closest('.row-activity-textfield'); 
+        if(floatEl.length) {
+            var parentEl = '#float-wrapper';
+            var currentEl = floatEl;
+        } else if(textfieldEl.length) {
+            var parentEl = '#text-wrapper';
+            var currentEl = textfieldEl;
+        }
+
+        changePosition('up', currentEl, parentEl);
+    });
+
+    $(document).on('click', '.btn-down', function() {
+        var floatEl = $(this).closest('.row-activity-float');
+        var textfieldEl = $(this).closest('.row-activity-textfield'); 
+        if(floatEl.length) {
+            var parentEl = '#float-wrapper';
+            var currentEl = floatEl;
+        } else if(textfieldEl.length) {
+            var parentEl = '#text-wrapper';
+            var currentEl = textfieldEl;
+        }
+
+        changePosition('down', currentEl, parentEl);
+    });
 })
 
 

@@ -14,6 +14,19 @@ export async function getActivities() {
     
 }
 
+export async function getActivitiesSortByPosition() {
+    var result = null;
+    var response = null;
+    try {
+        response = await api.requestApi("activity.get", {}, '?sortbyposition=true');    
+    } catch (error) {
+        response = false;  
+    }
+    result = api.processResponse(response);
+    return result;
+    
+}
+
 export async function getActivitiesByMonthAndYear(month, year) {
     var result = null;
     var response = null;
@@ -26,7 +39,7 @@ export async function getActivitiesByMonthAndYear(month, year) {
     return result;
 }
 
-export async function addActivity(title = "title", value = 50, target = 100, canChange = 0, useTextField = 0) {
+export async function addActivity(title = "title", value = 50, target = 100, canChange = 0, useTextField = 0, color = '') {
     //prepare variable to store response & result
     var result = null;
     var response = null;
@@ -39,6 +52,7 @@ export async function addActivity(title = "title", value = 50, target = 100, can
         "target" : target,
         "can_change" : canChange,
         "use_textfield" : useTextField,
+        "color" : color,
     };
 
     //call to api
@@ -61,6 +75,55 @@ export async function deleteActivity(activityId) {
     //call to api
     try {
         response = await api.requestApi("activity.delete", null, "/" + activityId);    
+    } catch (error) {
+        console.log("error !", error);
+        response = false;  
+    }
+    //proccess response
+    result = api.processResponse(response);
+    return result;
+}
+
+export async function updateActivity(id = 0, title = "title", value = 50, target = 100, canChange = 0, useTextField = 0, color = '') {
+    //prepare variable to store response & result
+    var result = null;
+    var response = null;
+
+    //prepare body
+    //- fill to body
+    var body = {
+        "title" : title,
+        "default_value" : value,
+        "target" : target,
+        "can_change" : canChange,
+        "use_textfield" : useTextField,
+        "color" : color,
+    };
+    //call to api
+    try {
+        response = await api.requestApi("activity.update", body, '/'+id);    
+    } catch (error) {
+        console.log("error !", error);
+        response = false;  
+    }
+    //proccess response
+    result = api.processResponse(response);
+    return result;
+}
+
+export async function updatePosition(position) {
+    //prepare variable to store response & result
+    var result = null;
+    var response = null;
+
+    //prepare body
+    //- fill to body
+    var body = {
+        "position" : position,
+    };
+    //call to api
+    try {
+        response = await api.requestApi("activity.updatePosition", body);    
     } catch (error) {
         console.log("error !", error);
         response = false;  

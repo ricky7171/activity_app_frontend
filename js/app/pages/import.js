@@ -1,6 +1,7 @@
 import * as historyRepository from './../../../js/app/data/history_repository';
 import * as activityRepository from './../../../js/app/data/activity_repository';
 import * as templateHelper from "./../core/template_helper";
+import * as alertHelper from "./../core/alert_helper";
 
 async function loadActivitiesData() {
     var result = await activityRepository.getActivities();
@@ -70,14 +71,14 @@ jQuery(async function () {
             });
         } catch (error) {
             console.log(error);
-            alert("your input format is wrong");
+            alertHelper.showError("your input format is wrong");
             
             return;
         }
         
         var result = await bulkStoreHistoriesData(inputHistories, activityId);
         if(result['success']) {
-            alert("successfully added !");
+            alertHelper.showSuccess("successfully added !");
         }
     });
 

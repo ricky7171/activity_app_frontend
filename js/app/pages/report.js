@@ -1,6 +1,7 @@
 import * as historyRepository from './../../../js/app/data/history_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
+import * as loadingHelper from "./../core/loading_helper";
 
 async function loadHistoryRange() {
     var result = await historyRepository.getHistoryRange();
@@ -20,8 +21,9 @@ function showHistoryRange(ranges) {
 
     //generate year & month data, then put it on .all-reports
     var yearDataHtml = "";
-    for(var year in ranges) {
-        var monthsDataHtml = ranges[year].map(function(history, i) {
+    for(var index in ranges) {
+        var dataRange = ranges[index];
+        var monthsDataHtml = dataRange.range.map(function(history, i) {
             return templateHelper.render(monthDataTpl, {
                 "year_number" : history["year"],
                 "month_number" : history["month"],
@@ -29,7 +31,7 @@ function showHistoryRange(ranges) {
             });
         }).join('');
         yearDataHtml += templateHelper.render(yearDataTpl, {
-            "year" : year,
+            "year" : dataRange.year,
             "months_data_html" : monthsDataHtml
         });
     }
@@ -37,22 +39,12 @@ function showHistoryRange(ranges) {
     
 }
 
-function changeReportTextToCurrentMonth()
-{
-    var dateObject = new Date();
-    var currentMonth = dateObject.getMonth() + 1;
-    var currentYear = dateObject.getFullYear();
-    $("#reportBtnTop").html("See " + dateTimeHelper.getCurrentMonth() + " Report").attr("href", "/report-list.html?year=" + currentYear + "&month=" + currentMonth);
-}
-
-
 jQuery(async function () {
-    //change "report" text to current month
-    changeReportTextToCurrentMonth();
-
+    loadingHelper.toggleLoading(true);
     var rangeData = await loadHistoryRange();
     if(rangeData['success']) { 
         showHistoryRange(rangeData['response']['data']);
+        loadingHelper.toggleLoading(false);
     }
 
 })
