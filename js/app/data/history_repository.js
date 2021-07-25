@@ -39,8 +39,8 @@ export async function addHistory(activityId, inputValue, useTextfield) {
     //- fill to body
     var body = {
         "activity_id" : activityId,
-        "date" : currentDateFormatted,
-        "time" : currentTimeFormatted,
+        // "date" : currentDateFormatted,
+        // "time" : currentTimeFormatted,
     };
     if(useTextfield) {
         body['value_textfield'] = inputValue;
