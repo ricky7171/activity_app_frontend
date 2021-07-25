@@ -121,3 +121,26 @@ export async function getHistoryRange() {
     result = api.processResponse(response);
     return result;
 }
+
+export async function updateHistory(id, body) {
+    //prepare variable to store response & result
+    var result = null;
+    var response = null;
+
+    //prepare body
+    //- fill to body
+    var body = body;
+
+    //call to api
+    try {
+        console.log("CHECK BODY FIRST");
+        console.log(body);
+        response = await api.requestApi("history.update", body, '/'+id);    
+    } catch (error) {
+        console.log("error !", error);
+        response = false;  
+    }
+    //proccess response
+    result = api.processResponse(response);
+    return result;
+}

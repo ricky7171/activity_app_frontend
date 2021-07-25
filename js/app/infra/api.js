@@ -64,6 +64,11 @@ var listApi = {
         url : server + "/api/histories/bulkStore",
         withToken : false,
     },
+    "history.update" : {
+        method : "PATCH",
+        url : server + "/api/histories",
+        withToken : false,
+    },
     "setting.get": {
         method: 'GET',
         url: server + "/api/setting",

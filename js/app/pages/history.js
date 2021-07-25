@@ -35,11 +35,13 @@ function showHistoriesData(histories) {
             value = 0;
         }
         return templateHelper.render(rowHistoriesTpl, {
+            "id" : historyData["id"],
             "date" : historyData["date"],
             "time" : historyData["time"],
             "activity_title" : historyData["activity_title"],
             "value" : value,
-            "history_id" : historyData['id']
+            "history_id" : historyData['id'],
+            "useTextField" : historyData["value_textfield"] ? true : false
         });
     }));
     
@@ -71,12 +73,55 @@ jQuery(async function () {
         }
     });
 
-    $('body').on('click', '.table-responsive td', function(){
-        var content = $(this).html();
-        var isEditable = $(this).data('editable');
-        if(isEditable) {
+    $('body').on('click', '.table-responsive td', function(e){
+        e.stopPropagation();
 
-        }
+        var value = $(this).html();
+        var isEditable = $(this).data('editable');
+        var hasInput = $(this).find('.input-editable').length;
+        console.log('di click', this)
         
+        if(isEditable && !hasInput) {
+            // save default content
+            $(this).data('defaultcontent', value);
+            console.log("🚀 ~ file: history.js ~ line 86 ~ $ ~ $(this).data", $(this).data())
+
+            var rowEditable = $('script[data-template="row-editable"').text();
+            var content = templateHelper.render(rowEditable, {
+                name: $(this).data('name'),
+                value: value,
+            })
+            $(this).html(content);
+        }
+    })
+
+    $('body').on('click', '.btn-cancel-editable', function(e){
+        e.stopPropagation();
+        var td = $(this).closest('td');
+        var defaultContent = td.data('defaultcontent');
+        
+        td.html(defaultContent);
+    })
+
+    $('body').on('click', '.btn-save-editable', async function(e){
+        e.stopPropagation();
+        var inputContainer = $(this).closest('.input-editable-container');
+        var value = inputContainer.find('.input-editable').val();
+        var td = $(this).closest('td');
+        var id = $(this).closest('tr').data('historyid');
+        var name = td.data('name');
+        var useTextField = td.data('usetextfield');
+
+        if(useTextField) {
+            name = 'value_textfield';
+        }
+        var body = {
+            [name]: value
+        };
+        var result = await historyRepository.updateHistory(id, body);
+        if(result['success']) {
+            td.html(value);
+            alertHelper.showSnackBar('Successfully Updated');
+        }
     })
 })
