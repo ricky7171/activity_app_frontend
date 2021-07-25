@@ -6,7 +6,8 @@
         "start": "node_modules/.bin/gulp dev",
         "watch": "node_modules/.bin/gulp watch",
         "build": "node_modules/.bin/gulp build",
-        "serve": "node_modules/.bin/gulp serve"
+        "serve": "node_modules/.bin/gulp serve",
+        "dev": "node_modules/.bin/gulp dev"
     },
     "description": "An open source Bootstrap 4 admin theme.",
     "keywords": [
