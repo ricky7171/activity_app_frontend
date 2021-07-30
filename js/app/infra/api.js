@@ -6,7 +6,7 @@ const message =
 };
 
 // const server = "https://activity-app-database.herokuapp.com";
-const server = "http://activity_app_backend.test";
+export const server = "http://activity_app_backend.test";
 
 var listApi = {
     "activity.get": {
@@ -209,6 +209,7 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
     return await $.ajax({
         url: url + additionalUrl,
         data: dataRequest,
+        dataType: 'json',
         type: method,
         crossDomain: true,
         dataType: 'json', // added data type

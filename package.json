@@ -65,6 +65,7 @@
         "jquery.easing": "^1.4.1",
         "merge-stream": "^2.0.0",
         "nunjucks": "^3.2.3",
+        "peasy-js": "^2.3.0",
         "spectrum-colorpicker": "^1.8.1",
         "sweetalert2": "^11.0.19",
         "tinycolor2": "^1.4.2",
