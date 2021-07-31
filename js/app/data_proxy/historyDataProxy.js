@@ -17,6 +17,17 @@ class HistoryDataProxy extends HttpDataProxy {
       this._api.requestApi(`${this._entity}.add`, data)
     );
   }
+
+  bulkInsert(attributes) {
+    const body = {
+      activity_id: attributes.activity_id,
+      history: attributes.history,
+    };
+
+    return this._handleResponseFrom(
+      this._api.requestApi(`${this._entity}.bulkStore`, body)
+    );
+  }
 }
 
 module.exports = HistoryDataProxy;
