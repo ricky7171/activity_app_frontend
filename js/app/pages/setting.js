@@ -1,21 +1,46 @@
-import * as settingRepository from '../data/setting_repository';
+import SettingService from "../business_logic/service/settingService";
+import SettingDataProxy from "../data_proxy/settingDataProxy";
 import * as alertHelper from "./../core/alert_helper";
 
-jQuery(async function () {
-    async function loadSettingData() {
-        var result = await settingRepository.getSetting();
-        return result;
+class SettingView {
+  constructor() {
+    this.settingService = new SettingService(new SettingDataProxy());
+  }
+
+  async fetchSettingData() {
+    const command = await this.settingService.getAllCommand().execute();
+    if (command.success) {
+      const result = command.value;
+      if (result.success) {
+        const setting = result.response.data;
+        // set value
+        $("#toggleBeepSound").prop("checked", setting.beep_sound == 1);
+      }
     }
+  }
 
-    loadSettingData().then(function(res){
-        var setting = res.response.data;
+  async handleChangeBeepSound(evt) {
+    const value = $(evt.target).prop("checked") ? 1 : 0;
 
-        $('#toggleBeepSound').prop('checked', setting.beep_sound == 1)
-    });
+    const command = await this.settingService.saveCommand('beep_sound', value).execute();
+    if (command.success) {
+      const result = command.value;
 
-    $('#toggleBeepSound').on('change', function(){
-        settingRepository
-            .saveSetting('beep_sound', $(this).prop('checked') ? 1 : 0)
-            .then(() => alertHelper.showSnackBar("Successfully saved !", 1));
-    })
-})
+      if (result.success) {
+        alertHelper.showSnackBar("Successfully saved !", 1);
+      }
+    }
+  }
+
+  initialize() {
+    this.fetchSettingData();
+
+    $("#toggleBeepSound").on("change", (evt) =>
+      this.handleChangeBeepSound(evt)
+    );
+  }
+}
+
+jQuery(async function () {
+  new SettingView().initialize();
+});
