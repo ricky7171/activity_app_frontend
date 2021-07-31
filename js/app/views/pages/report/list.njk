@@ -14,10 +14,10 @@
         <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Activity</th>
                     <th>Target</th>
-                    <th>Your Score</th>
-                    <th>Count</th>
+                    <th>Score</th>
+                    <th>Ct</th>
                 </tr>
             </thead>
             <tbody class="data-activity-summary">
@@ -62,7 +62,7 @@
             <a class="activity_button" activityId="${activity_id}">${activity_name}</a>
         </td>
         <td>${target}</td>
-        <td>${score}</td>
+        <td class='red-score-${redscore}'>${score}</td>
         <td>${count}</td>
     </tr>
 </script>
