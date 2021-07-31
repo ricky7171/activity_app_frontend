@@ -15,8 +15,7 @@ class HistoryService extends BusinessService {
 
   _getRulesForUpdateCommand(attr) {
     return Promise.resolve([
-      new FieldRequiredRule("activity_id", attr),
-      new FieldRequiredRule("value", attr),
+      new FieldRequiredRule("id", attr),
     ]);
   }
 }
