@@ -135,7 +135,14 @@ function css() {
 
 // JS task
 function js() {
-  var files = glob.sync("./js/**/*.js");
+  var files = glob.sync("./js/**/*.js", {
+    ignore: [
+      './js/app/business_logic/**',
+      './js/app/core/**',
+      './js/app/data_proxy/**',
+      './js/app/infra/**',
+    ]
+  });
   return merge(files.map(function(file) {
     var b = browserify(file)
       .transform("babelify", { presets: ['@babel/preset-env'] });
