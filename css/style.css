@@ -13,6 +13,11 @@
     min-width: 85px;
 }
 
+.btn-add-value {
+    min-width: 85px;
+    overflow: hidden;
+}
+
 /**
 * History page
 */
@@ -239,6 +244,10 @@ input[type=checkbox], input[type=radio] {
 
 .data-activity-summary a {
     cursor: pointer;
+}
+
+.red-score-true {
+    color:red;
 }
 
 /**

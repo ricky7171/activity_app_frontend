@@ -101,12 +101,16 @@ function showActivitiesSummary(activities) {
 
     //render html
     $(".report-summary-activity .data-activity-summary").append(activities.map(function(activity) {
+        var redScore = activity["score"] < activity["target"];
+        console.log("check redscore");
+        console.log(redScore);
         return templateHelper.render(rowActivitySummaryTpl, {
             "activity_id" : activity["id"],
             "activity_name" : activity["title"],
             "target" : activity["target"],
             "score" : activity["score"],
             "count" : activity["count"],
+            "redscore" : redScore,
         });
     }));
     
