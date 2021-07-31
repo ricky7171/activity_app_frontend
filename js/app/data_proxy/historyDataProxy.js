@@ -28,6 +28,12 @@ class HistoryDataProxy extends HttpDataProxy {
       this._api.requestApi(`${this._entity}.bulkStore`, body)
     );
   }
+
+  getHistoryRange() {
+    return this._handleResponseFrom(
+      this._api.requestApi(`${this._entity}.getHistoryRange`)
+    );
+  }
 }
 
 module.exports = HistoryDataProxy;

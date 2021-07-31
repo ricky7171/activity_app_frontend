@@ -57,6 +57,16 @@ class HistoryService extends BusinessService {
       },
     });
   }
+
+  getHistoryRangeCommand() {
+    const dataProxy = this.dataProxy;
+
+    return new Command({
+      _onValidationSuccess() {
+        return dataProxy.getHistoryRange();
+      },
+    });
+  }
 }
 
 export default HistoryService;

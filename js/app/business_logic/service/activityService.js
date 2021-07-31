@@ -46,6 +46,16 @@ class ActivityService extends BusinessService {
       },
     });
   }
+
+  getByMonthAndYearCommand(month, year) {
+    const dataProxy = this.dataProxy;
+
+    return new Command({
+      _onValidationSuccess() {
+        return dataProxy.getByMonthAndYear(month, year);
+      },
+    });
+  }
 }
 
 export default ActivityService;

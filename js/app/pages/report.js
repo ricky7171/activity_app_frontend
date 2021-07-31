@@ -1,56 +1,68 @@
-import * as historyRepository from './../../../js/app/data/history_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
 import * as loadingHelper from "./../core/loading_helper";
+import HistoryService from "../business_logic/service/historyService";
+import HistoryDataProxy from "../data_proxy/historyDataProxy";
 
-async function loadHistoryRange() {
-    var result = await historyRepository.getHistoryRange();
-    return result;
-}
+class ReportView {
+  constructor() {
+    this.historyService = new HistoryService(new HistoryDataProxy());
+  }
 
-function showHistoryRange(ranges) {
-    console.log("check data");
-    console.log(ranges);
+  async fetchHistory() {
+    loadingHelper.toggleLoading(true);
+    const command = await this.historyService
+      .getHistoryRangeCommand()
+      .execute();
+    if (command.success) {
+      const result = command.value;
+      if (result.success) {
+        this.showHistoryRange(result.response.data);
+        loadingHelper.toggleLoading(false);
+      }
+    }
+  }
 
-    if(!ranges.length) {
-        $('.empty-content').show();
+  showHistoryRange(ranges) {
+    if (!ranges.length) {
+      $(".empty-content").show();
     } else {
-        $('.empty-content').hide();
+      $(".empty-content").hide();
     }
 
     //clear histories
     $(".all-reports").empty();
 
     //prepare template
-    var yearDataTpl = $('script[data-template="year-data"').text();
-    var monthDataTpl = $('script[data-template="month-data"').text();
+    const yearDataTpl = $('script[data-template="year-data"').text();
+    const monthDataTpl = $('script[data-template="month-data"').text();
 
     //generate year & month data, then put it on .all-reports
-    var yearDataHtml = "";
-    for(var index in ranges) {
-        var dataRange = ranges[index];
-        var monthsDataHtml = dataRange.range.map(function(history, i) {
-            return templateHelper.render(monthDataTpl, {
-                "year_number" : history["year"],
-                "month_number" : history["month"],
-                "month_text" : dateTimeHelper.monthToText(history['month']),
-            });
-        }).join('');
-        yearDataHtml += templateHelper.render(yearDataTpl, {
-            "year" : dataRange.year,
-            "months_data_html" : monthsDataHtml
-        });
+    let yearDataHtml = "";
+    for (let index in ranges) {
+      const dataRange = ranges[index];
+      const monthsDataHtml = dataRange.range
+        .map(function (history, i) {
+          return templateHelper.render(monthDataTpl, {
+            year_number: history["year"],
+            month_number: history["month"],
+            month_text: dateTimeHelper.monthToText(history["month"]),
+          });
+        })
+        .join("");
+      yearDataHtml += templateHelper.render(yearDataTpl, {
+        year: dataRange.year,
+        months_data_html: monthsDataHtml,
+      });
     }
     $(".all-reports").append(yearDataHtml);
-    
+  }
+
+  initialize() {
+    this.fetchHistory();
+  }
 }
 
 jQuery(async function () {
-    loadingHelper.toggleLoading(true);
-    var rangeData = await loadHistoryRange();
-    if(rangeData['success']) { 
-        showHistoryRange(rangeData['response']['data']);
-        loadingHelper.toggleLoading(false);
-    }
-
-})
+  new ReportView().initialize();
+});
