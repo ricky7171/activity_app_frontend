@@ -1,4 +1,3 @@
-import * as historyRepository from "./../../../js/app/data/history_repository";
 import * as templateHelper from "./../core/template_helper";
 import * as alertHelper from "./../core/alert_helper";
 import ActivityService from "../business_logic/service/activityService";
