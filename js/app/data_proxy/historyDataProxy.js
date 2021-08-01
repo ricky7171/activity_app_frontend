@@ -1,4 +1,4 @@
-var HttpDataProxy = require("./httpDataProxy");
+import HttpDataProxy from "./httpDataProxy";
 
 class HistoryDataProxy extends HttpDataProxy {
   constructor() {
@@ -36,4 +36,4 @@ class HistoryDataProxy extends HttpDataProxy {
   }
 }
 
-module.exports = HistoryDataProxy;
+export default HistoryDataProxy;

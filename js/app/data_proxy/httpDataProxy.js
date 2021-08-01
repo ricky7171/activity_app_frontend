@@ -1,7 +1,7 @@
-var ServiceException = require("peasy-js").ServiceException;
-var ConcurrencyError = require("../business_logic/shared/concurrencyError");
-var NotFoundError = require("../business_logic/shared/notFoundError");
-var api = require("../infra/api");
+import { ServiceException } from "peasy-js";
+import ConcurrencyError from "../business_logic/shared/concurrencyError";
+import NotFoundError from "../business_logic/shared/notFoundError";
+import api from "../infra/api";
 
 class HttpDataProxy {
   constructor(entity) {
@@ -84,4 +84,4 @@ class HttpDataProxy {
   }
 }
 
-module.exports = HttpDataProxy;
+export default HttpDataProxy;

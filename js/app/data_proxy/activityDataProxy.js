@@ -1,4 +1,4 @@
-var HttpDataProxy = require("./httpDataProxy");
+import HttpDataProxy from "./httpDataProxy";
 
 class ActivityDataProxy extends HttpDataProxy {
   constructor() {
@@ -31,4 +31,4 @@ class ActivityDataProxy extends HttpDataProxy {
   }
 }
 
-module.exports = ActivityDataProxy;
+export default ActivityDataProxy;

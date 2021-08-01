@@ -1,4 +1,4 @@
-var HttpDataProxy = require("./httpDataProxy");
+import HttpDataProxy from "./httpDataProxy";
 
 class SettingDataProxy extends HttpDataProxy {
   constructor() {
@@ -11,4 +11,4 @@ class SettingDataProxy extends HttpDataProxy {
   }
 }
 
-module.exports = SettingDataProxy;
+export default SettingDataProxy;
