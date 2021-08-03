@@ -7,7 +7,8 @@
         "watch": "node_modules/.bin/gulp watch",
         "build": "node_modules/.bin/gulp build",
         "serve": "node_modules/.bin/gulp serve",
-        "dev": "node_modules/.bin/gulp dev"
+        "dev": "node_modules/.bin/gulp dev",
+        "test": "jest"
     },
     "description": "An open source Bootstrap 4 admin theme.",
     "keywords": [
@@ -41,6 +42,7 @@
         "@babel/preset-env": "^7.14.2",
         "@babel/runtime": "^7.14.0",
         "@fortawesome/fontawesome-free": "5.15.3",
+        "axios": "^0.21.1",
         "babel-core": "^6.26.3",
         "babel-preset-env": "^1.7.0",
         "babelify": "^10.0.0",
@@ -74,11 +76,19 @@
         "vinyl-source-stream": "^2.0.0"
     },
     "devDependencies": {
-        "gulp-nunjucks": "^5.1.0"
+        "gulp-nunjucks": "^5.1.0",
+        "jest": "^27.0.6",
+        "jest-mock-axios": "^4.4.0"
     },
     "@babel": {
         "presets": [
             "env"
+        ]
+    },
+    "jest": {
+        "verbose": false,
+        "modulePaths": [
+            "./js/app/tests/"
         ]
     }
 }

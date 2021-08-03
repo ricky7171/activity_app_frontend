@@ -1,7 +1,7 @@
 import { ServiceException } from "peasy-js";
 import ConcurrencyError from "../business_logic/shared/concurrencyError";
 import NotFoundError from "../business_logic/shared/notFoundError";
-import api from "../infra/api";
+import * as api from "../infra/api";
 
 class HttpDataProxy {
   constructor(entity) {

@@ -1,3 +1,4 @@
+import axios from "axios";
 import * as alertHelper from "./../core/\alert_helper";
 
 const message =
@@ -203,15 +204,17 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         return resultReturn;
     }
 
-    console.log("check datarequest");
-    console.log(dataRequest);
-    console.log(method);
-    return await $.ajax({
-        url: url + additionalUrl,
-        data: dataRequest,
-        dataType: 'json',
-        type: method,
-        crossDomain: true,
-        dataType: 'json', // added data type
-    });
+    // console.log("check datarequest");
+    // console.log(dataRequest);
+    // console.log(method);
+
+    try {
+        return await axios({
+            method: method,
+            url: url + additionalUrl,
+            data: dataRequest,
+        }).then((r) => r.data)
+    } catch (error) {
+        return error.response.data;
+    }
 }

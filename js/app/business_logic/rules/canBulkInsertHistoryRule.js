@@ -14,7 +14,6 @@ class CanBulkInsertHistoryRule extends Rule {
     } else {
         // checkFormat
         let isValidFormat = true;
-        console.log("🚀 ~ file: canBulkInsertHistoryRule.js ~ line 19 ~ CanBulkInsertHistoryRule ~ this.inputHistories.forEach ~ inputHistories", this.inputHistories)
         this.inputHistories.forEach((history) => {
           const keyValue = this.useTextfield ? "value_textfield" : "value";
     
@@ -26,7 +25,6 @@ class CanBulkInsertHistoryRule extends Rule {
         if (isValidFormat == false) {
             this._invalidate("Your input format is wrong !");
         }
-        console.log("🚀 ~ file: canBulkInsertHistoryRule.js ~ line 27 ~ CanBulkInsertHistoryRule ~ _onValidate ~ isValidFormat", isValidFormat)
     }
 
 

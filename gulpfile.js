@@ -141,6 +141,8 @@ function js() {
       './js/app/core/**',
       './js/app/data_proxy/**',
       './js/app/infra/**',
+      './js/app/__mocks__/**',
+      './js/app/tests/**',
     ]
   });
   return merge(files.map(function(file) {
