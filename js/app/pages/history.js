@@ -56,7 +56,8 @@ class HistoryView {
           activity_title: historyData["activity_title"],
           value: value,
           history_id: historyData["id"],
-          useTextField: historyData["value_textfield"] ? true : false,
+          useTextField: historyData["value_textfield"] ? 'true' : 'false',
+          is_value_editable: historyData['activity_can_change'] ? 'true' : 'false',
         });
       })
     );

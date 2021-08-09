@@ -33,6 +33,7 @@ class FormView {
         this.showActivitiesData(activitiesData.response.data);
         loadingHelper.toggleLoading(false);
         this.tableElement.show();
+        $('div.form-wrapper').show();
       }
     }
   }
