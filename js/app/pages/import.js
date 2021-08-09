@@ -1,85 +1,81 @@
-import * as historyRepository from './../../../js/app/data/history_repository';
-import * as activityRepository from './../../../js/app/data/activity_repository';
 import * as templateHelper from "./../core/template_helper";
 import * as alertHelper from "./../core/alert_helper";
+import ActivityService from "../business_logic/service/activityService";
+import ActivityDataProxy from "../data_proxy/activityDataProxy";
+import HistoryService from "../business_logic/service/historyService";
+import HistoryDataProxy from "../data_proxy/historyDataProxy";
 
-async function loadActivitiesData() {
-    var result = await activityRepository.getActivities();
-    return result;
-}
+class ImportView {
+  constructor() {
+    this.activityService = new ActivityService(new ActivityDataProxy());
+    this.historyService = new HistoryService(new HistoryDataProxy());
+  }
 
-function showActivitiesData(activities) {
-    console.log("check data");
-    console.log(activities);
+  async fetchActivities() {
+    const command = await this.activityService.getAllCommand().execute();
+    if (command.success) {
+      const result = command.value;
 
+      this.showActivitiesData(result.response.data);
+    }
+  }
+
+  showActivitiesData(activities) {
     //clear histories
     $("#importer").empty();
 
     //prepare template
-    var optionActivityTpl = $('script[data-template="option-activity"').text();
+    const optionActivityTpl = $(
+      'script[data-template="option-activity"'
+    ).text();
 
     //render template
-    $("#importer").append(activities.map(function(activity,i) {
+    $("#importer").append(
+      activities.map(function (activity, i) {
         return templateHelper.render(optionActivityTpl, {
-            "title" : activity['title'],
-            'id' : activity['id'],
-            'useTextfield' : activity['use_textfield'],
+          title: activity["title"],
+          id: activity["id"],
+          useTextfield: activity["use_textfield"],
         });
-    }));
-    
-}
+      })
+    );
+  }
+  async handleClickButtonSubmit(evt) {
+    //get activityId
+    const activityId = $("#importer").find(":selected").val();
+    const useTextfield = $("#importer").find(":selected").attr("useTextfield");
 
-async function bulkStoreHistoriesData(inputHistories, activityId) {
-    var result = await historyRepository.bulkStoreHistoriesData(inputHistories, activityId);
-    return result;
+    //get input history
+    const plainInput = $("textarea[name='histories']").val();
+
+    const attributes = {
+      activity_id: activityId,
+      history: plainInput,
+      use_textfield: useTextfield,
+    };
+
+    const command = await this.historyService
+      .bulkInsertCommand(attributes)
+      .execute();
+
+    if (command.success == false) {
+      const firstErrorMsg = command.errors[0].message;
+      alertHelper.showError(firstErrorMsg);
+      return;
+    }
+
+    alertHelper.showSuccess("successfully added !");
+  }
+
+  initialize() {
+    this.fetchActivities();
+
+    $("body").on("click", "#submit-btn", (evt) =>
+      this.handleClickButtonSubmit(evt)
+    );
+  }
 }
 
 jQuery(async function () {
-    var activitiesData = await loadActivitiesData();
-    if(activitiesData['success']) { 
-        showActivitiesData(activitiesData['response']['data']);
-    }
-
-    //event handler
-    $("body").on('click','#submit-btn', async function() {
-        //get activityId
-        var activityId = $("#importer").find(":selected").val();
-        var useTextfield = $("#importer").find(":selected").attr("useTextfield");
-
-
-        //get input history
-        var plainInput = $("textarea[name='histories']").val();
-        var inputHistories = [];
-        try {
-            console.log("check palinInput");
-            console.log(plainInput);
-            inputHistories = plainInput.split("\n").map(function(row) {
-                var rowSplitted = row.split(", ");
-                if(useTextfield == "1") {
-                    return {
-                        "date" : rowSplitted[0],
-                        "time" : rowSplitted[1],
-                        "value_textfield" : rowSplitted[2],
-                    }
-                } else {
-                    return {
-                        "date" : rowSplitted[0],
-                        "time" : rowSplitted[1],
-                        "value" : rowSplitted[2],
-                    }
-                }
-            });
-        } catch (error) {
-            console.log(error);
-            alertHelper.showError("your input format is wrong");
-            
-            return;
-        }
-        
-        var result = await bulkStoreHistoriesData(inputHistories, activityId);
-        if(result['success']) {
-            alertHelper.showSuccess("successfully added !");
-        }
-    });
-
-})
+  new ImportView().initialize();
+});

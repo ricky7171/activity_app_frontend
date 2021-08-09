@@ -1,8 +1,10 @@
 {% extends "templates/index.njk" %}
+{% set active_menu = 'history' %}
 {% block title %}History{% endblock title %}
 
 {% block content %}
 <!-- Data Talbe New -->
+
 <div class="table-responsive" style="display:none">
     <table class="table data-table table-bordered" id="history_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
         <thead>
@@ -28,15 +30,33 @@
 
 {% block footer %}
 <script type="text/template" data-template="row-history">
-    <tr>
-        <td>${date}</td>
-        <td>${time}</td>
+    <tr data-historyid="${id}">
+        <td data-editable="true" data-name="date">${date}</td>
+        <td data-editable="true" data-name="time">${time}</td>
         <td>${activity_title}</td>
-        <td>${value}</td>
+        <td data-editable="${is_value_editable}" data-name="value" data-usetextfield="${useTextField}">${value}</td>
         <td class="action">
             <button class="btn-delete-history" historyId="${history_id}">Delete</button>
         </td>
     </tr>
+</script>
+<script type="text/template" data-template="row-empty-content">
+    <tr>
+        <td colspan="5">
+            {% include "templates/components/empty-box.njk" %}
+        </td>
+    </tr>
+</script>
+<script type="text/template" data-template="row-editable">
+    <div class="input-group input-editable-container">
+        <input name="${name}" type="text" class="form-control w-auto input-editable" value="${value}" />
+        <div class="input-group-append">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary w-100 btn-save-editable" role="button"><i class="fa fa-save"></i></button>
+                <button type="button" class="btn btn-secondary w-100 btn-cancel-editable" role="button"><i class="fa fa-times"></i></button>
+            </div>
+        </div>
+    </div>
 </script>
 <script src="vendor/footable-bootstrap/js/footable.min.js"></script>
 <script src="js/app/pages/history.js"></script>

@@ -1,22 +1,23 @@
 {% extends "templates/index.njk" %}
+{% set active_menu = 'activity' %}
 {% block title %}Form{% endblock title %}
 
 {% block content %}
 <!-- Form -->
-<div class="form-wrapper">
+<div class="form-wrapper" style="display:none">
     <h3 class="mb-2">Add Activity</h3>
     <div id="demo_form" class="form">
         <div class="form-group d-flex flex-nowrap align-items-center">
             <label for="title">Title</label>
-            <input type="text" name="title" id="title" class="form-control" placeholder="Activity Title" value="Toilet">
+            <input type="text" name="title" id="title" class="form-control" placeholder="Activity Title">
         </div>
         <div class="form-group d-flex flex-nowrap align-items-center">
             <label for="value">Value</label>
-            <input type="text" name="value" id="value" class="form-control" placeholder="Activity Default Value" value="50">
+            <input type="text" name="value" id="value" class="form-control" placeholder="Activity Default Value">
         </div>
         <div class="form-group d-flex flex-nowrap align-items-center">
             <label for="target">Target</label>
-            <input type="number" name="target" id="target" class="form-control" min="50" placeholder="Activity Target" value="100">
+            <input type="number" name="target" id="target" class="form-control" min="50" placeholder="Activity Target">
         </div>
         <div class="form-group d-flex flex-nowrap align-items-center">
             <label for="target">Color</label>
@@ -70,30 +71,30 @@
                 <div id="edit_form" class="form">
                     <div class="form-group d-flex flex-nowrap align-items-center">
                         <label for="title2">Title</label>
-                        <input type="text" name="title2" id="title2" class="form-control" placeholder="Activity Title" value="Toilet">
+                        <input type="text" name="title2" id="title2" class="form-control" placeholder="Activity Title">
                     </div>
                     <div class="form-group d-flex flex-nowrap align-items-center">
                         <label for="value2">Value</label>
-                        <input type="text" name="value2" id="value2" class="form-control" placeholder="Activity Default Value" value="50">
+                        <input type="text" name="value2" id="value2" class="form-control" placeholder="Activity Default Value">
                     </div>
                     <div class="form-group d-flex flex-nowrap align-items-center">
                         <label for="target2">Target</label>
-                        <input type="number" name="target2" id="target2" class="form-control" min="50" placeholder="Activity Target" value="100">
+                        <input type="number" name="target2" id="target2" class="form-control" min="50" placeholder="Activity Target">
                     </div>
                     <div class="form-group d-flex flex-nowrap align-items-center">
                         <label for="color2">Color</label>
                         <input type="color" name="color2" id="color2" class="form-control " placeholder="Color" value="#4e73df">
                     </div>
-                    <div class="form-group form-check form-check-inline checkbox-lg">
+                    <div class="form-group form-check form-check-inline checkbox-lg" style="display:none">
                         <input type="checkbox" name="is_editable2" id="is_editable2" class="form-check-input">
                         <label class="form-check-label" for="is_editable2">Can change value</label>
                     </div>
-                    <div class="form-group form-check form-check-inline checkbox-lg">
+                    <div class="form-group form-check form-check-inline checkbox-lg" style="display:none">
                         <input type="checkbox" name="is_use_textfield2" id="is_use_textfield2" class="form-check-input">
                         <label class="form-check-label" for="is_use_textfield2">Use textfield</label>
                     </div>
                     <input type="hidden" name="activity_id" value=""/>
-                    <div class="form-group d-flex flex-nowrap align-items-center">
+                    <div class="form-group d-flex flex-nowrap align-items-center" style="display:none">
                         <label>If you check "Use textfield", then the target will be count of your histories</label>
                     </div>
                 </div>
@@ -122,6 +123,13 @@
         <td class="action">
             <button class="btn-edit-activity" activityId="${id}">Edit</button>
             <button class="btn-delete-activity" activityId="${id}">Delete</button>
+        </td>
+    </tr>
+</script>
+<script type="text/template" data-template="row-empty-content">
+    <tr>
+        <td colspan="5">
+            {% include "templates/components/empty-box.njk" %}
         </td>
     </tr>
 </script>

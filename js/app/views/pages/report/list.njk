@@ -1,7 +1,9 @@
 {% extends "templates/index.njk" %}
+{% set active_menu = 'report' %}
 {% block title %}Report{% endblock title %}
 
 {% block content %}
+<div class="content-container" style="display: none">
 <a id="btnBack" href="/report/index.html" class="btn btn-primary mb-4"><i class="fa fa-arrow-left"></i> Back</a>
 
 <h3 id="titleContent">Report</h3>
@@ -13,10 +15,10 @@
         <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Activity</th>
                     <th>Target</th>
-                    <th>Your Score</th>
-                    <th>Count</th>
+                    <th>Score</th>
+                    <th>Ct</th>
                 </tr>
             </thead>
             <tbody class="data-activity-summary">
@@ -49,6 +51,7 @@
         </table>
     </div>
 </div>
+</div>
 {% endblock content %}
 {% block header %}
 <!-- Page level plugin style -->
@@ -61,7 +64,7 @@
             <a class="activity_button" activityId="${activity_id}">${activity_name}</a>
         </td>
         <td>${target}</td>
-        <td>${score}</td>
+        <td class='red-score-${redscore}'>${score}</td>
         <td>${count}</td>
     </tr>
 </script>
@@ -93,7 +96,7 @@
         <th colspan="2">Target</th>
         <th>${target}</th>
     </tr>
-    <tr>
+    <tr style="${leftStyle}">
         <th colspan="2">Left</th>
         <th>${left}</th>
     </tr>
