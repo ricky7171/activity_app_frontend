@@ -20,6 +20,9 @@ var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var connect = require('gulp-connect');
+const debounce = require('gulp-debounce');
+const watch = require('gulp-debounced-watch')
+const log = require('fancy-log')
 // var nunjucks = require('./js/app/infra/nunjucks');
 var nunjucks = require('nunjucks');
 var gnunjucks = require('gulp-nunjucks');
@@ -52,10 +55,14 @@ function browserSync(done) {
   });
   done();
 }
-
+let IS_RUNNING = {
+  js: false,
+  css: false,
+  njk: false
+}
 // BrowserSync reload
 function browserSyncReload(done) {
-  browsersync.reload();
+  browsersync.reload({stream: true});
   
   done();
 }
@@ -109,9 +116,15 @@ function modules() {
 }
 
 // CSS task
-function css() {
+function css(args) {
+  const fileName = typeof args == 'string' ? args : '';
+
+  if(fileName) {
+    log.info(`[BUILD] ${fileName}`)
+  }
+  const sourceFile = fileName || ["./scss/**/*.scss", "./css/**/*.css"];
   return gulp
-    .src(["./scss/**/*.scss", "./css/**/*.css"])
+    .src(sourceFile)
     .pipe(plumber())
     .pipe(sass({
       outputStyle: "expanded",
@@ -134,8 +147,13 @@ function css() {
 }
 
 // JS task
-function js() {
-  var files = glob.sync("./js/**/*.js", {
+function js(args) {
+  const fileName = typeof args == 'string' ? args : '';
+  if(fileName) {
+    log.info(`[BUILD] ${fileName}`)
+  }
+  const sourceFile = fileName || "./js/**/*.js";
+  var files = glob.sync(sourceFile, {
     ignore: [
       './js/app/business_logic/**',
       './js/app/core/**',
@@ -192,15 +210,23 @@ function serve() {
 
 // Watch files
 function watchFiles() {
-  gulp.watch("./scss/**/*", css);
-  gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
+  const options = {
+    debounceTimeout: 1000,
+    awaitWriteFinish: true
+  }
+  watch("./scss/**/*", options).on('change', css);
+  watch(["./js/**/*.js", "!./js/**/*.min.js"], options).on('change', js)
   // gulp.watch("./**/*.html", browserSyncReload);
-  gulp.watch("./dist/**/*", browserSyncReload);
-  gulp.watch(config.VIEW_PATH+"**/*", compileNunjucks)
+  gulp.watch(config.VIEW_PATH+"**/*",options).on('change', compileNunjucks)
+  gulp.watch("./dist/**/*",options ,browserSyncReload);
 }
 
 // Compile nunjucks file
-function compileNunjucks() {
+function compileNunjucks(args) {
+  const fileName = typeof args == 'string' ? args : '';
+  if(fileName) {
+    log.info(`[COMPILE] ${fileName}`)
+  }
   var PAGE_PATH = config.PAGE_PATH;
   var opts = {
     env:  new nunjucks.Environment(new nunjucks.FileSystemLoader('js/app/views/'))
@@ -211,8 +237,11 @@ function compileNunjucks() {
     `!${PAGE_PATH}*/components/${extensions}`,
   ]
 
-  return gulp.src(listPath)
-  .pipe(gnunjucks.compile({name: 'Sindre'}, opts))
+  const sourceFile = fileName || listPath
+  
+  return gulp.src(sourceFile)
+  .pipe(plumber())
+  .pipe(gnunjucks.precompile({name: 'Sindre'}, opts))
   .pipe(rename(function(path){
     if(path.dirname == 'home') {
       path.dirname = '.';
@@ -228,8 +257,9 @@ function copyAssets() {
 }
 
 // Define complex tasks
-const build = gulp.series(clean, modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
-const watch = gulp.series(build, gulp.parallel(watchFiles, browserSync));
+const build = gulp.series(modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
+// const watchCmd = gulp.series(build, gulp.parallel(watchFiles, browserSync));
+const watchCmd = gulp.series(watchFiles);
 const dev = gulp.series(build, gulp.parallel(watchFiles, serve));
 // const watch = gulp.series(watchFiles)
 
@@ -239,7 +269,7 @@ exports.js = js;
 exports.clean = clean;
 // exports.vendor = vendor;
 exports.build = build;
-exports.watch = watch;
+exports.watch = watchCmd;
 exports.default = build;
 exports.compile = compileNunjucks;
 exports.serve = serve;
