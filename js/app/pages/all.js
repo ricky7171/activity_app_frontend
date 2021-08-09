@@ -1,25 +1,39 @@
 import * as dateTimeHelper from "./../core/datetime_helper";
-import * as settingRepository from '../data/setting_repository';
+import SettingService from "../business_logic/service/settingService";
+import SettingDataProxy from "../data_proxy/settingDataProxy";
 
+class GlobalView {
+  constructor() {
+    this.settingService = new SettingService(new SettingDataProxy());
+  }
 
-function changeReportTextToCurrentMonth()
-{
-    var dateObject = new Date();
-    var currentMonth = dateObject.getMonth() + 1;
-    var currentYear = dateObject.getFullYear();
-    $("#reportBtnTop").html(dateTimeHelper.getCurrentMonth() + " Report").attr("href", "/report/list.html?year=" + currentYear + "&month=" + currentMonth);
+  changeReportTextToCurrentMonth() {
+    const dateObject = new Date();
+    const currentMonth = dateObject.getMonth() + 1;
+    const currentYear = dateObject.getFullYear();
+    const btnText = `${dateTimeHelper.getCurrentMonth()} Report`;
+    const btnLink = `/report/list.html?year=${currentYear}&month=${currentMonth}`;
+
+    $("#reportBtnTop").html(btnText).attr("href", btnLink);
+  }
+
+  async setSettingObject() {
+    const command = await this.settingService.getAllCommand().execute();
+    if (command.success) {
+      const result = command.value;
+
+      if (result.response && result.response.data) {
+        window.setting = result.response.data;
+      }
+    }
+  }
+
+  initialize() {
+    this.changeReportTextToCurrentMonth();
+    this.setSettingObject();
+  }
 }
 
-async function setSettingObject()
-{
-    var result = await settingRepository.getSetting()
-
-    if(result.response && result.response.data) {
-        window.setting = result.response.data;
-    }
-} 
-
 jQuery(async function () {
-    changeReportTextToCurrentMonth();
-    setSettingObject();
-})
+  new GlobalView().initialize();
+});

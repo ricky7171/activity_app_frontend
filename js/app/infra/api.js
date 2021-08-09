@@ -1,3 +1,4 @@
+import axios from "axios";
 import * as alertHelper from "./../core/\alert_helper";
 
 const message =
@@ -5,8 +6,18 @@ const message =
     "connection": "Check your internet connection !"
 };
 
+axios.interceptors.response.use((response) => response, (error) => {
+    // catch CORS error
+    if (typeof error.response === 'undefined') {
+      error.response = ('A network error occurred. '
+          + 'This could be a CORS issue or a dropped internet connection. '
+          + 'It is not possible for us to know.')
+    }
+    return Promise.reject(error)
+  })
+
 // const server = "https://activity-app-database.herokuapp.com";
-const server = "http://activity_app_backend.test";
+export const server = "http://activity_app_backend.test";
 
 var listApi = {
     "activity.get": {
@@ -62,6 +73,11 @@ var listApi = {
     "history.bulkStore" : {
         method : "POST",
         url : server + "/api/histories/bulkStore",
+        withToken : false,
+    },
+    "history.update" : {
+        method : "PATCH",
+        url : server + "/api/histories",
         withToken : false,
     },
     "setting.get": {
@@ -198,14 +214,18 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         return resultReturn;
     }
 
-    console.log("check datarequest");
-    console.log(dataRequest);
-    console.log(method);
-    return await $.ajax({
-        url: url + additionalUrl,
-        data: dataRequest,
-        type: method,
-        crossDomain: true,
-        dataType: 'json', // added data type
-    });
+    // console.log("check datarequest");
+    // console.log(dataRequest);
+    // console.log(method);
+
+    try {
+        return await axios({
+            method: method,
+            url: url + additionalUrl,
+            data: dataRequest,
+        }).then((r) => r.data)
+    } catch (error) {
+        console.log("🚀 ~ file: api.js ~ line 218 ~ requestApi ~ error", error)
+        return error.response.data;
+    }
 }

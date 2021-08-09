@@ -1,0 +1,14 @@
+{# {% set hasEmptyText = typeof emptyText !== 'undefined' %} #}
+
+<div id="" class="empty-content" style="display:none">
+    <div class="empty-icon">
+        <i class="fas fa-database"></i>
+    </div>
+    <div class="empty-caption"> 
+        {% if emptyText %}
+            {{emptyText}}
+        {% else %}
+            No Data
+        {% endif %}
+    </div>
+</div>

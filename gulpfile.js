@@ -14,12 +14,17 @@ const rename = require("gulp-rename");
 const sass = require("gulp-sass");
 const uglify = require("gulp-uglify");
 const browserify = require('browserify');
+const watchify = require('watchify');
 const babelify = require('babelify');
 var fs = require("fs");
 var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var connect = require('gulp-connect');
+const debounce = require('gulp-debounce');
+const watch = require('gulp-debounced-watch')
+const log = require('fancy-log')
+const newer = require('gulp-newer');
 // var nunjucks = require('./js/app/infra/nunjucks');
 var nunjucks = require('nunjucks');
 var gnunjucks = require('gulp-nunjucks');
@@ -52,11 +57,14 @@ function browserSync(done) {
   });
   done();
 }
-
+let IS_RUNNING = {
+  js: false,
+  css: false,
+  njk: false
+}
 // BrowserSync reload
 function browserSyncReload(done) {
-  browsersync.reload();
-  console.log('asdasd', browserSync.reload)
+  browsersync.reload({stream: true});
   
   done();
 }
@@ -68,51 +76,75 @@ function clean() {
 
 // Bring third party dependencies from node_modules into vendor directory
 function modules() {
-  // Bootstrap JS
-  var bootstrapJS = gulp.src('./node_modules/bootstrap/dist/js/*')
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/bootstrap/js'));
-  // Bootstrap SCSS
-  var bootstrapSCSS = gulp.src('./node_modules/bootstrap/scss/**/*')
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/bootstrap/scss'));
-  // ChartJS
-  var chartJS = gulp.src('./node_modules/chart.js/dist/*.js')
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/chart.js'));
-  // dataTables
-  var dataTables = gulp.src([
-    './node_modules/datatables.net/js/*.js',
-    './node_modules/datatables.net-bs4/js/*.js',
-    './node_modules/datatables.net-bs4/css/*.css'
-  ])
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/datatables'));
-  // Font Awesome
-  var fontAwesome = gulp.src('./node_modules/@fortawesome/**/*')
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor'));
-  // jQuery Easing
-  var jqueryEasing = gulp.src('./node_modules/jquery.easing/*.js')
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/jquery-easing'));
-  // jQuery
-  var jquery = gulp.src([
-    './node_modules/jquery/dist/*',
-    '!./node_modules/jquery/dist/core.js'
-  ])
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/jquery'));
-  // Sweetalert JS
-  var sweetalert2 = gulp.src('./node_modules/sweetalert2/dist/**/*')
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/sweetalert2'));
-  // Colorpicker JS
-  var colorPicker = gulp.src('./node_modules/spectrum-colorpicker/**/*')
-  .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/spectrum-colorpicker'));
-  // Tinycolor JS
-  var tinyColor = gulp.src('./node_modules/tinycolor2/dist/**/*')
-  .pipe(gulp.dest(config.DESTINATION_PATH+'/vendor/tinycolor2'));
+  var list_modules = {
+    bootstrapJS: {
+      source: './node_modules/bootstrap/dist/js/*',
+      dest: config.DESTINATION_PATH+'/vendor/bootstrap/js'
+    },
+    bootstrapSCSS: {
+      source: './node_modules/bootstrap/scss/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/bootstrap/scss',
+    },
+    chartJS: {
+      source: './node_modules/chart.js/dist/*.js',
+      dest: config.DESTINATION_PATH+'/vendor/chart.js'
+    },
+    dataTables: {
+      source: [
+        './node_modules/datatables.net/js/*.js',
+        './node_modules/datatables.net-bs4/js/*.js',
+        './node_modules/datatables.net-bs4/css/*.css'
+      ],
+      dest: config.DESTINATION_PATH+'/vendor/datatables'
+    },
+    fontAwesome: {
+      source: './node_modules/@fortawesome/**/*',
+      dest: config.DESTINATION_PATH+'/vendor',
+    },
+    jqueryEasing: {
+      source: './node_modules/jquery.easing/*.js',
+      dest: config.DESTINATION_PATH+'/vendor/jquery-easing'
+    },
+    jquery: {
+      source: [
+        './node_modules/jquery/dist/*',
+        '!./node_modules/jquery/dist/core.js'
+      ],
+      dest: config.DESTINATION_PATH+'/vendor/jquery',
+    },
+    sweetalert2: {
+      source: './node_modules/sweetalert2/dist/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/sweetalert2'
+    },
+    colorPicker: {
+      source: './node_modules/spectrum-colorpicker/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/spectrum-colorpicker'
+    },
+    tinyColor: {
+      source: './node_modules/tinycolor2/dist/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/tinycolor2'
+    }
+  }
 
-  return merge(bootstrapJS, bootstrapSCSS, chartJS, dataTables, fontAwesome, jquery, jqueryEasing, sweetalert2, tinyColor);
+  return merge(Object.keys(list_modules).map((moduleName) => {
+    const moduleOpt = list_modules[moduleName];
+    return gulp.src(moduleOpt.source)
+    .pipe(newer(moduleOpt.dest))
+      .pipe(gulp.dest(moduleOpt.dest))
+  }))
 }
 
 // CSS task
-function css() {
+function css(args) {
+  const fileName = typeof args == 'string' ? args : '';
+
+  if(fileName) {
+    log.info(`[BUILD] ${fileName}`)
+  }
+  const sourceFile = fileName || ["./scss/**/*.scss", "./css/**/*.css"];
   return gulp
-    .src(["./scss/**/*.scss", "./css/**/*.css"])
+    .src(sourceFile)
+    .pipe(newer(config.DESTINATION_PATH+"/css"))
     .pipe(plumber())
     .pipe(sass({
       outputStyle: "expanded",
@@ -135,11 +167,25 @@ function css() {
 }
 
 // JS task
-function js() {
-  var files = glob.sync("./js/**/*.js");
+function js(args) {
+  const fileName = typeof args == 'string' ? args : '';
+  if(fileName) {
+    log.info(`[BUILD] ${fileName}`)
+  }
+  const sourceFile = "./js/**/*.js";
+  var files = glob.sync(sourceFile, {
+    ignore: [
+      './js/app/business_logic/**',
+      './js/app/core/**',
+      './js/app/data_proxy/**',
+      './js/app/infra/**',
+      './js/app/__mocks__/**',
+      './js/app/tests/**',
+    ]
+  });
   return merge(files.map(function(file) {
-    var b = browserify(file)
-      .transform("babelify", { presets: ['@babel/preset-env'] });
+    var b = watchify(browserify(file)
+      .transform("babelify", { presets: ['@babel/preset-env'] }));
     return b.bundle()
       .pipe(source(file))
       .pipe(buffer())
@@ -184,18 +230,23 @@ function serve() {
 
 // Watch files
 function watchFiles() {
-  console.log('🚀 ~ file: gulpfile.js ~ line 185 ~ watchFiles', config.VIEW_PATH+'**/*')
-  gulp.watch("./scss/**/*", css);
-  gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
+  const options = {
+    debounceTimeout: 1000,
+    awaitWriteFinish: true
+  }
+  watch("./scss/**/*", options).on('change', css);
+  watch(["./js/**/*.js", "!./js/**/*.min.js"], options).on('change', js)
   // gulp.watch("./**/*.html", browserSyncReload);
-  gulp.watch("./dist/**/*", browserSyncReload);
-  gulp.watch(config.VIEW_PATH+"**/*", compileNunjucks)
+  gulp.watch(config.VIEW_PATH+"**/*",options).on('change', compileNunjucks)
 }
 
 // Compile nunjucks file
-function compileNunjucks() {
+function compileNunjucks(args) {
+  const fileName = typeof args == 'string' ? args : '';
+  if(fileName) {
+    log.info(`[COMPILE] ${fileName}`)
+  }
   var PAGE_PATH = config.PAGE_PATH;
-  console.log("🚀 ~ file: gulpfile.js ~ line 186 ~ compileNunjucks ~ PAGE_PATH", PAGE_PATH)
   var opts = {
     env:  new nunjucks.Environment(new nunjucks.FileSystemLoader('js/app/views/'))
   }
@@ -205,7 +256,11 @@ function compileNunjucks() {
     `!${PAGE_PATH}*/components/${extensions}`,
   ]
 
-  return gulp.src(listPath)
+  const sourceFile = listPath
+  
+  return gulp.src(sourceFile)
+  .pipe(newer(config.DESTINATION_PATH+'/**/*.html'))
+  // .pipe(plumber())
   .pipe(gnunjucks.compile({name: 'Sindre'}, opts))
   .pipe(rename(function(path){
     if(path.dirname == 'home') {
@@ -218,14 +273,16 @@ function compileNunjucks() {
 // copy assets
 function copyAssets() {
   return gulp.src('./assets/**/*')
+    .pipe(newer(config.DESTINATION_PATH+'/assets'))
     .pipe(gulp.dest(config.DESTINATION_PATH+'/assets'));
 }
 
 // Define complex tasks
-const buildTask = gulp.series(clean, modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
-const build = gulp.series(buildTask, serve);
-const watch = gulp.series(buildTask, gulp.parallel(watchFiles, browserSync));
-// const watch = gulp.series(watchFiles);
+const build = gulp.series(modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
+// const watchCmd = gulp.series(build, gulp.parallel(watchFiles, browserSync));
+const watchCmd = gulp.series(watchFiles);
+const dev = gulp.series(build, gulp.parallel(watchFiles, serve));
+// const watch = gulp.series(watchFiles)
 
 // Export tasks
 exports.css = css;
@@ -233,7 +290,8 @@ exports.js = js;
 exports.clean = clean;
 // exports.vendor = vendor;
 exports.build = build;
-exports.watch = watch;
+exports.watch = watchCmd;
 exports.default = build;
 exports.compile = compileNunjucks;
 exports.serve = serve;
+exports.dev = dev;
