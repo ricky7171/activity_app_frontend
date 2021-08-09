@@ -3,6 +3,7 @@
 {% block title %}Report{% endblock title %}
 
 {% block content %}
+<div class="content-container" style="display: none">
 <a id="btnBack" href="/report/index.html" class="btn btn-primary mb-4"><i class="fa fa-arrow-left"></i> Back</a>
 
 <h3 id="titleContent">Report</h3>
@@ -50,6 +51,7 @@
         </table>
     </div>
 </div>
+</div>
 {% endblock content %}
 {% block header %}
 <!-- Page level plugin style -->
@@ -94,7 +96,7 @@
         <th colspan="2">Target</th>
         <th>${target}</th>
     </tr>
-    <tr>
+    <tr style="${leftStyle}">
         <th colspan="2">Left</th>
         <th>${left}</th>
     </tr>

@@ -6,6 +6,16 @@ const message =
     "connection": "Check your internet connection !"
 };
 
+axios.interceptors.response.use((response) => response, (error) => {
+    // catch CORS error
+    if (typeof error.response === 'undefined') {
+      error.response = ('A network error occurred. '
+          + 'This could be a CORS issue or a dropped internet connection. '
+          + 'It is not possible for us to know.')
+    }
+    return Promise.reject(error)
+  })
+
 // const server = "https://activity-app-database.herokuapp.com";
 export const server = "http://activity_app_backend.test";
 
@@ -215,6 +225,7 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
             data: dataRequest,
         }).then((r) => r.data)
     } catch (error) {
+        console.log("🚀 ~ file: api.js ~ line 218 ~ requestApi ~ error", error)
         return error.response.data;
     }
 }

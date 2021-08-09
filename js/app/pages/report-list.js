@@ -101,6 +101,7 @@ class ReportListView {
         this.showActivitiesSummary(activitySummary);
         loadingHelper.toggleLoading(false);
         $(".report-summary-activity").show();
+        $('.content-container').show();
       }
     }
   }
@@ -189,12 +190,15 @@ class ReportListView {
       })
     );
 
+    const leftStyle = detailActivity['left'] < 0 ? 'display:none' : '';
+    
     //- render total report detail activity
     $(".report-detail-activity .total-report-detail-activity").append(
       templateHelper.render(rowFooterReportDetailActivityTpl, {
         score: detailActivity["score"],
         target: detailActivity["target"],
         left: detailActivity["left"],
+        leftStyle: leftStyle
       })
     );
 
