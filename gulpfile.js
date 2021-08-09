@@ -172,7 +172,7 @@ function js(args) {
   if(fileName) {
     log.info(`[BUILD] ${fileName}`)
   }
-  const sourceFile = fileName || "./js/**/*.js";
+  const sourceFile = "./js/**/*.js";
   var files = glob.sync(sourceFile, {
     ignore: [
       './js/app/business_logic/**',
@@ -256,11 +256,11 @@ function compileNunjucks(args) {
     `!${PAGE_PATH}*/components/${extensions}`,
   ]
 
-  const sourceFile = fileName || listPath
+  const sourceFile = listPath
   
   return gulp.src(sourceFile)
   .pipe(newer(config.DESTINATION_PATH+'/**/*.html'))
-  .pipe(plumber())
+  // .pipe(plumber())
   .pipe(gnunjucks.compile({name: 'Sindre'}, opts))
   .pipe(rename(function(path){
     if(path.dirname == 'home') {
