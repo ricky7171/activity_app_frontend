@@ -17,7 +17,7 @@ axios.interceptors.response.use((response) => response, (error) => {
   })
 
 // const server = "https://activity-app-database.herokuapp.com";
-export const server = "http://activity_app_backend.test";
+export const server = "http://localhost:8000";
 
 var listApi = {
     "activity.get": {

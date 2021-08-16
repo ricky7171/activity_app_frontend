@@ -19,6 +19,10 @@ class SettingView {
     }
   }
 
+  async fetchApplicationLogData() {
+    //...
+  }
+
   async handleChangeBeepSound(evt) {
     const value = $(evt.target).prop("checked") ? 1 : 0;
 

@@ -8,6 +8,24 @@
   <input type="checkbox" class="custom-control-input" id="toggleBeepSound">
   <label class="custom-control-label" for="toggleBeepSound">Enable  Beep Sound</label>
 </div>
+
+<div class="form-wrapper mt-5">
+    <h3 class="mb-2">Add Application Log</h3>
+    <div id="application_log_form" class="form">
+        <div class="form-group d-flex flex-nowrap align-items-center">
+            <label class="label-form" for="title">Version</label>
+            <input type="text" name="title" id="title" class="form-control" placeholder="v 0.2">
+        </div>
+        <div class="form-group d-flex flex-nowrap align-items-center">
+            <label class="label-form" for="value">Description</label>
+            <input type="text" name="value" id="value" class="form-control" placeholder="This application have new features x,y,z">
+        </div>
+        <div class="form-group text-right">
+            <button id="submit-application-log-btn" class="btn btn-primary ml-auto">Create Application Log</button>
+        </div>
+    </div>
+    {# </form> #}
+</div>
 {% endblock content %}
 
 {% block footer %}

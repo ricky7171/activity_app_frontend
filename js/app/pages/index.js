@@ -181,12 +181,19 @@ class HomeView {
     this.changePosition(direction, currentEl, parentEl);
   }
 
-  async handleClickButtonAddValue(evt) {
-    console.log("🚀 ~ file: index.js ~ line 185 ~ HomeView ~ handleClickButtonAddValue ~ evt", evt)
+  async handleClickButtonAddValue(evt, inputElement) {
+    // console.log("🚀 ~ file: index.js ~ line 185 ~ HomeView ~ handleClickButtonAddValue ~ evt", evt)
     //get activity id and input value
-    const elInput = $(evt)
-      .parents(".input-activity-group")
-      .find(".input-activity-value");
+    var elInput = null;
+    if(inputElement) {
+      console.log("check from inputelement");
+      elInput = inputElement;
+    } else {
+      console.log("check from evt");
+      elInput = $(evt)
+        .parents(".input-activity-group")
+        .find(".input-activity-value");
+    }
     const activityId = elInput.attr("activityId");
     const useTextfield = elInput.is("[type=text]");
     const useNumberField = elInput.is("[type=number]");
@@ -222,18 +229,23 @@ class HomeView {
   }
 
   initialize() {
-    this.fetchActivities();
+    var thisObject = this;
+    thisObject.fetchActivities();
 
     $("body").on("click", ".btn-down", (evt) =>
-      this.handleClickButtonChangePosition("down", evt.target)
+      thisObject.handleClickButtonChangePosition("down", evt.target)
     );
     $("body").on("click", ".btn-up", (evt) =>
-      this.handleClickButtonChangePosition("up", evt.target)
+      thisObject.handleClickButtonChangePosition("up", evt.target)
     );
 
     $("body").on("click", ".btn-add-value", (evt) =>
-      this.handleClickButtonAddValue(evt.target)
+      thisObject.handleClickButtonAddValue(evt.target)
     );
+
+    $("body").on('keyup', ".input-activity-value", function (evt) {
+      evt.key === 'Enter' ? thisObject.handleClickButtonAddValue(null, $(this)) : null
+    });
   }
 }
 

@@ -263,6 +263,14 @@ form.not-editable input:not([type="checkbox"]) {
 }
 
 /**
+* Setting page
+*/
+#application_log_form .label-form {
+    width:100px;
+}
+
+
+/**
 * Import page
 */
 .import-content-wrapper {

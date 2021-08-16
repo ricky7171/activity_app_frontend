@@ -223,7 +223,7 @@ function serve() {
   console.log(process.env.PORT);
   return connect.server({
     root: "./dist",
-    port: process.env.PORT || 8000, // localhost:8000
+    port: process.env.PORT || 8080, // localhost:8000
     livereload: false
   });
 }
