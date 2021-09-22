@@ -1,4 +1,20 @@
 /**
+* Header
+*/
+#modalAddActivity .form-group label {
+    min-width: 90px;
+}
+
+#modalAddActivity form.not-editable input:not([type="checkbox"]) {
+    background-color: #eaecf4;
+    pointer-events: none;
+}
+
+#modalAddActivity #form_color {
+    width: 48px;
+}
+
+/**
 * Home page
 */
 #reportBtnTop {
@@ -30,6 +46,15 @@
     width: 50px;
 }
 
+.data-table tr .description-column {
+    width: 40%;
+    min-width: 200px;
+}
+
+.data-table .table-header-checkbox {
+    width: 40px;
+}
+
 /**
 * Data Tables
 */
@@ -37,7 +62,7 @@
     text-align: right;
 }
 
-.data-table tr td:first-child {
+.data-table tr td[data-name=date] {
     text-align: left;
 }
 
@@ -254,7 +279,7 @@ input[type=checkbox], input[type=radio] {
 * Form page
 */
 .form-group label {
-    min-width: 70px;
+    min-width: 90px;
 }
 
 form.not-editable input:not([type="checkbox"]) {
@@ -267,6 +292,10 @@ form.not-editable input:not([type="checkbox"]) {
 */
 #application_log_form .label-form {
     width:100px;
+}
+
+.table-application-log .list-application-log tr td{
+    text-align: left;
 }
 
 

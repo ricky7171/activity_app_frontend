@@ -11,6 +11,7 @@ class FormView {
       title: "",
       value: "",
       target: "",
+      description: "",
       color: "#4e73df",
     };
 
@@ -65,6 +66,7 @@ class FormView {
           title: activityData["title"],
           value: activityData["default_value"],
           target: activityData["target"],
+          description: activityData["description"],
           color: activityData["color"],
           id: activityData["id"],
           textColor: colorHelper.isDark(activityData["color"])
@@ -81,37 +83,50 @@ class FormView {
   }
 
   async handleClickSubmitButton() {
+    // - get data
     const attributes = {
       title: $("#title").val(),
       default_value: $("#value").val(),
       target: $("#target").val(),
+      description: $("#description").val(),
       color: $("#color").val(),
       can_change: $("#is_editable").prop("checked") ? 1 : 0,
       use_textfield: $("#is_use_textfield").prop("checked") ? 1 : 0,
     };
 
+    // - show loading
+    loadingHelper.toggleLoading(true);
+
+    // - insert activity
     const command = await this.activityService
       .insertCommand(attributes)
       .execute();
+
+    // - show error if there is error
     if (command.success == false) {
+      console.log("check command errors");
+      console.log(command.errors);
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
+      loadingHelper.toggleLoading(false);
       return;
     }
 
+    // - show popup when success
     const result = command.value;
     if (result.success) {
       alertHelper.showSnackBar("Successfully added !", 1);
 
-      // set form to default value
+      // - set form to default value
       $("#title").val(this.defaultValue.title);
       $("#value").val(this.defaultValue.value);
       $("#target").val(this.defaultValue.target);
+      $("#description").val(this.defaultValue.description);
       $("#is_editable").prop("checked", false);
       $("#is_use_textfield").prop("checked", false);
       colorHelper.updateColorOfInput("#color", this.defaultValue.color);
 
-      // refresh activities data
+      // - refresh activities data
       this.fetchActivities();
     }
   }
@@ -137,10 +152,28 @@ class FormView {
   }
 
   async handleClickDeleteButton(evt) {
+    // - show confirmation popup
+    var result = await alertHelper.showConfirmation("Your activity will be delete and cannot be restore");
+
+    // - if user cancel delete
+    if (!result.isConfirmed) return;
+
+    // - delete activity
+    // o show loading
+    loadingHelper.toggleLoading(true);
+
+    // o get activity id
     const activityId = $(evt).attr("activityId");
+
+    // o run command
     const command = await this.activityService
       .destroyCommand(activityId)
       .execute();
+
+    // o hide loading
+    loadingHelper.toggleLoading(false);
+
+    // o show success message if success delete
     if (command.success) {
       const result = command.value;
       if (result.success) {
@@ -160,6 +193,7 @@ class FormView {
     modalEdit.find("#title2").val(activityData.title);
     modalEdit.find("#value2").val(activityData.default_value);
     modalEdit.find("#target2").val(activityData.target);
+    modalEdit.find("#description2").val(activityData.description);
     colorHelper.updateColorOfInput(
       modalEdit.find("#color2"),
       activityData.color
@@ -181,6 +215,7 @@ class FormView {
       default_value: $("#value2").val(),
       target: $("#target2").val(),
       color: $("#color2").val(),
+      description: $("#description2").val(),
       can_change: $("#is_editable2").prop("checked") ? 1 : 0,
       use_textfield: $("#is_use_textfield2").prop("checked") ? 1 : 0,
     };

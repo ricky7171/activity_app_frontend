@@ -136,10 +136,14 @@ function modules() {
 
 // CSS task
 function css(args) {
+  console.log("here build css");
   const fileName = typeof args == 'string' ? args : '';
 
   if(fileName) {
+    console.log("checkpoint-1");
     log.info(`[BUILD] ${fileName}`)
+  } else {
+    console.log("checkpoint-2");
   }
   const sourceFile = fileName || ["./scss/**/*.scss", "./css/**/*.css"];
   return gulp
@@ -234,7 +238,7 @@ function watchFiles() {
     debounceTimeout: 1000,
     awaitWriteFinish: true
   }
-  watch("./scss/**/*", options).on('change', css);
+  watch("./css/**/*", options).on('change', css);
   watch(["./js/**/*.js", "!./js/**/*.min.js"], options).on('change', js)
   // gulp.watch("./**/*.html", browserSyncReload);
   gulp.watch(config.VIEW_PATH+"**/*",options).on('change', compileNunjucks)

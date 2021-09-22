@@ -13,6 +13,15 @@ class SettingService extends BusinessService {
       }
     })
   }
+
+  // getApplicationLogs() {
+  //   const dataProxy = this.dataProxy;
+  //   return new Command({
+  //     _onValidationSuccess() {
+  //       return dataProxy.getApplicationLogs();
+  //     }
+  //   })
+  // }
 }
 
 export default SettingService;

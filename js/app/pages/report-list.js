@@ -25,6 +25,22 @@ class ReportListView {
   }
 
   getActivitiesSummaryFromResult(result) {
+
+    // - gathering information about created at on last history of each activities (this information used to sort activities)
+    for( let i = 0;i < result.length;i++) { //iterate over activities
+      // o get created_at attribute on last history on this activity
+      let historyCount = result[i]['histories'].length;
+      if(historyCount <= 0) continue;
+      let created_at_on_last_history = result[i]['histories'][historyCount - 1]['created_at'];
+      result[i]['created_at_on_last_history'] = Date.parse(created_at_on_last_history);
+    }
+
+    // - sort activities by 'created_at_on_last_history'
+    result.sort(function(a,b){
+      return new Date(b['created_at_on_last_history']) - new Date(a['created_at_on_last_history']);
+    });
+
+    // - store all activity summary to "activitySummary" variable
     const activitySummary = [];
     for (let i = 0; i < result.length; i++) {
       let score = 0;

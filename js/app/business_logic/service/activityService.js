@@ -55,6 +55,7 @@ class ActivityService extends BusinessService {
         return dataProxy.getByMonthAndYear(month, year);
       },
     });
+    
   }
 }
 
