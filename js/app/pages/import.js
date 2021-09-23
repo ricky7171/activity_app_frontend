@@ -30,6 +30,7 @@ class ImportView {
     ).text();
 
     //render template
+    $("#importer").append("<option disabled selected value> -- select an option -- </option>");
     $("#importer").append(
       activities.map(function (activity, i) {
         return templateHelper.render(optionActivityTpl, {

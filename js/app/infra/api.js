@@ -17,7 +17,7 @@ axios.interceptors.response.use((response) => response, (error) => {
   })
 
 // const server = "https://activity-app-database.herokuapp.com";
-export const server = "http://activity_app_backend.test";
+export const server = "http://localhost:8000";
 
 var listApi = {
     "activity.get": {
@@ -80,6 +80,11 @@ var listApi = {
         url : server + "/api/histories",
         withToken : false,
     },
+    "history.bulkDelete" : {
+        method : "POST",
+        url : server + "/api/histories/bulkDelete",
+        withToken : false,
+    },
     "setting.get": {
         method: 'GET',
         url: server + "/api/setting",
@@ -88,6 +93,26 @@ var listApi = {
     "setting.save": {
         method: 'POST',
         url: server + "/api/setting",
+        withToken: false,
+    },
+    "applicationlog.get": {
+        method: 'GET',
+        url: server + "/api/application_logs",
+        withToken: false,
+    },
+    "applicationlog.add" : {
+        method : "POST",
+        url: server + "/api/application_logs",
+        withToken: false,
+    },
+    "applicationlog.delete" : {
+        method : "DELETE",
+        url: server + "/api/application_logs",
+        withToken: false,
+    },
+    "applicationlog.update" : {
+        method : "PATCH",
+        url: server + "/api/application_logs",
         withToken: false,
     },
 };
@@ -101,8 +126,16 @@ function processMessage(message) {
     var result = "";
     var listMessage = [];
 
-    for (var [key, value] of message) {
-        listMessage.push(value.toString());
+    if(Array.isArray(message)) {
+        for(var i = 0;i<message.length;i++) {
+            if(typeof(message[i]) == 'string') {
+                listMessage.push(message[i]);
+            }
+        }
+    } else {
+        for (var [key, value] of message) {
+            listMessage.push(value.toString());
+        }
     }
 
     if (listMessage.length > 0) {
@@ -199,7 +232,8 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         }
 
     }
-
+    console.log("check dataRequest");
+    console.log(dataRequest);
     //1. prepare params or formData
     var dataRequest = null;
     dataRequest = bodyRequest;
@@ -213,10 +247,6 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         }
         return resultReturn;
     }
-
-    // console.log("check datarequest");
-    // console.log(dataRequest);
-    // console.log(method);
 
     try {
         return await axios({

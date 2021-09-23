@@ -35,7 +35,7 @@
     }
     #loading-container {
         width: 100%;
-        height: 500px;
+        height: 100%;
         position: absolute;
         background-color: #f8f9fc;
         z-index: 999;
@@ -45,6 +45,7 @@
         align-items: center;
         flex-direction: column;
         color: #b3b2b2;
+        padding-top: 70px;
     }
 
     #loading-container .loading-icon,
@@ -70,6 +71,10 @@
 
     td .empty-content {
         height: 250px;
+    }
+
+    #addActivityBtnTop {
+        background-color: #4e73df;
     }
     </style>
 </head>
@@ -98,6 +103,8 @@
 
                     <!-- Report Button (Topbar) -->
                     <a href="#" id="reportBtnTop" class="btn btn-link rounded text-white text-lg ml-auto" role="button">Report</a>
+
+                    <p id="addActivityBtnTop" class="btn btn-link rounded text-white my-auto ml-3">+</p>
 
                 </nav>
                 <!-- End of Topbar -->
@@ -138,8 +145,63 @@
 {% include 'templates/partials/footer.njk' %}
 {% block footer %}
 {% endblock footer %}
-    
 
+<div class="modal fade" id="modalAddActivity" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditLabel">Add Activity</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-wrapper">
+                    <div id="demo_form" class="form">
+                        <div class="form-group d-flex flex-nowrap align-items-center">
+                            <label>Title</label>
+                            <input type="text" name="title" id="form_title" class="form-control" placeholder="Activity Title">
+                        </div>
+                        <div class="form-group d-flex flex-nowrap align-items-center">
+                            <label>Value</label>
+                            <input type="number" name="value" id="form_value" class="form-control" placeholder="Activity Default Value">
+                        </div>
+                        <div class="form-group d-flex flex-nowrap align-items-center">
+                            <label>Target</label>
+                            <input type="number" name="target" id="form_target" class="form-control" min="50" placeholder="Activity Target">
+                        </div>
+                        <div class="form-group d-flex flex-nowrap align-items-center">
+                            <label>Color</label>
+                            <input type="color" name="color" id="form_color" class="form-control" placeholder="Color" value="#4e73df">
+                        </div>
+                        <div class="form-group d-flex flex-nowrap align-items-center">
+                            <label>Description</label>
+                            <input type="text" name="description" id="form_description" class="form-control" placeholder="Activity Description">
+                        </div>
+                        <div class="form-group form-check form-check-inline checkbox-lg">
+                            <input type="checkbox" name="is_editable" id="form_is_editable" class="form-check-input">
+                            <label class="form-check-label">Can change value</label>
+                        </div>
+                        <div class="form-group form-check form-check-inline checkbox-lg">
+                            <input type="checkbox" name="is_use_textfield" id="form_is_use_textfield" class="form-check-input">
+                            <label class="form-check-label">Use textfield</label>
+                        </div>
+                        <div class="form-group d-flex flex-nowrap align-items-center">
+                            <label>If you check "Use textfield", then the target will be count of your histories</label>
+                        </div>
+                        <div class="form-group text-right">
+                            <button id="form_submit_btn" class="btn btn-primary ml-auto">Create Activity</button>
+                        </div>
+                    </div>
+                    {# </form> #}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>    
+<script src="/js/app/pages/header.js"></script>
 </body>
 
 </html>

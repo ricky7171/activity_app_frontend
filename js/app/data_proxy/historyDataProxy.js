@@ -34,6 +34,17 @@ class HistoryDataProxy extends HttpDataProxy {
       this._api.requestApi(`${this._entity}.getHistoryRange`)
     );
   }
+
+  bulkDestroy(historiesIds) {
+    const body = {
+      history: historiesIds
+    };
+    console.log('check body on histordataproxy blukdelete');
+    console.log(body);
+    return this._handleResponseFrom(
+      this._api.requestApi(`${this._entity}.bulkDelete`, body)
+    );
+  }
 }
 
 export default HistoryDataProxy;

@@ -67,6 +67,16 @@ class HistoryService extends BusinessService {
       },
     });
   }
+
+  bulkDestroyCommand(historiesIds) {
+    const dataProxy = this.dataProxy;
+
+    return new Command({
+      _onValidationSuccess() {
+        return dataProxy.bulkDestroy(historiesIds);
+      },
+    })
+  }
 }
 
 export default HistoryService;
