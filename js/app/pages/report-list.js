@@ -173,8 +173,10 @@ class ReportListView {
     var rowDataReportDetailActivityTpl = $(
       'script[data-template="row-data-report-detail-activity"'
     ).text();
+
+    var templateDetail = detailActivity.type === 'timespeed' ? 'row-footer-report-detail-activity-timespeed' : 'row-footer-report-detail-activity';
     var rowFooterReportDetailActivityTpl = $(
-      'script[data-template="row-footer-report-detail-activity"'
+      `script[data-template="${templateDetail}"`
     ).text();
 
     //render html

@@ -34,7 +34,7 @@ class FormView {
         this.showActivitiesData(activitiesData.response.data);
         loadingHelper.toggleLoading(false);
         this.tableElement.show();
-        $('div.form-wrapper').show();
+        $("div.form-wrapper").show();
       }
     }
   }
@@ -92,6 +92,7 @@ class FormView {
       color: $("#color").val(),
       can_change: $("#is_editable").prop("checked") ? 1 : 0,
       use_textfield: $("#is_use_textfield").prop("checked") ? 1 : 0,
+      type: $('#is_time_as_speed_target').prop("checked") ? "timespeed" : "text",
     };
 
     // - show loading
@@ -114,6 +115,7 @@ class FormView {
 
     // - show popup when success
     const result = command.value;
+    console.log("🚀 ~ file: form.js ~ line 118 ~ FormView ~ handleClickSubmitButton ~ result", result)
     if (result.success) {
       alertHelper.showSnackBar("Successfully added !", 1);
 
@@ -128,6 +130,8 @@ class FormView {
 
       // - refresh activities data
       this.fetchActivities();
+    } else {
+      loadingHelper.toggleLoading(false);
     }
   }
 
@@ -151,9 +155,19 @@ class FormView {
     }
   }
 
+  handleChangeTimeSpeedTarget(evt, isFormEdit = false) {
+    const useTextfieldEl = $("#is_use_textfield");
+    const editableEl = isFormEdit ? $("#is_editable2") : $("#is_editable");
+    this.handleChangeUseTextfield(true);
+    useTextfieldEl.prop('checked', true);
+    $('#target').prop('type', 'text');
+  }
+
   async handleClickDeleteButton(evt) {
     // - show confirmation popup
-    var result = await alertHelper.showConfirmation("Your activity will be delete and cannot be restore");
+    var result = await alertHelper.showConfirmation(
+      "Your activity will be delete and cannot be restore"
+    );
 
     // - if user cancel delete
     if (!result.isConfirmed) return;
@@ -218,15 +232,13 @@ class FormView {
       description: $("#description2").val(),
       can_change: $("#is_editable2").prop("checked") ? 1 : 0,
       use_textfield: $("#is_use_textfield2").prop("checked") ? 1 : 0,
+      use_timespeedtarget: $('#is_time_as_speed_target2').prop('checked') ? 'timespeed' : 'text',
     };
 
     const command = await this.activityService
       .updateCommand(attributes)
       .execute();
-    console.log(
-      "🚀 ~ file: form.js ~ line 187 ~ FormView ~ handleClickUpdateButton ~ command",
-      command
-    );
+
     if (command.success == false) {
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
@@ -272,6 +284,12 @@ class FormView {
     );
     $("body").on("change", "#is_use_textfield2", (evt) =>
       this.handleChangeUseTextfield(evt.target.checked, true)
+    );
+    $("body").on("change", "#is_time_as_speed_target", (evt) =>
+      this.handleChangeTimeSpeedTarget(evt.target)
+    );
+    $("body").on("change", "#is_time_as_speed_target2", (evt) =>
+      this.handleChangeTimeSpeedTarget(evt.target)
     );
   }
 }

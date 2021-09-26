@@ -117,12 +117,21 @@ var listApi = {
     },
 };
 
+function isIterable(variable) {
+    if(typeof variable[Symbol.iterator] === 'function') {
+        return true;
+    }
+
+    return false;
+}
+
 //this function will process message to readable message (not object)
 //example : 
 //message = {username: ["The username field is required.", "other error"]}
 //this function will return :
 //"The username field is required., other error"
 function processMessage(message) {
+    console.log("🚀 MESSAGE ERROR -> ", message)
     var result = "";
     var listMessage = [];
 
@@ -132,10 +141,14 @@ function processMessage(message) {
                 listMessage.push(message[i]);
             }
         }
-    } else {
+    } else if(isIterable(message)) {
         for (var [key, value] of message) {
             listMessage.push(value.toString());
         }
+    } else if(typeof message == 'object') {
+        Object.keys(message).forEach(attrName => {
+            listMessage.push(message[attrName].toString());
+        });
     }
 
     if (listMessage.length > 0) {

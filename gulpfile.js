@@ -53,7 +53,7 @@ function browserSync(done) {
     server: {
       baseDir: config.DESTINATION_PATH
     },
-    port: process.env.PORT || 8080
+    port: process.env.PORT || 333
   });
   done();
 }
@@ -227,7 +227,7 @@ function serve() {
   console.log(process.env.PORT);
   return connect.server({
     root: "./dist",
-    port: process.env.PORT || 8080, // localhost:8000
+    port: process.env.PORT || 333, // localhost:8000
     livereload: false
   });
 }
