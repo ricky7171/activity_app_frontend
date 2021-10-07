@@ -323,7 +323,7 @@ export default class FormView {
           valueContainerEl.attr('style', 'display:none !important');
           canChangeChekbox.attr('style', 'display: none !important');
           valueEl.prop('type', 'text');
-          valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 74ms')
+          valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 00ms')
           break;
 
         default:
