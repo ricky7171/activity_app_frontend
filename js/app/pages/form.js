@@ -201,23 +201,32 @@ export default class FormView {
     const btn = $(evt);
     const tr = btn.closest("tr");
     const activityData = tr.data("activity");
+    console.log("🚀 ~ file: form.js ~ line 204 ~ FormView ~ handleClickEditButton ~ activityData", activityData)
     const modalEdit = $("#modalEdit");
 
+    if(activityData.type == 'speedrun') {
+      modalEdit.find("input[name=hour]").val(activityData.speedrun_parsed.h);
+      modalEdit.find("input[name=minute]").val(activityData.speedrun_parsed.m);
+      modalEdit.find("input[name=second]").val(activityData.speedrun_parsed.s);
+      modalEdit.find("input[name=millisecond]").val(activityData.speedrun_parsed.ms);
+    } else {
+      modalEdit.find("input[name=value]").val(activityData.value);
+    }
     // set form
-    modalEdit.find("#title2").val(activityData.title);
-    modalEdit.find("#value2").val(activityData.value);
-    modalEdit.find("#target2").val(activityData.target);
-    modalEdit.find("#description2").val(activityData.description);
+    modalEdit.find("select[name=type]").val(activityData.type).trigger('change');
+    modalEdit.find("input[name=title]").val(activityData.title);
+    modalEdit.find("input[name=target]").val(activityData.target);
+    modalEdit.find("input[name=description]").val(activityData.description);
     colorHelper.updateColorOfInput(
-      modalEdit.find("#color2"),
+      modalEdit.find("input[name=color]"),
       activityData.color
     );
     modalEdit
-      .find("#is_editable2")
+      .find("input[name=is_editable]")
       .prop("checked", activityData.can_change == 1);
-    modalEdit
-      .find("#is_use_textfield2")
-      .prop("checked", activityData.use_textfield == 1);
+    // modalEdit
+    //   .find("#is_use_textfield2")
+    //   .prop("checked", activityData.use_textfield == 1);
     modalEdit.find("input[name=activity_id]").val(activityData.id);
     modalEdit.modal("show");
   }
@@ -225,14 +234,7 @@ export default class FormView {
   async handleClickUpdateButton() {
     const attributes = {
       id: $("#modalEdit").find("input[name=activity_id]").val(),
-      title: $("#title2").val(),
-      value: $("#value2").val(),
-      target: $("#target2").val(),
-      color: $("#color2").val(),
-      description: $("#description2").val(),
-      can_change: $("#is_editable2").prop("checked") ? 1 : 0,
-      use_textfield: $("#is_use_textfield2").prop("checked") ? 1 : 0,
-      use_timespeedtarget: $('#is_time_as_speed_target2').prop('checked') ? 'timespeed' : 'text',
+      ...this.getValueFromForm('#modalEdit')
     };
 
     const command = await this.activityService
@@ -350,13 +352,13 @@ export default class FormView {
 
     // event handler
     $("#submit-btn").on("click", () => this.handleClickSubmitButton('.form-add-activity'));
-    $("body").off().on("click", ".btn-delete-activity", (evt) =>
+    $("body").on("click", ".btn-delete-activity", (evt) =>
       this.handleClickDeleteButton(evt.target)
     );
-    $("body").off().on("click", ".btn-edit-activity", (evt) =>
+    $("body").on("click", ".btn-edit-activity", (evt) =>
       this.handleClickEditButton(evt.target)
     );
-    $("body").off().on("click", "#btn-update-activity", (evt) =>
+    $("body").on("click", "#btn-update-activity", (evt) =>
       this.handleClickUpdateButton(evt.target)
     );
 

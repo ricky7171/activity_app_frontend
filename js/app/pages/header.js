@@ -92,15 +92,15 @@ class HeaderView {
 
     initialize() {
 
-        // $("input[type=color]").spectrum({
-        //     showInput: true,
-        //     className: "full-spectrum",
-        //     showInitial: true,
-        //     showPalette: true,
-        //     showSelectionPalette: true,
-        //     maxSelectionSize: 10,
-        //     preferredFormat: "hex",
-        // });
+        $("input[type=color]").spectrum({
+            showInput: true,
+            className: "full-spectrum",
+            showInitial: true,
+            showPalette: true,
+            showSelectionPalette: true,
+            maxSelectionSize: 10,
+            preferredFormat: "hex",
+        });
 
 
         $("body").on('click', '#addActivityBtnTop', (evt) =>
