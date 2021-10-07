@@ -16,8 +16,8 @@ axios.interceptors.response.use((response) => response, (error) => {
     return Promise.reject(error)
   })
 
-// const server = "https://activityapi.demo.masuk.id";
-export const server = "http://localhost:8000";
+const server = "https://activityapi.demo.masuk.id";
+// export const server = "http://localhost:8000";
 
 var listApi = {
     "activity.get": {
