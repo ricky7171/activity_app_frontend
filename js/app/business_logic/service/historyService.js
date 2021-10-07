@@ -75,12 +75,12 @@ class HistoryService extends BusinessService {
     });
   }
 
-  getHistoryRangeCommand() {
+  getHistoryRangeCommand(params) {
     const dataProxy = this.dataProxy;
 
     return new Command({
       _onValidationSuccess() {
-        return dataProxy.getHistoryRange();
+        return dataProxy.getHistoryRange(params);
       },
     });
   }

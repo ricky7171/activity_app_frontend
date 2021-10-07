@@ -16,7 +16,7 @@ axios.interceptors.response.use((response) => response, (error) => {
     return Promise.reject(error)
   })
 
-// const server = "https://activity-app-database.herokuapp.com";
+// const server = "https://activityapi.demo.masuk.id";
 export const server = "http://localhost:8000";
 
 var listApi = {

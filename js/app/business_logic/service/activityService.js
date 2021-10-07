@@ -7,24 +7,38 @@ class ActivityService extends BusinessService {
   }
 
   _getRulesForInsertCommand(attr) {
-    return Promise.resolve([
-      new ValidTextFieldActivityRule(attr),
+    const rules = [
+      // new ValidTextFieldActivityRule(attr),
+      new FieldRequiredRule("type", attr),
       new FieldRequiredRule("title", attr),
-      new FieldRequiredRule("default_value", "value", attr),
+      // new FieldRequiredRule("value", "value", attr),
       new FieldRequiredRule("target", attr),
       new FieldRequiredRule("color", attr),
-    ]);
+    ];
+    
+    if(['speedrun', 'value'].indexOf(attr.type) >= 0) {
+      rules.push(new FieldRequiredRule("value", attr));
+    }
+    
+    return Promise.resolve(rules);
   }
 
   _getRulesForUpdateCommand(attr) {
-    return Promise.resolve([
+    const rules = [
       new FieldRequiredRule("id", attr),
-      new ValidTextFieldActivityRule(attr),
+      // new ValidTextFieldActivityRule(attr),
+      new FieldRequiredRule("type", attr),
       new FieldRequiredRule("title", attr),
-      new FieldRequiredRule("default_value", "value", attr),
+      // new FieldRequiredRule("value", "value", attr),
       new FieldRequiredRule("target", attr),
       new FieldRequiredRule("color", attr),
-    ]);
+    ];
+
+    if(['speedrun', 'value'].indexOf(attr.type) >= 0) {
+      rules.push(new FieldRequiredRule("value", attr));
+    }
+    
+    return Promise.resolve(rules);
   }
 
   getSortByPositionCommand() {

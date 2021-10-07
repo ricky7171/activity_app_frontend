@@ -50,6 +50,7 @@ class HistoryView {
           value = 0;
         }
         return templateHelper.render(rowHistoriesTpl, {
+          activity_id: historyData["activity_id"],
           id: historyData["id"],
           date: historyData["date"],
           time: historyData["time"],
@@ -131,14 +132,16 @@ class HistoryView {
     const value = inputContainer.find(".input-editable").val();
     const td = $(el).closest("td");
     const id = $(el).closest("tr").data("historyid");
+    const activity_id = $(el).closest("tr").data("activityid");
     let name = td.data("name");
-    const useTextField = td.data("usetextfield");
+    // const useTextField = td.data("usetextfield");
 
-    if (useTextField) {
-      name = "value_textfield";
-    }
+    // if (useTextField) {
+    //   name = "value_textfield";
+    // }
     const body = {
       id,
+      activity_id,
       [name]: value,
     };
     const command = await this.historyService.updateCommand(body).execute();

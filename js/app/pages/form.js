@@ -5,9 +5,10 @@ import * as colorHelper from "./../core/color_helper";
 import ActivityService from "./../business_logic/service/activityService";
 import ActivityDataProxy from "./../data_proxy/activityDataProxy";
 
-class FormView {
+export default class FormView {
   constructor() {
     this.defaultValue = {
+      type: 'value',
       title: "",
       value: "",
       target: "",
@@ -63,8 +64,9 @@ class FormView {
     $(".list-activity").append(
       activities.map(function (activityData, i) {
         var html = templateHelper.render(rowActivitiesTpl, {
+          type: activityData["type"],
           title: activityData["title"],
-          value: activityData["default_value"],
+          value: activityData["value"],
           target: activityData["target"],
           description: activityData["description"],
           color: activityData["color"],
@@ -82,21 +84,14 @@ class FormView {
     );
   }
 
-  async handleClickSubmitButton() {
+  async handleClickSubmitButton(formContainer, options = {}) {
     // - get data
-    const attributes = {
-      title: $("#title").val(),
-      default_value: $("#value").val(),
-      target: $("#target").val(),
-      description: $("#description").val(),
-      color: $("#color").val(),
-      can_change: $("#is_editable").prop("checked") ? 1 : 0,
-      use_textfield: $("#is_use_textfield").prop("checked") ? 1 : 0,
-      type: $('#is_time_as_speed_target').prop("checked") ? "timespeed" : "text",
-    };
+    const attributes = this.getValueFromForm(formContainer);
 
+    if(!options.disableLoading) {
+      loadingHelper.toggleLoading(true);
+    }
     // - show loading
-    loadingHelper.toggleLoading(true);
 
     // - insert activity
     const command = await this.activityService
@@ -115,21 +110,26 @@ class FormView {
 
     // - show popup when success
     const result = command.value;
-    console.log("🚀 ~ file: form.js ~ line 118 ~ FormView ~ handleClickSubmitButton ~ result", result)
     if (result.success) {
       alertHelper.showSnackBar("Successfully added !", 1);
 
       // - set form to default value
-      $("#title").val(this.defaultValue.title);
-      $("#value").val(this.defaultValue.value);
-      $("#target").val(this.defaultValue.target);
-      $("#description").val(this.defaultValue.description);
-      $("#is_editable").prop("checked", false);
-      $("#is_use_textfield").prop("checked", false);
+      $(formContainer).find("select[name=type]").val(this.defaultValue.type).trigger('change');
+      $(formContainer).find("input[name=title]").val(this.defaultValue.title);
+      $(formContainer).find("input[name=value]").val(this.defaultValue.value);
+      $(formContainer).find("input[name=target]").val(this.defaultValue.target);
+      $(formContainer).find("input[name=description]").val(this.defaultValue.description);
+      $(formContainer).find("input[name=is_editable]").prop("checked", false);
+      // $(formContainer).find("input[name=is_use_textfield]").prop("checked", false);
       colorHelper.updateColorOfInput("#color", this.defaultValue.color);
 
-      // - refresh activities data
-      this.fetchActivities();
+      if(typeof options.callbackSuccess == 'function') {
+        options.callbackSuccess()
+      } else {
+        // - refresh activities data
+        this.fetchActivities();
+      }
+      loadingHelper.toggleLoading(false);
     } else {
       loadingHelper.toggleLoading(false);
     }
@@ -205,7 +205,7 @@ class FormView {
 
     // set form
     modalEdit.find("#title2").val(activityData.title);
-    modalEdit.find("#value2").val(activityData.default_value);
+    modalEdit.find("#value2").val(activityData.value);
     modalEdit.find("#target2").val(activityData.target);
     modalEdit.find("#description2").val(activityData.description);
     colorHelper.updateColorOfInput(
@@ -226,7 +226,7 @@ class FormView {
     const attributes = {
       id: $("#modalEdit").find("input[name=activity_id]").val(),
       title: $("#title2").val(),
-      default_value: $("#value2").val(),
+      value: $("#value2").val(),
       target: $("#target2").val(),
       color: $("#color2").val(),
       description: $("#description2").val(),
@@ -255,8 +255,88 @@ class FormView {
     }
   }
 
+  getValueFromForm(formContainer) {
+    const type = $(formContainer).find('select[name=type]').val();
+    // - get data
+    const attributes = {
+      type,
+      title: $(formContainer).find("input[name=title]").val(),
+      value: $(formContainer).find("input[name=value]").val(),
+      target: $(formContainer).find("input[name=target]").val(),
+      description: $(formContainer).find("input[name=description]").val(),
+      color: $(formContainer).find("input[name=color]").val(),
+    };
+
+    if(type == 'value') {
+      attributes.can_change = $(formContainer).find('input[name=is_editable]').prop("checked") ? 1 : 0;
+    }
+
+    if(type == 'speedrun') {
+      const hour = $(formContainer).find('input[name=hour]').val();
+      const minute = $(formContainer).find('input[name=minute]').val();
+      const second = $(formContainer).find('input[name=second]').val();
+      const milisecond = $(formContainer).find('input[name=millisecond]').val();
+
+      if(hour == '' || minute == '' || second == '' || milisecond == '') {
+        alertHelper.showError("The input is required");
+        return;
+      }
+
+      attributes.value = `${hour}h ${minute}m ${second}s ${milisecond}ms`;
+    }
+
+    return attributes;
+  }
+  
+  changeTypeListener(formContainer) {
+    $('body').on('change', `${formContainer} select[name=type]`, function (evt) {
+      const typeValue = $(this).val();
+      const targetEl = $(formContainer).find('input[name=target]');
+      const valueEl = $(formContainer).find('input[name=value]');
+      const valueContainerEl = $(formContainer).find('.value-container');
+      const targetContainerEl = $(formContainer).find('.target-container');
+      const speedrunContainerEl = $(formContainer).find('.value-speedrun-container');
+      const canChangeChekbox = $(formContainer).find(".form-can-change");
+      switch (typeValue) {
+        case 'value':
+          valueContainerEl.attr('style', '');
+          speedrunContainerEl.attr('style', 'display:none !important');
+          canChangeChekbox.attr('style', '');
+          valueEl.prop('type', 'number');
+          valueEl.prop('placeholder', 'Activity Default Value');
+          
+          targetContainerEl.show();
+          targetEl.prop('placeholder', 'Count Target');
+          break;
+
+        case 'count':
+          speedrunContainerEl.attr('style', 'display:none !important');
+          valueContainerEl.attr('style', 'display: none !important');
+          canChangeChekbox.attr('style', 'display: none !important');
+          targetEl.prop('placeholder', 'Count Target');
+          break;
+      
+        case 'speedrun':
+          speedrunContainerEl.attr('style', '');
+          valueContainerEl.attr('style', 'display:none !important');
+          canChangeChekbox.attr('style', 'display: none !important');
+          valueEl.prop('type', 'text');
+          valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 74ms')
+          break;
+
+        default:
+          break;
+      }
+      
+    })
+  }
+  
   initialize() {
+    console.log('==== initializeFORM =====')
     this.fetchActivities();
+
+    this.changeTypeListener('.form-add-activity');
+    this.changeTypeListener('#edit_form');
 
     $("input[type=color]").spectrum({
       showInput: true,
@@ -269,31 +349,27 @@ class FormView {
     });
 
     // event handler
-    $("#submit-btn").on("click", () => this.handleClickSubmitButton());
-    $("body").on("change", "#is_use_textfield", (evt) =>
-      this.handleChangeUseTextfield(evt.target.checked)
-    );
-    $("body").on("click", ".btn-delete-activity", (evt) =>
+    $("#submit-btn").on("click", () => this.handleClickSubmitButton('.form-add-activity'));
+    $("body").off().on("click", ".btn-delete-activity", (evt) =>
       this.handleClickDeleteButton(evt.target)
     );
-    $("body").on("click", ".btn-edit-activity", (evt) =>
+    $("body").off().on("click", ".btn-edit-activity", (evt) =>
       this.handleClickEditButton(evt.target)
     );
-    $("body").on("click", "#btn-update-activity", (evt) =>
+    $("body").off().on("click", "#btn-update-activity", (evt) =>
       this.handleClickUpdateButton(evt.target)
     );
-    $("body").on("change", "#is_use_textfield2", (evt) =>
-      this.handleChangeUseTextfield(evt.target.checked, true)
-    );
-    $("body").on("change", "#is_time_as_speed_target", (evt) =>
-      this.handleChangeTimeSpeedTarget(evt.target)
-    );
-    $("body").on("change", "#is_time_as_speed_target2", (evt) =>
-      this.handleChangeTimeSpeedTarget(evt.target)
-    );
+
+    // $('#addActivityBtnTop').prop('disabled', true)
   }
 }
 
+// window.isActivityInitialized = typeof window.isActivityInitialized == 'undefined' ? null : window.isActivityInitialized;
+
 jQuery(async function () {
-  new FormView().initialize();
+  if(!window.isActivityInitialized && $('#activity_table').length) {
+    new FormView().initialize();
+
+    window.isActivityInitialized = true;
+  }
 });

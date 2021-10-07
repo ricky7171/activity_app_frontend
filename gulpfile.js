@@ -75,7 +75,7 @@ function clean() {
 }
 
 // Bring third party dependencies from node_modules into vendor directory
-function modules() {
+function modules(cb) {
   var list_modules = {
     bootstrapJS: {
       source: './node_modules/bootstrap/dist/js/*',
@@ -131,12 +131,14 @@ function modules() {
     return gulp.src(moduleOpt.source)
     .pipe(newer(moduleOpt.dest))
       .pipe(gulp.dest(moduleOpt.dest))
-  }))
+  })).on('end', () => {
+    console.log("TASK COMPLETE modules")
+    cb();
+  })
 }
 
 // CSS task
 function css(args) {
-  console.log("here build css");
   const fileName = typeof args == 'string' ? args : '';
 
   if(fileName) {
@@ -167,7 +169,13 @@ function css(args) {
     }))
     .pipe(cleanCSS())
     .pipe(gulp.dest(config.DESTINATION_PATH+"/css"))
-    .pipe(browsersync.stream());
+    .pipe(browsersync.stream())
+    .on('end', () => {
+      if(typeof args == 'function') {
+        console.log('TASK COMPLETE css')
+        args();
+      }
+    });
 }
 
 // JS task
@@ -196,7 +204,12 @@ function js(args) {
       .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest(config.DESTINATION_PATH));
-  }));
+  })).on('end', () => {
+    if(typeof args == 'function') {
+      console.log('TASK COMPLATE JS')
+      args();
+    }
+  });
 
   
   
@@ -271,14 +284,25 @@ function compileNunjucks(args) {
       path.dirname = '.';
     }
   }))
-  .pipe(gulp.dest(config.DESTINATION_PATH));
+  .pipe(gulp.dest(config.DESTINATION_PATH))
+  .on('end', () => {
+    if(typeof args == 'function') {
+      console.log("TASK COMPLETE compile nunjuk")
+      args();
+    }
+  });
 }
 
 // copy assets
-function copyAssets() {
+function copyAssets(cb) {
+  console.log("🚀 ~ file: gulpfile.js ~ line 289 ~ copyAssets ~ cb", cb)
   return gulp.src('./assets/**/*')
     .pipe(newer(config.DESTINATION_PATH+'/assets'))
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/assets'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/assets'))
+    .on('end', () => {
+      console.log('TASK COMPLETE COPY ASSET')
+      cb();
+    });
 }
 
 // Define complex tasks

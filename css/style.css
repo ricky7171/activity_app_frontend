@@ -1,3 +1,7 @@
+.navbar-expand {
+    justify-content: space-between !important;
+}
+
 /**
 * Header
 */
@@ -18,6 +22,10 @@
 * Home page
 */
 #reportBtnTop {
+    background-color: #ED873E;
+}
+
+.btn-orange {
     background-color: #ED873E;
 }
 

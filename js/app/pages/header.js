@@ -3,6 +3,7 @@ import ActivityService from "./../business_logic/service/activityService";
 import ActivityDataProxy from "./../data_proxy/activityDataProxy";
 import * as alertHelper from "./../core/alert_helper";
 import * as colorHelper from "./../core/color_helper";
+import FormView from "./form"
 
 class HeaderView {
     constructor() {
@@ -21,12 +22,12 @@ class HeaderView {
         // - get data
         const attributes = {
             title: $("#form_title").val(),
-            default_value: $("#form_value").val(),
+            value: $("#form_value").val(),
             target: $("#form_target").val(),
             description: $("#form_description").val(),
             color: $("#form_color").val(),
-            can_change: $("#form_is_editable").prop("checked") ? 1 : 0,
-            use_textfield: $("#form_is_use_textfield").prop("checked") ? 1 : 0,
+            // can_change: $("#form_is_editable").prop("checked") ? 1 : 0,
+            // use_textfield: $("#form_is_use_textfield").prop("checked") ? 1 : 0,
         };
 
         // - show loading
@@ -106,14 +107,17 @@ class HeaderView {
             this.handleClickAddActivityButtonTop()
         );
 
-        $("#form_submit_btn").on("click", () => this.handleClickSubmitButton());
-        $("body").on("change", "#form_is_use_textfield", (evt) =>
-            this.handleChangeUseTextfield(evt.target.checked)
-        );
-
-
-
-
+        const formView = new FormView();
+        formView.changeTypeListener('#activity_top_area');
+        $("#form_submit_btn_top").on("click", () => formView.handleClickSubmitButton('#activity_top_area', {
+            disableLoading: true,
+            callbackSuccess: () => {
+                $("#modalAddActivity").modal("hide");
+            }
+        }));
+    // $("body").on("change", "#form_is_use_textfield", (evt) =>
+        //     this.handleChangeUseTextfield(evt.target.checked)
+        // );
     }
 
 }

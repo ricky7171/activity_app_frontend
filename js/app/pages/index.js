@@ -36,6 +36,9 @@ class HomeView {
     let rowActivityFloatTpl = $(
       'script[data-template="row-activity-float"]'
     ).text();
+    let rowActivitySpeedrunTpl = $(
+      'script[data-template="row-activity-speedrun"]'
+    ).text();
     let rowActivityTextfieldTpl = $(
       'script[data-template="row-activity-textfield"]'
     ).text();
@@ -73,11 +76,12 @@ class HomeView {
 
     dataSource.forEach((activityData) => {
       // process if activity is use textfield
-      if (activityData.use_textfield) {
+      if (['count'].indexOf(activityData.type) >= 0) {
         //prepare content activity row for textfield value
         let contentActivityRowTextfield = {
           title: activityData.title,
           activity_id: activityData.id,
+          placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field'
         };
 
         // modify template change color of button
@@ -99,42 +103,65 @@ class HomeView {
       }
 
       // process if activity not using textfield
-      const templateValueActivity = activityData.can_change
-        ? editableValueActivityTpl
-        : disabledValueActivityTpl;
-
-      const contentActivityValue = {
-        activity_id: activityData.id,
-        value: activityData.default_value,
-      };
-
-      const valueActivityHtml = templateHelper.render(
-        templateValueActivity,
-        contentActivityValue
-      );
-
-      //prepare content activity row for float value
-      let contentActivityRowFloat = {
-        title: activityData.title,
-        activity_id: activityData.id,
-        value_activity_html: valueActivityHtml,
-      };
-
-      // modify template change color of button
-      rowActivityFloatTpl = $(rowActivityFloatTpl);
-      rowActivityFloatTpl
-        .find(".changepos-btn-wrapper")
-        .attr("data-activityId", activityData["id"]);
-      changeColorBtnActivity(activityData["color"], rowActivityFloatTpl);
-
-      // get html script from modified template
-      rowActivityFloatTpl = rowActivityFloatTpl[0].outerHTML;
-
-      // render template and save to temp variable
-      tempActivityRowFloatHtml += templateHelper.render(
-        rowActivityFloatTpl,
-        contentActivityRowFloat
-      );
+      if(activityData.type == 'value') {
+        let templateValueActivity = activityData.can_change
+          ? editableValueActivityTpl
+          : disabledValueActivityTpl;
+  
+        const contentActivityValue = {
+          activity_id: activityData.id,
+          value: activityData.value,
+        };
+  
+        const valueActivityHtml = templateHelper.render(
+          templateValueActivity,
+          contentActivityValue
+        );
+  
+        //prepare content activity row for float value
+        let contentActivityRowFloat = {
+          title: activityData.title,
+          activity_id: activityData.id,
+          value_activity_html: valueActivityHtml,
+        };
+  
+        // modify template change color of button
+        rowActivityFloatTpl = $(rowActivityFloatTpl);
+        rowActivityFloatTpl
+          .find(".changepos-btn-wrapper")
+          .attr("data-activityId", activityData["id"]);
+        changeColorBtnActivity(activityData["color"], rowActivityFloatTpl);
+  
+        // get html script from modified template
+        rowActivityFloatTpl = rowActivityFloatTpl[0].outerHTML;
+  
+        // render template and save to temp variable
+        tempActivityRowFloatHtml += templateHelper.render(
+          rowActivityFloatTpl,
+          contentActivityRowFloat
+        );
+      } else if(activityData.type == 'speedrun') {
+        let contentActivityRowSpeedrun = {
+          title: activityData.title,
+          activity_id: activityData.id,
+        };
+  
+        // modify template change color of button
+        rowActivitySpeedrunTpl = $(rowActivitySpeedrunTpl);
+        rowActivitySpeedrunTpl
+          .find(".changepos-btn-wrapper")
+          .attr("data-activityId", activityData["id"]);
+        changeColorBtnActivity(activityData["color"], rowActivitySpeedrunTpl);
+  
+        // get html script from modified template
+        rowActivitySpeedrunTpl = rowActivitySpeedrunTpl[0].outerHTML;
+  
+        // render template and save to temp variable
+        tempActivityRowFloatHtml += templateHelper.render(
+          rowActivitySpeedrunTpl,
+          contentActivityRowSpeedrun
+        );
+      }
     });
 
     // render list activity
@@ -194,16 +221,30 @@ class HomeView {
         .parents(".input-activity-group")
         .find(".input-activity-value");
     }
-    const activityId = elInput.attr("activityId");
+    let activityId = elInput.attr("activityId");
     const useTextfield = elInput.is("[type=text]");
     const useNumberField = elInput.is("[type=number]");
+    const isSpeedrun = elInput.closest('.speedrun-container').length;
+    
     let inputValue = null;
 
-    if (useNumberField || useTextfield) {
-      inputValue = elInput.val();
+    if(isSpeedrun) {
+      const container = elInput.closest('.speedrun-container');
+      const hour = container.find('input[name=hour]').val();
+      const minute = container.find('input[name=minute]').val();
+      const second = container.find('input[name=second]').val();
+      const millisecond = container.find('input[name=millisecond]').val();
+      inputValue = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
+      activityId = container.attr("activityId");
+
     } else {
-      inputValue = elInput.attr("value");
+      if (useNumberField || useTextfield) {
+        inputValue = elInput.val();
+      } else {
+        inputValue = elInput.attr("value");
+      }
     }
+    
 
     const attributes = {
       activity_id: activityId,

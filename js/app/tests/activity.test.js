@@ -11,7 +11,7 @@ test("get all activity", async () => {
       target: 123,
       position: 2,
       color: "#4e73df",
-      default_value: 0,
+      value: 0,
       can_change: 1,
       deleted_at: null,
       created_at: "2021-07-30T15:28:37.000000Z",
@@ -37,7 +37,7 @@ test("insert activity", async () => {
   const service = new ActivityService(new ActivityDataProxy());
   const attributes = {
     title: "First Activity",
-    default_value: 100,
+    value: 100,
     target: 500,
     color: "#000000",
     can_change: 0,
@@ -63,7 +63,7 @@ test("insert activity with wrong attributes must fail", async () => {
   const service = new ActivityService(new ActivityDataProxy());
   const attributes = {
     title: "First Activity",
-    default_value: 100,
+    value: 100,
     target: 500,
     color: "#000000",
     can_change: 0, // if textfield, can_change attribute must also true
@@ -87,7 +87,7 @@ test("update activity", async () => {
   const attributes = {
     id: 1,
     title: "First Activity",
-    default_value: 100,
+    value: 100,
     target: 500,
     color: "#000000",
     can_change: 0,
@@ -114,7 +114,7 @@ test("update activity with wrong attributes must fail", async () => {
   const attributes = {
     id: 1,
     title: "First Activity",
-    default_value: 100,
+    value: 100,
     target: 500,
     color: "#000000",
     can_change: 0, // if textfield, can_change attribute must also true
@@ -141,7 +141,7 @@ test("get sort by position activity", async () => {
       target: 123,
       position: 2,
       color: "#4e73df",
-      default_value: 0,
+      value: 0,
       can_change: 1,
       deleted_at: null,
       created_at: "2021-07-30T15:28:37.000000Z",
@@ -190,7 +190,7 @@ test("get by month and year activity", async () => {
       target: 123,
       position: 2,
       color: "#4e73df",
-      default_value: 0,
+      value: 0,
       can_change: 1,
       deleted_at: null,
       created_at: "2021-07-30T15:28:37.000000Z",

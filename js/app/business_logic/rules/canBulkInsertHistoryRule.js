@@ -35,7 +35,6 @@ class CanBulkInsertHistoryRule extends Rule {
             });
           }
 
-          console.log('DEBUG', { split, history })
         }
       });
 
