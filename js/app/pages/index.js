@@ -230,13 +230,23 @@ class HomeView {
 
     if(isSpeedrun) {
       const container = elInput.closest('.speedrun-container');
-      const hour = container.find('input[name=hour]').val();
-      const minute = container.find('input[name=minute]').val();
-      const second = container.find('input[name=second]').val();
-      const millisecond = container.find('input[name=millisecond]').val();
+      const hour = container.find('input[name=hour]').val() || 0;
+      const minute = container.find('input[name=minute]').val() || 0;
+      const second = container.find('input[name=second]').val() || 0;
+      const millisecond = container.find('input[name=millisecond]').val() || 0;
       inputValue = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
       activityId = container.attr("activityId");
 
+      if(hour == 0 && minute == 0 && second == 0 && millisecond == 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return;
+      }
+      
+      if(hour < 0 || minute < 0 || second < 0 || millisecond < 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return;
+      }
+      
     } else {
       if (useNumberField || useTextfield) {
         inputValue = elInput.val();

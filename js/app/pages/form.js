@@ -88,6 +88,10 @@ export default class FormView {
     // - get data
     const attributes = this.getValueFromForm(formContainer);
 
+    if(attributes === false) {
+      return ;
+    }
+
     if(!options.disableLoading) {
       loadingHelper.toggleLoading(true);
     }
@@ -232,9 +236,15 @@ export default class FormView {
   }
 
   async handleClickUpdateButton() {
+    const allValue = this.getValueFromForm('#modalEdit');
+
+    if(allValue === false) {
+      return ;
+    }
+    
     const attributes = {
       id: $("#modalEdit").find("input[name=activity_id]").val(),
-      ...this.getValueFromForm('#modalEdit')
+      ...allValue
     };
 
     const command = await this.activityService
@@ -274,17 +284,22 @@ export default class FormView {
     }
 
     if(type == 'speedrun') {
-      const hour = $(formContainer).find('input[name=hour]').val();
-      const minute = $(formContainer).find('input[name=minute]').val();
-      const second = $(formContainer).find('input[name=second]').val();
-      const milisecond = $(formContainer).find('input[name=millisecond]').val();
+      const hour = $(formContainer).find('input[name=hour]').val() || 0;
+      const minute = $(formContainer).find('input[name=minute]').val() || 0;
+      const second = $(formContainer).find('input[name=second]').val() || 0;
+      const millisecond = $(formContainer).find('input[name=millisecond]').val() || 0;
 
-      if(hour == '' || minute == '' || second == '' || milisecond == '') {
-        alertHelper.showError("The input is required");
-        return;
+      if(hour == 0 && minute == 0 && second == 0 && millisecond == 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return false;
+      }
+      
+      if(hour < 0 || minute < 0 || second < 0 || millisecond < 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return false;
       }
 
-      attributes.value = `${hour}h ${minute}m ${second}s ${milisecond}ms`;
+      attributes.value = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
     }
 
     return attributes;
