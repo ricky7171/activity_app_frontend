@@ -302,6 +302,11 @@ export default class FormView {
       attributes.value = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
     }
 
+    if(type == 'alarm') {
+      delete attributes.target;
+      delete attributes.value;
+    }
+
     return attributes;
   }
   
@@ -321,8 +326,8 @@ export default class FormView {
           canChangeChekbox.attr('style', '');
           valueEl.prop('type', 'number');
           valueEl.prop('placeholder', 'Activity Default Value');
+          targetContainerEl.attr('style', '');
           
-          targetContainerEl.show();
           targetEl.prop('placeholder', 'Count Target');
           break;
 
@@ -330,6 +335,7 @@ export default class FormView {
           speedrunContainerEl.attr('style', 'display:none !important');
           valueContainerEl.attr('style', 'display: none !important');
           canChangeChekbox.attr('style', 'display: none !important');
+          targetContainerEl.attr('style', '');
           targetEl.prop('placeholder', 'Count Target');
           break;
       
@@ -337,8 +343,16 @@ export default class FormView {
           speedrunContainerEl.attr('style', '');
           valueContainerEl.attr('style', 'display:none !important');
           canChangeChekbox.attr('style', 'display: none !important');
+          targetContainerEl.attr('style', '');
           valueEl.prop('type', 'text');
           valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 00ms')
+          break;
+
+        case 'alarm':
+          speedrunContainerEl.attr('style', 'display:none !important');
+          valueContainerEl.attr('style', 'display:none !important');
+          canChangeChekbox.attr('style', 'display: none !important');
+          targetContainerEl.attr('style', 'display: none !important');
           break;
 
         default:

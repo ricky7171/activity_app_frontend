@@ -12,12 +12,16 @@ class ActivityService extends BusinessService {
       new FieldRequiredRule("type", attr),
       new FieldRequiredRule("title", attr),
       // new FieldRequiredRule("value", "value", attr),
-      new FieldRequiredRule("target", attr),
+      // new FieldRequiredRule("target", attr),
       new FieldRequiredRule("color", attr),
     ];
     
     if(['speedrun', 'value'].indexOf(attr.type) >= 0) {
       rules.push(new FieldRequiredRule("value", attr));
+    }
+    
+    if(attr.type !== 'alarm') {
+      rules.push(new FieldRequiredRule("target", attr));
     }
     
     return Promise.resolve(rules);
@@ -30,12 +34,16 @@ class ActivityService extends BusinessService {
       new FieldRequiredRule("type", attr),
       new FieldRequiredRule("title", attr),
       // new FieldRequiredRule("value", "value", attr),
-      new FieldRequiredRule("target", attr),
+      // new FieldRequiredRule("target", attr),
       new FieldRequiredRule("color", attr),
     ];
 
     if(['speedrun', 'value'].indexOf(attr.type) >= 0) {
       rules.push(new FieldRequiredRule("value", attr));
+    }
+
+    if(attr.type !== 'alarm') {
+      rules.push(new FieldRequiredRule("target", attr));
     }
     
     return Promise.resolve(rules);
