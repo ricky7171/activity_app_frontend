@@ -214,7 +214,7 @@
     </div>
 </script>
 
-<script type="text/template" data-template="row-activity-speedrun">
+{# <script type="text/template" data-template="row-activity-speedrun">
     <div class="col-6 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
         <div class="d-flex flex-nowrap text-center">
             <div class="input-group input-activity-group">
@@ -234,6 +234,30 @@
             </div>
         </div>
     </div>
+</script> #}
+
+<script type="text/template" data-template="row-activity-speedrun">
+    <div class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
+        <div class="col-12"  style="padding-left: 0; padding-right: 0">
+            <div class="d-flex flex-nowrap text-center">
+                <div class="input-group input-activity-group">
+                    <div class="d-flex speedrun-container" activityId='${activity_id}'  style="flex: 1 1 auto">
+                        <input type="number" placeholder="h" name="hour" id="hour" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                        <input type="number" placeholder="m" name="minute" id="minute" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                        <input type="number" placeholder="s" name="second" id="second" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                        <input type="number" placeholder="ms" name="millisecond" id="millisecond" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                    </div>
+                    <div class="input-group-append">
+                        <a href="#" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</a>
+                    </div>
+                </div>
+                <div class="changepos-btn-wrapper">
+                    <i class="btn-up fa fa-caret-left" aria-hidden="true"></i>
+                    <i class="btn-down fa fa-caret-right" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </script>
 
 <script type="text/template" data-template="row-activity-textfield">
@@ -241,7 +265,7 @@
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center"> 
                 <div class="input-group input-activity-group">
-                    <input type="text" class="form-control border border-1 input-activity-value h-100" activityId='${activity_id}' placeholder="${placeholder}" aria-label="">
+                    <input type="text" class="form-control border border-1 input-activity-value h-100" activityId='${activity_id}' placeholder="${placeholder}" aria-label="" style="${style}">
                     <div class="input-group-append">
                         <button class="btn btn-primary btn-add-value border-0" type="button">${title}</button>
                     </div>

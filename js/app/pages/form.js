@@ -338,6 +338,14 @@ export default class FormView {
           targetContainerEl.attr('style', '');
           targetEl.prop('placeholder', 'Count Target');
           break;
+
+        case 'badhabit':
+          speedrunContainerEl.attr('style', 'display:none !important');
+          valueContainerEl.attr('style', 'display: none !important');
+          canChangeChekbox.attr('style', 'display: none !important');
+          targetContainerEl.attr('style', '');
+          targetEl.prop('placeholder', 'Count Target');
+          break;
       
         case 'speedrun':
           speedrunContainerEl.attr('style', '');

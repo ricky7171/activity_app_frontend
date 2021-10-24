@@ -77,13 +77,17 @@ class HomeView {
 
     dataSource.forEach((activityData) => {
       // process if activity is use textfield
-      if (['count'].indexOf(activityData.type) >= 0) {
+      if (['count', 'badhabit'].indexOf(activityData.type) >= 0) {
         //prepare content activity row for textfield value
         let contentActivityRowTextfield = {
           title: activityData.title,
           activity_id: activityData.id,
           placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field'
         };
+
+        if(activityData.type == 'badhabit' && activityData.is_red) {
+          contentActivityRowTextfield.style = "color:red";
+        }
 
         // modify template change color of button
         rowActivityTextfieldTpl = $(rowActivityTextfieldTpl);
@@ -158,7 +162,7 @@ class HomeView {
         rowActivitySpeedrunTpl = rowActivitySpeedrunTpl[0].outerHTML;
   
         // render template and save to temp variable
-        tempActivityRowFloatHtml += templateHelper.render(
+        tempActivityRowTextfieldHtml += templateHelper.render(
           rowActivitySpeedrunTpl,
           contentActivityRowSpeedrun
         );
