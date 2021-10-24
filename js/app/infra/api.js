@@ -115,6 +115,46 @@ var listApi = {
         url: server + "/api/application_logs",
         withToken: false,
     },
+    "mediaGallery.get": {
+        method: 'GET',
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "mediaGallery.add" : {
+        method : "POST",
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "mediaGallery.delete" : {
+        method : "DELETE",
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "mediaGallery.update" : {
+        method : "PATCH",
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "category.get": {
+        method: 'GET',
+        url: server + "/api/categories",
+        withToken: false,
+    },
+    "category.add" : {
+        method : "POST",
+        url: server + "/api/categories",
+        withToken: false,
+    },
+    "category.delete" : {
+        method : "DELETE",
+        url: server + "/api/categories",
+        withToken: false,
+    },
+    "category.update" : {
+        method : "PATCH",
+        url: server + "/api/categories",
+        withToken: false,
+    },
 };
 
 function isIterable(variable) {

@@ -196,7 +196,9 @@ function js(args) {
     ]
   });
   return merge(files.map(function(file) {
-    var b = watchify(browserify(file)
+    // var b = watchify(browserify(file)
+    //   .transform("babelify", { presets: ['@babel/preset-env'] }));
+    var b = (browserify(file)
       .transform("babelify", { presets: ['@babel/preset-env'] }));
     return b.bundle()
       .pipe(source(file))
@@ -309,7 +311,8 @@ function copyAssets(cb) {
 const build = gulp.series(modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
 // const watchCmd = gulp.series(build, gulp.parallel(watchFiles, browserSync));
 const watchCmd = gulp.series(watchFiles);
-const dev = gulp.series(build, gulp.parallel(watchFiles, serve));
+const dev = gulp.parallel(watchFiles, serve);
+// const dev = gulp.series(build, gulp.parallel(watchFiles, serve));
 // const watch = gulp.series(watchFiles)
 
 // Export tasks

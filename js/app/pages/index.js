@@ -7,6 +7,7 @@ import ActivityService from "../business_logic/service/activityService";
 import ActivityDataProxy from "../data_proxy/activityDataProxy";
 import HistoryService from "../business_logic/service/historyService";
 import HistoryDataProxy from "../data_proxy/historyDataProxy";
+import MediaGalleryComponent from "./components/media-gallery";
 
 class HomeView {
   constructor() {
@@ -297,6 +298,10 @@ class HomeView {
     $("body").on('keyup', ".input-activity-value", function (evt) {
       evt.key === 'Enter' ? thisObject.handleClickButtonAddValue(null, $(this)) : null
     });
+
+    console.log('update source code media')
+    const media = new MediaGalleryComponent();
+    media.initiate();
   }
 }
 

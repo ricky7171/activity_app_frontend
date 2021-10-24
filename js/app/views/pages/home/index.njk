@@ -9,6 +9,139 @@
     <div id="text-wrapper">
     </div>
     <!-- template row activity -->
+
+    <div id="media-wrapper" class="mt-5">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filter
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-plus"></i></button>
+                <div class="modal fade" id="modalFormMedia" tabindex="-1" role="dialog" aria-labelledby="modalFormMediaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex justify-space-between align-items-center p-0" style="border-bottom: 1px solid #d6caca">
+                                <div class="modal-tabs">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                <h5 class="modal-title">Upload Media</h5>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                                                <h5 class="modal-title">Category</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <button type="button" class="close m-0 p-0" data-dismiss="modal" aria-label="Close" style="width: 50px">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                {# <h5 class="modal-title" id="modalFormMediaLabel">Media</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button> #}
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="form-media-wrapper">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label>Type</label>
+                                                <select name="type" class="form-control">
+                                                    <option value="image" selected>Image</option>
+                                                    <option value="video">Video</option>
+                                                    <option value="youtube">Youtube</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Category</label>
+                                                <select name="category_id" class="form-control">
+                                                </select>
+                                            </div>
+                                            <div class="form-group file-media">
+                                                <label>Upload</label>
+                                                <div class="custom-file">
+                                                    <input name="file" type="file" class="custom-file-input" id="fileMedia" accept="image/*">
+                                                    <label class="custom-file-label" for="fileMedia">Choose file</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group youtube-link-input" style="display:none">
+                                                <label>Youtube Link</label>
+                                                <input type="text" name="youtube_link" class="form-control" placeholder="https://www.youtube.com/watch?v=xxxxxxxx"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Preview</label>
+                                                <div class="preview-area"></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary btn-save-media">
+                                                Save changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="form-category-wrapper">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input class="form-control" name="category_name" placeholder="Category Name"/>
+                                                <input type="hidden" name="category_id" value="" />
+                                            </div>
+                                            <div class="text-right mb-2">
+                                                <button type="button" class="btn btn-primary btn-save-category">
+                                                    Save changes
+                                                </button>
+                                            </div>
+
+
+                                            <h4>List Category</h4>
+                                            <ul class="list-group media-list-category">
+                                                
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="media-content-wrapper mt-2">
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetailMedia" tabindex="-1" role="dialog" aria-labelledby="modalDetailMediaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetailMediaLabel">Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
 
@@ -128,6 +261,44 @@
 
 <script type="text/template" data-template="disabled-value-activity-template">
     <p class="form-control border border-0 bg-gray-200 w-50 input-activity-value h-100 pt-2" activityId='${activity_id}' value='${value}'>${value}</p>
+</script>
+
+<script type="text/template" data-template="media-content-template">
+    <div class="media-content-item ${className}" data-source='${source}'>
+        <img src="${imageSource}" alt="" />
+    </div>
+</script>
+<script type="text/template" data-template="media-detail-youtube-template">
+    <iframe width="100%" height="500" src="https://www.youtube.com/embed/${source}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</script>
+<script type="text/template" data-template="media-detail-youtube-template">
+    <img src="${source}" alt="" style="width: 100%" />
+</script>
+<script type="text/template" data-template="media-detail-image-template">
+    <img src="${source}" alt="" style="width: 100%" />
+</script>
+<script type="text/template" data-template="media-detail-video-template">
+    <video width="100%" height="500" controls>
+        <source src="${source}">
+        Your browser does not support the video tag.
+    </video>
+</script>
+<script type="text/template" data-template="media-filter-item">
+    <a class="dropdown-item filter-category" data-categoryid="${id}" href="#">${name}</a>
+</script>
+<script type="text/template" data-template="media-category-option">
+    <option value="${id}">${name}</option>
+</script>
+<script type="text/template" data-template="media-category-list-template">
+<li class="list-group-item d-flex justify-content-between" data-category='${dataJson}'>
+    <div>
+        ${name}
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn-edit-category btn btn-primary btn-sm"><i class="fa fa-edit"></i></button>
+        <button type="button" class="btn-delete-category btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+    </div>
+</li>
 </script>
 <script src="js/app/pages/index.js"></script>
 {% endblock footer %}

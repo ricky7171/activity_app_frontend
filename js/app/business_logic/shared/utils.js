@@ -39,7 +39,24 @@ function convert(value, prop) {
   };
 }
 
+function chunkArray(inputArray, perChunk = 2) {
+  var result = inputArray.reduce((resultArray, item, index) => { 
+    const chunkIndex = Math.floor(index/perChunk)
+
+    if(!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = [] // start a new chunk
+    }
+
+    resultArray[chunkIndex].push(item)
+
+    return resultArray
+  }, [])
+
+  return result;
+}
+
 module.exports = {
   stripAllFieldsFrom: stripAllFieldsFrom,
-  convert: convert
+  convert: convert,
+  chunkArray,
 }
