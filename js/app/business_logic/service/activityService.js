@@ -23,7 +23,11 @@ class ActivityService extends BusinessService {
     if(attr.type !== 'alarm') {
       rules.push(new FieldRequiredRule("target", attr));
     }
-    
+
+    if(['speedrun', 'count'].indexOf(attr.type) >= 0) {
+      rules.push(new FieldRequiredRule("increase_value", attr))
+    }
+
     return Promise.resolve(rules);
   }
 
@@ -44,6 +48,10 @@ class ActivityService extends BusinessService {
 
     if(attr.type !== 'alarm') {
       rules.push(new FieldRequiredRule("target", attr));
+    }
+
+    if(['speedrun', 'count'].indexOf(attr.type) >= 0) {
+      rules.push(new FieldRequiredRule("increase_value", attr))
     }
     
     return Promise.resolve(rules);

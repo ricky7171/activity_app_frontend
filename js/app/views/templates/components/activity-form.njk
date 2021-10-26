@@ -39,6 +39,17 @@
     <label for="target">Target</label>
     <input type="number" name="target" class="form-control" min="50" placeholder="Count Target">
 </div>
+<div class="form-group d-flex flex-nowrap align-items-center increase-value-container">
+    <label for="value">Increase Value</label>
+    <input type="number" name="increase_value" class="form-control" placeholder="Increase Value" value="1">
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center">
+    <label for="value">Hide</label>
+    <select name="is_hide" class="form-control">
+        <option value="1">Yes</option>
+        <option value="0" selected>No</option>
+    </select>
+</div>
 <div class="form-group form-check form-can-change form-check-inline checkbox-lg">
     <input type="checkbox" name="is_editable" class="form-check-input">
     <label class="form-check-label" for="is_editable">Can change value</label>

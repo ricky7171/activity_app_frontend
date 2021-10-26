@@ -13,6 +13,8 @@ class HomeView {
   constructor() {
     this.activityService = new ActivityService(new ActivityDataProxy());
     this.historyService = new HistoryService(new HistoryDataProxy());
+    this.tempData = [];
+    this.is_hide = true;
   }
 
   async fetchActivities() {
@@ -24,7 +26,8 @@ class HomeView {
     if (command.success) {
       const activitiesData = command.value;
       if (activitiesData.success) {
-        this.showActivitiesData(activitiesData.response.data);
+        this.tempData = activitiesData.response.data;
+        this.showActivitiesData(this.tempData.filter(v => !v.is_hide));
         loadingHelper.toggleLoading(false);
       }
     }
@@ -116,6 +119,7 @@ class HomeView {
         const contentActivityValue = {
           activity_id: activityData.id,
           value: activityData.value,
+          increase_value: activityData.increase_value,
         };
   
         const valueActivityHtml = templateHelper.render(
@@ -214,14 +218,11 @@ class HomeView {
   }
 
   async handleClickButtonAddValue(evt, inputElement) {
-    // console.log("🚀 ~ file: index.js ~ line 185 ~ HomeView ~ handleClickButtonAddValue ~ evt", evt)
     //get activity id and input value
     var elInput = null;
     if(inputElement) {
-      console.log("check from inputelement");
       elInput = inputElement;
     } else {
-      console.log("check from evt");
       elInput = $(evt)
         .parents(".input-activity-group")
         .find(".input-activity-value");
@@ -284,6 +285,39 @@ class HomeView {
     }
   }
 
+  changeNumber(input, direction = 'up') {
+    let value = Number($(input).val());
+    let increaseValue = $(input).data('increasevalue') || 1;
+
+    // convert number
+    increaseValue = Number(increaseValue)
+
+    if(direction == 'up') {
+      value += increaseValue;
+    } else {
+      if(value < 1) {
+        return ;
+      }
+
+      value -= increaseValue;
+    }
+    
+    $(input).val(value);
+  }
+
+  handleClickSeeAllButton(evt) {
+    var data = [];
+    if(this.is_hide) {
+      this.is_hide = false;
+      data = this.tempData;
+    } else {
+      this.is_hide = true;
+      data = this.tempData.filter(v => !v.is_hide);
+    }
+
+    this.showActivitiesData(data)
+  }
+
   initialize() {
     var thisObject = this;
     thisObject.fetchActivities();
@@ -303,9 +337,18 @@ class HomeView {
       evt.key === 'Enter' ? thisObject.handleClickButtonAddValue(null, $(this)) : null
     });
 
-    console.log('update source code media')
     const media = new MediaGalleryComponent();
     media.initiate();
+
+    $('body').on('click', '.btn-step', function(){
+      var direction = $(this).hasClass('step-up') ? 'up' : 'down';
+      var input = $(this).closest('.activity-input-float').find('input');
+      thisObject.changeNumber(input, direction)
+    })
+
+    $('body').on('click', '#seeAllActivity', function(evt){
+      thisObject.handleClickSeeAllButton(evt)
+    });
   }
 }
 

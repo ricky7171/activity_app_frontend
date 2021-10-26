@@ -4,6 +4,9 @@
 <!-- Report -->
 {% include "templates/components/empty-box.njk" %}
 <div class="report-wrapper">
+    <div class="border-bottom border-1 mb-3 text-right">
+        <button class="btn btn-link" id="seeAllActivity" type="button">See All</button>
+    </div>
     <div id="float-wrapper" class="row">
     </div>
     <div id="text-wrapper">
@@ -167,6 +170,44 @@
     gap: 8px 0;
     margin-bottom: 8px;
 }
+.report-wrapper input[type="number"] {
+  -webkit-appearance: textfield;
+     -moz-appearance: textfield;
+          appearance: textfield;
+}
+.report-wrapper input[type=number]::-webkit-inner-spin-button, 
+.report-wrapper input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}
+.activity-input-float {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.activity-input-float button {
+    margin: 12px;
+    background: white;
+    padding: 3px 10px;
+    border: none;
+    border-radius: 7px;
+    position: absolute;
+    color: #4e73df;
+    font-weight: bold;
+}
+
+.activity-input-float button:hover {
+    background: #ddd;
+}
+
+.activity-input-float button.step-up {
+    right:0;
+}
+
+.activity-input-float button.step-down {
+    left:0;
+}
+
 </style>
 {%endblock header %}
 
@@ -237,11 +278,11 @@
 </script> #}
 
 <script type="text/template" data-template="row-activity-speedrun">
-    <div class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
+    <div class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center">
                 <div class="input-group input-activity-group">
-                    <div class="d-flex speedrun-container" activityId='${activity_id}'  style="flex: 1 1 auto">
+                    <div class="d-flex speedrun-container" activityId='${activity_id}'  style="flex: 1 1 auto; width: 1%">
                         <input type="number" placeholder="h" name="hour" id="hour" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
                         <input type="number" placeholder="m" name="minute" id="minute" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
                         <input type="number" placeholder="s" name="second" id="second" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
@@ -252,8 +293,8 @@
                     </div>
                 </div>
                 <div class="changepos-btn-wrapper">
-                    <i class="btn-up fa fa-caret-left" aria-hidden="true"></i>
-                    <i class="btn-down fa fa-caret-right" aria-hidden="true"></i>
+                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -280,7 +321,11 @@
 </script>
 
 <script type="text/template" data-template="editable-value-activity-template">
-    <input class="form-control border border-0 bg-white text-center w-50 input-activity-value h-100 pt-2" activityId='${activity_id}' value='${value}' type="number">
+    <div class="activity-input-float w-50" style="flex: 1 1 auto">
+        <button class="btn-step step-up shadow" type="button">+</button>
+        <input class="form-control border border-0 bg-white text-center input-activity-value h-100 pt-2" activityId='${activity_id}' data-increasevalue="${increase_value}" value='${value}' type="number">
+        <button class="btn-step step-down shadow" type="button">-</button>
+    </div>
 </script>
 
 <script type="text/template" data-template="disabled-value-activity-template">

@@ -221,6 +221,8 @@ export default class FormView {
     modalEdit.find("input[name=title]").val(activityData.title);
     modalEdit.find("input[name=target]").val(activityData.target);
     modalEdit.find("input[name=description]").val(activityData.description);
+    modalEdit.find("input[name=increase_value]").val(activityData.increase_value);
+    modalEdit.find("select[name=is_hide]").val(activityData.is_hide).trigger("change");
     colorHelper.updateColorOfInput(
       modalEdit.find("input[name=color]"),
       activityData.color
@@ -277,6 +279,7 @@ export default class FormView {
       target: $(formContainer).find("input[name=target]").val(),
       description: $(formContainer).find("input[name=description]").val(),
       color: $(formContainer).find("input[name=color]").val(),
+      is_hide: $(formContainer).find("select[name=is_hide]").val(),
     };
 
     if(type == 'value') {
@@ -307,6 +310,10 @@ export default class FormView {
       delete attributes.value;
     }
 
+    if(type != 'speedrun' && type != 'count') {
+      attributes.increase_value = $(formContainer).find('input[name=increase_value]').val()
+    }
+
     return attributes;
   }
   
@@ -319,6 +326,7 @@ export default class FormView {
       const targetContainerEl = $(formContainer).find('.target-container');
       const speedrunContainerEl = $(formContainer).find('.value-speedrun-container');
       const canChangeChekbox = $(formContainer).find(".form-can-change");
+      const increaseValueContainerEl = $(formContainer).find('.increase-value-container');
       switch (typeValue) {
         case 'value':
           valueContainerEl.attr('style', '');
@@ -327,6 +335,7 @@ export default class FormView {
           valueEl.prop('type', 'number');
           valueEl.prop('placeholder', 'Activity Default Value');
           targetContainerEl.attr('style', '');
+          increaseValueContainerEl.attr('style', '');
           
           targetEl.prop('placeholder', 'Count Target');
           break;
@@ -337,6 +346,7 @@ export default class FormView {
           canChangeChekbox.attr('style', 'display: none !important');
           targetContainerEl.attr('style', '');
           targetEl.prop('placeholder', 'Count Target');
+          increaseValueContainerEl.attr('style', 'display:none !important');
           break;
 
         case 'badhabit':
@@ -345,6 +355,7 @@ export default class FormView {
           canChangeChekbox.attr('style', 'display: none !important');
           targetContainerEl.attr('style', '');
           targetEl.prop('placeholder', 'Count Target');
+          increaseValueContainerEl.attr('style', '');
           break;
       
         case 'speedrun':
@@ -354,6 +365,7 @@ export default class FormView {
           targetContainerEl.attr('style', '');
           valueEl.prop('type', 'text');
           valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 00ms')
+          increaseValueContainerEl.attr('style', 'display:none !important');
           break;
 
         case 'alarm':
@@ -361,6 +373,7 @@ export default class FormView {
           valueContainerEl.attr('style', 'display:none !important');
           canChangeChekbox.attr('style', 'display: none !important');
           targetContainerEl.attr('style', 'display: none !important');
+          increaseValueContainerEl.attr('style', '');
           break;
 
         default:
