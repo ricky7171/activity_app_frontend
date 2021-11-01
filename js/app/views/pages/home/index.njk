@@ -7,7 +7,7 @@
     <div class="border-bottom border-1 mb-3 text-right">
         <button class="btn btn-link" id="seeAllActivity" type="button">See All</button>
     </div>
-    <div id="float-wrapper" class="row">
+    <div id="float-wrapper">
     </div>
     <div id="text-wrapper">
     </div>
@@ -208,6 +208,21 @@
     left:0;
 }
 
+.row-activity-float .btn {
+    min-width: 20vw;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .row-activity-float .input-group-append {
+        width: 50%;
+    }
+
+    .row-activity-float .btn {
+        width: 100%;
+    }
+}
+
 </style>
 {%endblock header %}
 
@@ -238,7 +253,7 @@
     </div>
 </script> #}
 
-<script type="text/template" data-template="row-activity-float">
+{# <script type="text/template" data-template="row-activity-float">
     <div class="col-6 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
         <div class="d-flex flex-nowrap text-center">
             <div class="input-group input-activity-group">
@@ -250,6 +265,25 @@
             <div class="changepos-btn-wrapper">
                 <i class="btn-up fa fa-caret-left" aria-hidden="true"></i>
                 <i class="btn-down fa fa-caret-right" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+</script> #}
+
+<script type="text/template" data-template="row-activity-float">
+    <div class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
+        <div class="col-12"  style="padding-left: 0; padding-right: 0">
+            <div class="d-flex flex-nowrap text-center">
+                <div class="input-group input-activity-group">
+                    ${value_activity_html}
+                    <div class="input-group-append">
+                        <a href="#" class="btn btn-primary btn-add-value border-0" role="button">${title}</a>
+                    </div>
+                </div>
+                <div class="changepos-btn-wrapper">
+                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -320,16 +354,24 @@
     </div>
 </script>
 
-<script type="text/template" data-template="editable-value-activity-template">
+{# <script type="text/template" data-template="editable-value-activity-template">
     <div class="activity-input-float w-50" style="flex: 1 1 auto">
         <button class="btn-step step-up shadow" type="button">+</button>
         <input class="form-control border border-0 bg-white text-center input-activity-value h-100 pt-2" activityId='${activity_id}' data-increasevalue="${increase_value}" value='${value}' type="number">
         <button class="btn-step step-down shadow" type="button">-</button>
     </div>
+</script> #}
+
+<script type="text/template" data-template="editable-value-activity-template">
+    <div class="activity-input-float w-50" style="flex: 1 1 auto">
+        <button class="btn-step step-up shadow" type="button">+</button>
+        <input class="form-control border border-1 input-activity-value h-100 text-center" activityId='${activity_id}' data-increasevalue="${increase_value}" value='${value}' type="number" style="${style}">
+        <button class="btn-step step-down shadow" type="button">-</button>
+    </div>
 </script>
 
 <script type="text/template" data-template="disabled-value-activity-template">
-    <p class="form-control border border-0 bg-gray-200 w-50 input-activity-value h-100 pt-2" activityId='${activity_id}' value='${value}'>${value}</p>
+    <p class="form-control border border-0 bg-gray-200 w-50 input-activity-value h-100 pt-2" activityId='${activity_id}' value='${value}' style="${style}">${value}</p>
 </script>
 
 <script type="text/template" data-template="media-content-template">

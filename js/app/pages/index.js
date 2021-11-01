@@ -80,7 +80,7 @@ class HomeView {
 
     dataSource.forEach((activityData) => {
       // process if activity is use textfield
-      if (['count', 'badhabit'].indexOf(activityData.type) >= 0) {
+      if (['count'].indexOf(activityData.type) >= 0) {
         //prepare content activity row for textfield value
         let contentActivityRowTextfield = {
           title: activityData.title,
@@ -111,7 +111,7 @@ class HomeView {
       }
 
       // process if activity not using textfield
-      if(activityData.type == 'value') {
+      if(activityData.type == 'value' || activityData.type == 'badhabit') {
         let templateValueActivity = activityData.can_change
           ? editableValueActivityTpl
           : disabledValueActivityTpl;
@@ -121,6 +121,10 @@ class HomeView {
           value: activityData.value,
           increase_value: activityData.increase_value,
         };
+
+        if(activityData.type == 'badhabit' && activityData.is_red) {
+          contentActivityValue.style = "color:red";
+        }
   
         const valueActivityHtml = templateHelper.render(
           templateValueActivity,

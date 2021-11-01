@@ -282,7 +282,7 @@ export default class FormView {
       is_hide: $(formContainer).find("select[name=is_hide]").val(),
     };
 
-    if(type == 'value') {
+    if(type == 'value' || type == 'badhabit') {
       attributes.can_change = $(formContainer).find('input[name=is_editable]').prop("checked") ? 1 : 0;
     }
 
@@ -350,12 +350,15 @@ export default class FormView {
           break;
 
         case 'badhabit':
+          valueContainerEl.attr('style', '');
           speedrunContainerEl.attr('style', 'display:none !important');
-          valueContainerEl.attr('style', 'display: none !important');
-          canChangeChekbox.attr('style', 'display: none !important');
+          canChangeChekbox.attr('style', '');
+          valueEl.prop('type', 'number');
+          valueEl.prop('placeholder', 'Activity Default Value');
           targetContainerEl.attr('style', '');
-          targetEl.prop('placeholder', 'Count Target');
           increaseValueContainerEl.attr('style', '');
+          
+          targetEl.prop('placeholder', 'Count Target');
           break;
       
         case 'speedrun':

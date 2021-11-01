@@ -16,7 +16,7 @@ class ActivityService extends BusinessService {
       new FieldRequiredRule("color", attr),
     ];
     
-    if(['speedrun', 'value'].indexOf(attr.type) >= 0) {
+    if(['speedrun', 'value', 'badhabit'].indexOf(attr.type) >= 0) {
       rules.push(new FieldRequiredRule("value", attr));
     }
     
@@ -24,7 +24,7 @@ class ActivityService extends BusinessService {
       rules.push(new FieldRequiredRule("target", attr));
     }
 
-    if(['speedrun', 'count'].indexOf(attr.type) >= 0) {
+    if(['speedrun', 'count'].indexOf(attr.type) < 0) {
       rules.push(new FieldRequiredRule("increase_value", attr))
     }
 
@@ -42,7 +42,7 @@ class ActivityService extends BusinessService {
       new FieldRequiredRule("color", attr),
     ];
 
-    if(['speedrun', 'value'].indexOf(attr.type) >= 0) {
+    if(['speedrun', 'value', 'badhabit'].indexOf(attr.type) >= 0) {
       rules.push(new FieldRequiredRule("value", attr));
     }
 
@@ -50,7 +50,7 @@ class ActivityService extends BusinessService {
       rules.push(new FieldRequiredRule("target", attr));
     }
 
-    if(['speedrun', 'count'].indexOf(attr.type) >= 0) {
+    if(['speedrun', 'count'].indexOf(attr.type) < 0) {
       rules.push(new FieldRequiredRule("increase_value", attr))
     }
     
