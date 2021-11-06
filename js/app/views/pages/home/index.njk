@@ -4,11 +4,147 @@
 <!-- Report -->
 {% include "templates/components/empty-box.njk" %}
 <div class="report-wrapper">
-    <div id="float-wrapper" class="row">
+    <div class="border-bottom border-1 mb-3 text-right">
+        <button class="btn btn-link" id="seeAllActivity" type="button">See All</button>
+    </div>
+    <div id="float-wrapper">
     </div>
     <div id="text-wrapper">
     </div>
     <!-- template row activity -->
+
+    <div id="media-wrapper" class="mt-5">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filter
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-plus"></i></button>
+                <div class="modal fade" id="modalFormMedia" tabindex="-1" role="dialog" aria-labelledby="modalFormMediaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex justify-space-between align-items-center p-0" style="border-bottom: 1px solid #d6caca">
+                                <div class="modal-tabs">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                <h5 class="modal-title">Upload Media</h5>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                                                <h5 class="modal-title">Category</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <button type="button" class="close m-0 p-0" data-dismiss="modal" aria-label="Close" style="width: 50px">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                {# <h5 class="modal-title" id="modalFormMediaLabel">Media</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button> #}
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="form-media-wrapper">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label>Type</label>
+                                                <select name="type" class="form-control">
+                                                    <option value="image" selected>Image</option>
+                                                    <option value="video">Video</option>
+                                                    <option value="youtube">Youtube</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Category</label>
+                                                <select name="category_id" class="form-control">
+                                                </select>
+                                            </div>
+                                            <div class="form-group file-media">
+                                                <label>Upload</label>
+                                                <div class="custom-file">
+                                                    <input name="file" type="file" class="custom-file-input" id="fileMedia" accept="image/*">
+                                                    <label class="custom-file-label" for="fileMedia">Choose file</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group youtube-link-input" style="display:none">
+                                                <label>Youtube Link</label>
+                                                <input type="text" name="youtube_link" class="form-control" placeholder="https://www.youtube.com/watch?v=xxxxxxxx"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Preview</label>
+                                                <div class="preview-area"></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary btn-save-media">
+                                                Save changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="form-category-wrapper">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input class="form-control" name="category_name" placeholder="Category Name"/>
+                                                <input type="hidden" name="category_id" value="" />
+                                            </div>
+                                            <div class="text-right mb-2">
+                                                <button type="button" class="btn btn-primary btn-save-category">
+                                                    Save changes
+                                                </button>
+                                            </div>
+
+
+                                            <h4>List Category</h4>
+                                            <ul class="list-group media-list-category">
+                                                
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="media-content-wrapper mt-2">
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetailMedia" tabindex="-1" role="dialog" aria-labelledby="modalDetailMediaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetailMediaLabel">Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
 
@@ -34,6 +170,59 @@
     gap: 8px 0;
     margin-bottom: 8px;
 }
+.report-wrapper input[type="number"] {
+  -webkit-appearance: textfield;
+     -moz-appearance: textfield;
+          appearance: textfield;
+}
+.report-wrapper input[type=number]::-webkit-inner-spin-button, 
+.report-wrapper input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}
+.activity-input-float {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.activity-input-float button {
+    margin: 12px;
+    background: white;
+    padding: 3px 10px;
+    border: none;
+    border-radius: 7px;
+    position: absolute;
+    color: #4e73df;
+    font-weight: bold;
+}
+
+.activity-input-float button:hover {
+    background: #ddd;
+}
+
+.activity-input-float button.step-up {
+    right:0;
+}
+
+.activity-input-float button.step-down {
+    left:0;
+}
+
+.row-activity-float .btn {
+    min-width: 20vw;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .row-activity-float .input-group-append {
+        width: 50%;
+    }
+
+    .row-activity-float .btn {
+        width: 100%;
+    }
+}
+
 </style>
 {%endblock header %}
 
@@ -64,7 +253,7 @@
     </div>
 </script> #}
 
-<script type="text/template" data-template="row-activity-float">
+{# <script type="text/template" data-template="row-activity-float">
     <div class="col-6 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
         <div class="d-flex flex-nowrap text-center">
             <div class="input-group input-activity-group">
@@ -79,6 +268,71 @@
             </div>
         </div>
     </div>
+</script> #}
+
+<script type="text/template" data-template="row-activity-float">
+    <div class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
+        <div class="col-12"  style="padding-left: 0; padding-right: 0">
+            <div class="d-flex flex-nowrap text-center">
+                <div class="input-group input-activity-group">
+                    ${value_activity_html}
+                    <div class="input-group-append">
+                        <a href="#" class="btn btn-primary btn-add-value border-0" role="button">${title}</a>
+                    </div>
+                </div>
+                <div class="changepos-btn-wrapper">
+                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+{# <script type="text/template" data-template="row-activity-speedrun">
+    <div class="col-6 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
+        <div class="d-flex flex-nowrap text-center">
+            <div class="input-group input-activity-group">
+                <div class="d-flex speedrun-container" activityId='${activity_id}' style="width:50%">
+                    <input type="number" placeholder="h" name="hour" id="hour" class="form-control border bg-white text-center w-50 input-activity-value h-100 pt-2" style="width: 25%">
+                    <input type="number" placeholder="m" name="minute" id="minute" class="form-control border bg-white text-center w-50 input-activity-value h-100 pt-2" style="width: 25%">
+                    <input type="number" placeholder="s" name="second" id="second" class="form-control border bg-white text-center w-50 input-activity-value h-100 pt-2" style="width: 25%">
+                    <input type="number" placeholder="ms" name="millisecond" id="millisecond" class="form-control border bg-white text-center w-50 input-activity-value h-100 pt-2" style="width: 25%">
+                </div>
+                <div class="input-group-append w-50">
+                    <a href="#" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</a>
+                </div>
+            </div>
+            <div class="changepos-btn-wrapper">
+                <i class="btn-up fa fa-caret-left" aria-hidden="true"></i>
+                <i class="btn-down fa fa-caret-right" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+</script> #}
+
+<script type="text/template" data-template="row-activity-speedrun">
+    <div class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0">
+        <div class="col-12"  style="padding-left: 0; padding-right: 0">
+            <div class="d-flex flex-nowrap text-center">
+                <div class="input-group input-activity-group">
+                    <div class="d-flex speedrun-container" activityId='${activity_id}'  style="flex: 1 1 auto; width: 1%">
+                        <input type="number" placeholder="h" name="hour" id="hour" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                        <input type="number" placeholder="m" name="minute" id="minute" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                        <input type="number" placeholder="s" name="second" id="second" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                        <input type="number" placeholder="ms" name="millisecond" id="millisecond" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
+                    </div>
+                    <div class="input-group-append">
+                        <a href="#" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</a>
+                    </div>
+                </div>
+                <div class="changepos-btn-wrapper">
+                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </script>
 
 <script type="text/template" data-template="row-activity-textfield">
@@ -86,7 +340,7 @@
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center"> 
                 <div class="input-group input-activity-group">
-                    <input type="text" class="form-control border border-1 input-activity-value h-100" activityId='${activity_id}' placeholder="Text Field" aria-label="Text Field">
+                    <input type="text" class="form-control border border-1 input-activity-value h-100" activityId='${activity_id}' placeholder="${placeholder}" aria-label="" style="${style}">
                     <div class="input-group-append">
                         <button class="btn btn-primary btn-add-value border-0" type="button">${title}</button>
                     </div>
@@ -100,12 +354,62 @@
     </div>
 </script>
 
+{# <script type="text/template" data-template="editable-value-activity-template">
+    <div class="activity-input-float w-50" style="flex: 1 1 auto">
+        <button class="btn-step step-up shadow" type="button">+</button>
+        <input class="form-control border border-0 bg-white text-center input-activity-value h-100 pt-2" activityId='${activity_id}' data-increasevalue="${increase_value}" value='${value}' type="number">
+        <button class="btn-step step-down shadow" type="button">-</button>
+    </div>
+</script> #}
+
 <script type="text/template" data-template="editable-value-activity-template">
-    <input class="form-control border border-0 bg-white text-center w-50 input-activity-value h-100 pt-2" activityId='${activity_id}' value='${value}' type="number">
+    <div class="activity-input-float w-50" style="flex: 1 1 auto">
+        <button class="btn-step step-up shadow" type="button">+</button>
+        <input class="form-control border border-1 input-activity-value h-100 text-center" activityId='${activity_id}' data-increasevalue="${increase_value}" value='${value}' type="number" style="${style}">
+        <button class="btn-step step-down shadow" type="button">-</button>
+    </div>
 </script>
 
 <script type="text/template" data-template="disabled-value-activity-template">
-    <p class="form-control border border-0 bg-gray-200 w-50 input-activity-value h-100 pt-2" activityId='${activity_id}' value='${value}'>${value}</p>
+    <p class="form-control border border-0 bg-gray-200 w-50 input-activity-value h-100 pt-2" activityId='${activity_id}' value='${value}' style="${style}">${value}</p>
+</script>
+
+<script type="text/template" data-template="media-content-template">
+    <div class="media-content-item ${className}" data-source='${source}'>
+        <img src="${imageSource}" alt="" />
+    </div>
+</script>
+<script type="text/template" data-template="media-detail-youtube-template">
+    <iframe width="100%" height="500" src="https://www.youtube.com/embed/${source}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</script>
+<script type="text/template" data-template="media-detail-youtube-template">
+    <img src="${source}" alt="" style="width: 100%" />
+</script>
+<script type="text/template" data-template="media-detail-image-template">
+    <img src="${source}" alt="" style="width: 100%" />
+</script>
+<script type="text/template" data-template="media-detail-video-template">
+    <video width="100%" height="500" controls>
+        <source src="${source}">
+        Your browser does not support the video tag.
+    </video>
+</script>
+<script type="text/template" data-template="media-filter-item">
+    <a class="dropdown-item filter-category" data-categoryid="${id}" href="#">${name}</a>
+</script>
+<script type="text/template" data-template="media-category-option">
+    <option value="${id}">${name}</option>
+</script>
+<script type="text/template" data-template="media-category-list-template">
+<li class="list-group-item d-flex justify-content-between" data-category='${dataJson}'>
+    <div>
+        ${name}
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn-edit-category btn btn-primary btn-sm"><i class="fa fa-edit"></i></button>
+        <button type="button" class="btn-delete-category btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+    </div>
+</li>
 </script>
 <script src="js/app/pages/index.js"></script>
 {% endblock footer %}

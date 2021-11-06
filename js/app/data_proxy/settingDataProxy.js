@@ -9,6 +9,10 @@ class SettingDataProxy extends HttpDataProxy {
     const body = { key, value };
     return this._handleResponseFrom(this._api.requestApi("setting.save", body));
   }
+
+  // getApplicationLogs() {
+  //   return this._handleResponseFrom(this._api.requestApi("applicationlogs.get"));
+  // }
 }
 
 export default SettingDataProxy;

@@ -26,3 +26,13 @@
     <script src="/js/app/pages/all.js"></script>
 
     <!-- script for this page -->
+    <script>
+        jQuery(document).ready(function(){
+             $('.custom-file input[name=file]').on('change',function(){
+                //get the file name
+                var fileName = $(this).val() || 'Choose File';
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
+        })
+    </script>

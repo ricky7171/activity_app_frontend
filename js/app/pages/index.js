@@ -7,11 +7,14 @@ import ActivityService from "../business_logic/service/activityService";
 import ActivityDataProxy from "../data_proxy/activityDataProxy";
 import HistoryService from "../business_logic/service/historyService";
 import HistoryDataProxy from "../data_proxy/historyDataProxy";
+import MediaGalleryComponent from "./components/media-gallery";
 
 class HomeView {
   constructor() {
     this.activityService = new ActivityService(new ActivityDataProxy());
     this.historyService = new HistoryService(new HistoryDataProxy());
+    this.tempData = [];
+    this.is_hide = true;
   }
 
   async fetchActivities() {
@@ -23,7 +26,8 @@ class HomeView {
     if (command.success) {
       const activitiesData = command.value;
       if (activitiesData.success) {
-        this.showActivitiesData(activitiesData.response.data);
+        this.tempData = activitiesData.response.data;
+        this.showActivitiesData(this.tempData.filter(v => !v.is_hide));
         loadingHelper.toggleLoading(false);
       }
     }
@@ -35,6 +39,9 @@ class HomeView {
     // prepare template
     let rowActivityFloatTpl = $(
       'script[data-template="row-activity-float"]'
+    ).text();
+    let rowActivitySpeedrunTpl = $(
+      'script[data-template="row-activity-speedrun"]'
     ).text();
     let rowActivityTextfieldTpl = $(
       'script[data-template="row-activity-textfield"]'
@@ -73,12 +80,17 @@ class HomeView {
 
     dataSource.forEach((activityData) => {
       // process if activity is use textfield
-      if (activityData.use_textfield) {
+      if (['count'].indexOf(activityData.type) >= 0) {
         //prepare content activity row for textfield value
         let contentActivityRowTextfield = {
           title: activityData.title,
           activity_id: activityData.id,
+          placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field'
         };
+
+        if(activityData.type == 'badhabit' && activityData.is_red) {
+          contentActivityRowTextfield.style = "color:red";
+        }
 
         // modify template change color of button
         rowActivityTextfieldTpl = $(rowActivityTextfieldTpl);
@@ -99,42 +111,70 @@ class HomeView {
       }
 
       // process if activity not using textfield
-      const templateValueActivity = activityData.can_change
-        ? editableValueActivityTpl
-        : disabledValueActivityTpl;
+      if(activityData.type == 'value' || activityData.type == 'badhabit') {
+        let templateValueActivity = activityData.can_change
+          ? editableValueActivityTpl
+          : disabledValueActivityTpl;
+  
+        const contentActivityValue = {
+          activity_id: activityData.id,
+          value: activityData.value,
+          increase_value: activityData.increase_value,
+        };
 
-      const contentActivityValue = {
-        activity_id: activityData.id,
-        value: activityData.default_value,
-      };
-
-      const valueActivityHtml = templateHelper.render(
-        templateValueActivity,
-        contentActivityValue
-      );
-
-      //prepare content activity row for float value
-      let contentActivityRowFloat = {
-        title: activityData.title,
-        activity_id: activityData.id,
-        value_activity_html: valueActivityHtml,
-      };
-
-      // modify template change color of button
-      rowActivityFloatTpl = $(rowActivityFloatTpl);
-      rowActivityFloatTpl
-        .find(".changepos-btn-wrapper")
-        .attr("data-activityId", activityData["id"]);
-      changeColorBtnActivity(activityData["color"], rowActivityFloatTpl);
-
-      // get html script from modified template
-      rowActivityFloatTpl = rowActivityFloatTpl[0].outerHTML;
-
-      // render template and save to temp variable
-      tempActivityRowFloatHtml += templateHelper.render(
-        rowActivityFloatTpl,
-        contentActivityRowFloat
-      );
+        if(activityData.type == 'badhabit' && activityData.is_red) {
+          contentActivityValue.style = "color:red";
+        }
+  
+        const valueActivityHtml = templateHelper.render(
+          templateValueActivity,
+          contentActivityValue
+        );
+  
+        //prepare content activity row for float value
+        let contentActivityRowFloat = {
+          title: activityData.title,
+          activity_id: activityData.id,
+          value_activity_html: valueActivityHtml,
+        };
+  
+        // modify template change color of button
+        rowActivityFloatTpl = $(rowActivityFloatTpl);
+        rowActivityFloatTpl
+          .find(".changepos-btn-wrapper")
+          .attr("data-activityId", activityData["id"]);
+        changeColorBtnActivity(activityData["color"], rowActivityFloatTpl);
+  
+        // get html script from modified template
+        rowActivityFloatTpl = rowActivityFloatTpl[0].outerHTML;
+  
+        // render template and save to temp variable
+        tempActivityRowFloatHtml += templateHelper.render(
+          rowActivityFloatTpl,
+          contentActivityRowFloat
+        );
+      } else if(activityData.type == 'speedrun') {
+        let contentActivityRowSpeedrun = {
+          title: activityData.title,
+          activity_id: activityData.id,
+        };
+  
+        // modify template change color of button
+        rowActivitySpeedrunTpl = $(rowActivitySpeedrunTpl);
+        rowActivitySpeedrunTpl
+          .find(".changepos-btn-wrapper")
+          .attr("data-activityId", activityData["id"]);
+        changeColorBtnActivity(activityData["color"], rowActivitySpeedrunTpl);
+  
+        // get html script from modified template
+        rowActivitySpeedrunTpl = rowActivitySpeedrunTpl[0].outerHTML;
+  
+        // render template and save to temp variable
+        tempActivityRowTextfieldHtml += templateHelper.render(
+          rowActivitySpeedrunTpl,
+          contentActivityRowSpeedrun
+        );
+      }
     });
 
     // render list activity
@@ -181,22 +221,50 @@ class HomeView {
     this.changePosition(direction, currentEl, parentEl);
   }
 
-  async handleClickButtonAddValue(evt) {
-    console.log("🚀 ~ file: index.js ~ line 185 ~ HomeView ~ handleClickButtonAddValue ~ evt", evt)
+  async handleClickButtonAddValue(evt, inputElement) {
     //get activity id and input value
-    const elInput = $(evt)
-      .parents(".input-activity-group")
-      .find(".input-activity-value");
-    const activityId = elInput.attr("activityId");
+    var elInput = null;
+    if(inputElement) {
+      elInput = inputElement;
+    } else {
+      elInput = $(evt)
+        .parents(".input-activity-group")
+        .find(".input-activity-value");
+    }
+    let activityId = elInput.attr("activityId");
     const useTextfield = elInput.is("[type=text]");
     const useNumberField = elInput.is("[type=number]");
+    const isSpeedrun = elInput.closest('.speedrun-container').length;
+    
     let inputValue = null;
 
-    if (useNumberField || useTextfield) {
-      inputValue = elInput.val();
+    if(isSpeedrun) {
+      const container = elInput.closest('.speedrun-container');
+      const hour = container.find('input[name=hour]').val() || 0;
+      const minute = container.find('input[name=minute]').val() || 0;
+      const second = container.find('input[name=second]').val() || 0;
+      const millisecond = container.find('input[name=millisecond]').val() || 0;
+      inputValue = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
+      activityId = container.attr("activityId");
+
+      if(hour == 0 && minute == 0 && second == 0 && millisecond == 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return;
+      }
+      
+      if(hour < 0 || minute < 0 || second < 0 || millisecond < 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return;
+      }
+      
     } else {
-      inputValue = elInput.attr("value");
+      if (useNumberField || useTextfield) {
+        inputValue = elInput.val();
+      } else {
+        inputValue = elInput.attr("value");
+      }
     }
+    
 
     const attributes = {
       activity_id: activityId,
@@ -221,19 +289,70 @@ class HomeView {
     }
   }
 
+  changeNumber(input, direction = 'up') {
+    let value = Number($(input).val());
+    let increaseValue = $(input).data('increasevalue') || 1;
+
+    // convert number
+    increaseValue = Number(increaseValue)
+
+    if(direction == 'up') {
+      value += increaseValue;
+    } else {
+      if(value < 1) {
+        return ;
+      }
+
+      value -= increaseValue;
+    }
+    
+    $(input).val(value);
+  }
+
+  handleClickSeeAllButton(evt) {
+    var data = [];
+    if(this.is_hide) {
+      this.is_hide = false;
+      data = this.tempData;
+    } else {
+      this.is_hide = true;
+      data = this.tempData.filter(v => !v.is_hide);
+    }
+
+    this.showActivitiesData(data)
+  }
+
   initialize() {
-    this.fetchActivities();
+    var thisObject = this;
+    thisObject.fetchActivities();
 
     $("body").on("click", ".btn-down", (evt) =>
-      this.handleClickButtonChangePosition("down", evt.target)
+      thisObject.handleClickButtonChangePosition("down", evt.target)
     );
     $("body").on("click", ".btn-up", (evt) =>
-      this.handleClickButtonChangePosition("up", evt.target)
+      thisObject.handleClickButtonChangePosition("up", evt.target)
     );
 
     $("body").on("click", ".btn-add-value", (evt) =>
-      this.handleClickButtonAddValue(evt.target)
+      thisObject.handleClickButtonAddValue(evt.target)
     );
+
+    $("body").on('keyup', ".input-activity-value", function (evt) {
+      evt.key === 'Enter' ? thisObject.handleClickButtonAddValue(null, $(this)) : null
+    });
+
+    const media = new MediaGalleryComponent();
+    media.initiate();
+
+    $('body').on('click', '.btn-step', function(){
+      var direction = $(this).hasClass('step-up') ? 'up' : 'down';
+      var input = $(this).closest('.activity-input-float').find('input');
+      thisObject.changeNumber(input, direction)
+    })
+
+    $('body').on('click', '#seeAllActivity', function(evt){
+      thisObject.handleClickSeeAllButton(evt)
+    });
   }
 }
 

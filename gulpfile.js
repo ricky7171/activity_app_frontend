@@ -53,7 +53,7 @@ function browserSync(done) {
     server: {
       baseDir: config.DESTINATION_PATH
     },
-    port: process.env.PORT || 8080
+    port: process.env.PORT || 333
   });
   done();
 }
@@ -75,7 +75,7 @@ function clean() {
 }
 
 // Bring third party dependencies from node_modules into vendor directory
-function modules() {
+function modules(cb) {
   var list_modules = {
     bootstrapJS: {
       source: './node_modules/bootstrap/dist/js/*',
@@ -131,7 +131,10 @@ function modules() {
     return gulp.src(moduleOpt.source)
     .pipe(newer(moduleOpt.dest))
       .pipe(gulp.dest(moduleOpt.dest))
-  }))
+  })).on('end', () => {
+    console.log("TASK COMPLETE modules")
+    cb();
+  })
 }
 
 // CSS task
@@ -139,7 +142,10 @@ function css(args) {
   const fileName = typeof args == 'string' ? args : '';
 
   if(fileName) {
+    console.log("checkpoint-1");
     log.info(`[BUILD] ${fileName}`)
+  } else {
+    console.log("checkpoint-2");
   }
   const sourceFile = fileName || ["./scss/**/*.scss", "./css/**/*.css"];
   return gulp
@@ -163,7 +169,13 @@ function css(args) {
     }))
     .pipe(cleanCSS())
     .pipe(gulp.dest(config.DESTINATION_PATH+"/css"))
-    .pipe(browsersync.stream());
+    .pipe(browsersync.stream())
+    .on('end', () => {
+      if(typeof args == 'function') {
+        console.log('TASK COMPLETE css')
+        args();
+      }
+    });
 }
 
 // JS task
@@ -184,7 +196,9 @@ function js(args) {
     ]
   });
   return merge(files.map(function(file) {
-    var b = watchify(browserify(file)
+    // var b = watchify(browserify(file)
+    //   .transform("babelify", { presets: ['@babel/preset-env'] }));
+    var b = (browserify(file)
       .transform("babelify", { presets: ['@babel/preset-env'] }));
     return b.bundle()
       .pipe(source(file))
@@ -192,7 +206,12 @@ function js(args) {
       .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest(config.DESTINATION_PATH));
-  }));
+  })).on('end', () => {
+    if(typeof args == 'function') {
+      console.log('TASK COMPLATE JS')
+      args();
+    }
+  });
 
   
   
@@ -223,7 +242,7 @@ function serve() {
   console.log(process.env.PORT);
   return connect.server({
     root: "./dist",
-    port: process.env.PORT || 8000, // localhost:8000
+    port: process.env.PORT || 333, // localhost:8000
     livereload: false
   });
 }
@@ -234,7 +253,7 @@ function watchFiles() {
     debounceTimeout: 1000,
     awaitWriteFinish: true
   }
-  watch("./scss/**/*", options).on('change', css);
+  watch("./css/**/*", options).on('change', css);
   watch(["./js/**/*.js", "!./js/**/*.min.js"], options).on('change', js)
   // gulp.watch("./**/*.html", browserSyncReload);
   gulp.watch(config.VIEW_PATH+"**/*",options).on('change', compileNunjucks)
@@ -267,21 +286,33 @@ function compileNunjucks(args) {
       path.dirname = '.';
     }
   }))
-  .pipe(gulp.dest(config.DESTINATION_PATH));
+  .pipe(gulp.dest(config.DESTINATION_PATH))
+  .on('end', () => {
+    if(typeof args == 'function') {
+      console.log("TASK COMPLETE compile nunjuk")
+      args();
+    }
+  });
 }
 
 // copy assets
-function copyAssets() {
+function copyAssets(cb) {
+  console.log("🚀 ~ file: gulpfile.js ~ line 289 ~ copyAssets ~ cb", cb)
   return gulp.src('./assets/**/*')
     .pipe(newer(config.DESTINATION_PATH+'/assets'))
-    .pipe(gulp.dest(config.DESTINATION_PATH+'/assets'));
+    .pipe(gulp.dest(config.DESTINATION_PATH+'/assets'))
+    .on('end', () => {
+      console.log('TASK COMPLETE COPY ASSET')
+      cb();
+    });
 }
 
 // Define complex tasks
 const build = gulp.series(modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
 // const watchCmd = gulp.series(build, gulp.parallel(watchFiles, browserSync));
 const watchCmd = gulp.series(watchFiles);
-const dev = gulp.series(build, gulp.parallel(watchFiles, serve));
+const dev = gulp.parallel(watchFiles, serve);
+// const dev = gulp.series(build, gulp.parallel(watchFiles, serve));
 // const watch = gulp.series(watchFiles)
 
 // Export tasks

@@ -27,3 +27,15 @@ export function showWarning(text) {
         icon: 'warning'
     })
 }
+
+export async function showConfirmation(text) {
+    return Swal.fire({
+        title: 'Are you sure?',
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    });
+}

@@ -5,12 +5,14 @@ import * as colorHelper from "./../core/color_helper";
 import ActivityService from "./../business_logic/service/activityService";
 import ActivityDataProxy from "./../data_proxy/activityDataProxy";
 
-class FormView {
+export default class FormView {
   constructor() {
     this.defaultValue = {
+      type: 'value',
       title: "",
       value: "",
       target: "",
+      description: "",
       color: "#4e73df",
     };
 
@@ -33,7 +35,7 @@ class FormView {
         this.showActivitiesData(activitiesData.response.data);
         loadingHelper.toggleLoading(false);
         this.tableElement.show();
-        $('div.form-wrapper').show();
+        $("div.form-wrapper").show();
       }
     }
   }
@@ -62,9 +64,11 @@ class FormView {
     $(".list-activity").append(
       activities.map(function (activityData, i) {
         var html = templateHelper.render(rowActivitiesTpl, {
+          type: activityData["type"],
           title: activityData["title"],
-          value: activityData["default_value"],
+          value: activityData["value"],
           target: activityData["target"],
+          description: activityData["description"],
           color: activityData["color"],
           id: activityData["id"],
           textColor: colorHelper.isDark(activityData["color"])
@@ -80,39 +84,58 @@ class FormView {
     );
   }
 
-  async handleClickSubmitButton() {
-    const attributes = {
-      title: $("#title").val(),
-      default_value: $("#value").val(),
-      target: $("#target").val(),
-      color: $("#color").val(),
-      can_change: $("#is_editable").prop("checked") ? 1 : 0,
-      use_textfield: $("#is_use_textfield").prop("checked") ? 1 : 0,
-    };
+  async handleClickSubmitButton(formContainer, options = {}) {
+    // - get data
+    const attributes = this.getValueFromForm(formContainer);
 
+    if(attributes === false) {
+      return ;
+    }
+
+    if(!options.disableLoading) {
+      loadingHelper.toggleLoading(true);
+    }
+    // - show loading
+
+    // - insert activity
     const command = await this.activityService
       .insertCommand(attributes)
       .execute();
+
+    // - show error if there is error
     if (command.success == false) {
+      console.log("check command errors");
+      console.log(command.errors);
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
+      loadingHelper.toggleLoading(false);
       return;
     }
 
+    // - show popup when success
     const result = command.value;
     if (result.success) {
       alertHelper.showSnackBar("Successfully added !", 1);
 
-      // set form to default value
-      $("#title").val(this.defaultValue.title);
-      $("#value").val(this.defaultValue.value);
-      $("#target").val(this.defaultValue.target);
-      $("#is_editable").prop("checked", false);
-      $("#is_use_textfield").prop("checked", false);
+      // - set form to default value
+      $(formContainer).find("select[name=type]").val(this.defaultValue.type).trigger('change');
+      $(formContainer).find("input[name=title]").val(this.defaultValue.title);
+      $(formContainer).find("input[name=value]").val(this.defaultValue.value);
+      $(formContainer).find("input[name=target]").val(this.defaultValue.target);
+      $(formContainer).find("input[name=description]").val(this.defaultValue.description);
+      $(formContainer).find("input[name=is_editable]").prop("checked", false);
+      // $(formContainer).find("input[name=is_use_textfield]").prop("checked", false);
       colorHelper.updateColorOfInput("#color", this.defaultValue.color);
 
-      // refresh activities data
-      this.fetchActivities();
+      if(typeof options.callbackSuccess == 'function') {
+        options.callbackSuccess()
+      } else {
+        // - refresh activities data
+        this.fetchActivities();
+      }
+      loadingHelper.toggleLoading(false);
+    } else {
+      loadingHelper.toggleLoading(false);
     }
   }
 
@@ -136,11 +159,39 @@ class FormView {
     }
   }
 
+  handleChangeTimeSpeedTarget(evt, isFormEdit = false) {
+    const useTextfieldEl = $("#is_use_textfield");
+    const editableEl = isFormEdit ? $("#is_editable2") : $("#is_editable");
+    this.handleChangeUseTextfield(true);
+    useTextfieldEl.prop('checked', true);
+    $('#target').prop('type', 'text');
+  }
+
   async handleClickDeleteButton(evt) {
+    // - show confirmation popup
+    var result = await alertHelper.showConfirmation(
+      "Your activity will be delete and cannot be restore"
+    );
+
+    // - if user cancel delete
+    if (!result.isConfirmed) return;
+
+    // - delete activity
+    // o show loading
+    loadingHelper.toggleLoading(true);
+
+    // o get activity id
     const activityId = $(evt).attr("activityId");
+
+    // o run command
     const command = await this.activityService
       .destroyCommand(activityId)
       .execute();
+
+    // o hide loading
+    loadingHelper.toggleLoading(false);
+
+    // o show success message if success delete
     if (command.success) {
       const result = command.value;
       if (result.success) {
@@ -154,44 +205,54 @@ class FormView {
     const btn = $(evt);
     const tr = btn.closest("tr");
     const activityData = tr.data("activity");
+    console.log("🚀 ~ file: form.js ~ line 204 ~ FormView ~ handleClickEditButton ~ activityData", activityData)
     const modalEdit = $("#modalEdit");
 
+    if(activityData.type == 'speedrun') {
+      modalEdit.find("input[name=hour]").val(activityData.speedrun_parsed.h);
+      modalEdit.find("input[name=minute]").val(activityData.speedrun_parsed.m);
+      modalEdit.find("input[name=second]").val(activityData.speedrun_parsed.s);
+      modalEdit.find("input[name=millisecond]").val(activityData.speedrun_parsed.ms);
+    } else {
+      modalEdit.find("input[name=value]").val(activityData.value);
+    }
     // set form
-    modalEdit.find("#title2").val(activityData.title);
-    modalEdit.find("#value2").val(activityData.default_value);
-    modalEdit.find("#target2").val(activityData.target);
+    modalEdit.find("select[name=type]").val(activityData.type).trigger('change');
+    modalEdit.find("input[name=title]").val(activityData.title);
+    modalEdit.find("input[name=target]").val(activityData.target);
+    modalEdit.find("input[name=description]").val(activityData.description);
+    modalEdit.find("input[name=increase_value]").val(activityData.increase_value);
+    modalEdit.find("select[name=is_hide]").val(activityData.is_hide).trigger("change");
     colorHelper.updateColorOfInput(
-      modalEdit.find("#color2"),
+      modalEdit.find("input[name=color]"),
       activityData.color
     );
     modalEdit
-      .find("#is_editable2")
+      .find("input[name=is_editable]")
       .prop("checked", activityData.can_change == 1);
-    modalEdit
-      .find("#is_use_textfield2")
-      .prop("checked", activityData.use_textfield == 1);
+    // modalEdit
+    //   .find("#is_use_textfield2")
+    //   .prop("checked", activityData.use_textfield == 1);
     modalEdit.find("input[name=activity_id]").val(activityData.id);
     modalEdit.modal("show");
   }
 
   async handleClickUpdateButton() {
+    const allValue = this.getValueFromForm('#modalEdit');
+
+    if(allValue === false) {
+      return ;
+    }
+    
     const attributes = {
       id: $("#modalEdit").find("input[name=activity_id]").val(),
-      title: $("#title2").val(),
-      default_value: $("#value2").val(),
-      target: $("#target2").val(),
-      color: $("#color2").val(),
-      can_change: $("#is_editable2").prop("checked") ? 1 : 0,
-      use_textfield: $("#is_use_textfield2").prop("checked") ? 1 : 0,
+      ...allValue
     };
 
     const command = await this.activityService
       .updateCommand(attributes)
       .execute();
-    console.log(
-      "🚀 ~ file: form.js ~ line 187 ~ FormView ~ handleClickUpdateButton ~ command",
-      command
-    );
+
     if (command.success == false) {
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
@@ -208,8 +269,129 @@ class FormView {
     }
   }
 
+  getValueFromForm(formContainer) {
+    const type = $(formContainer).find('select[name=type]').val();
+    // - get data
+    const attributes = {
+      type,
+      title: $(formContainer).find("input[name=title]").val(),
+      value: $(formContainer).find("input[name=value]").val(),
+      target: $(formContainer).find("input[name=target]").val(),
+      description: $(formContainer).find("input[name=description]").val(),
+      color: $(formContainer).find("input[name=color]").val(),
+      is_hide: $(formContainer).find("select[name=is_hide]").val(),
+    };
+
+    if(type == 'value' || type == 'badhabit') {
+      attributes.can_change = $(formContainer).find('input[name=is_editable]').prop("checked") ? 1 : 0;
+    }
+
+    if(type == 'speedrun') {
+      const hour = $(formContainer).find('input[name=hour]').val() || 0;
+      const minute = $(formContainer).find('input[name=minute]').val() || 0;
+      const second = $(formContainer).find('input[name=second]').val() || 0;
+      const millisecond = $(formContainer).find('input[name=millisecond]').val() || 0;
+
+      if(hour == 0 && minute == 0 && second == 0 && millisecond == 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return false;
+      }
+      
+      if(hour < 0 || minute < 0 || second < 0 || millisecond < 0) {
+        alertHelper.showError('Invalid speedrun value');
+        return false;
+      }
+
+      attributes.value = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
+    }
+
+    if(type == 'alarm') {
+      delete attributes.target;
+      delete attributes.value;
+    }
+
+    if(type != 'speedrun' && type != 'count') {
+      attributes.increase_value = $(formContainer).find('input[name=increase_value]').val()
+    }
+
+    return attributes;
+  }
+  
+  changeTypeListener(formContainer) {
+    $('body').on('change', `${formContainer} select[name=type]`, function (evt) {
+      const typeValue = $(this).val();
+      const targetEl = $(formContainer).find('input[name=target]');
+      const valueEl = $(formContainer).find('input[name=value]');
+      const valueContainerEl = $(formContainer).find('.value-container');
+      const targetContainerEl = $(formContainer).find('.target-container');
+      const speedrunContainerEl = $(formContainer).find('.value-speedrun-container');
+      const canChangeChekbox = $(formContainer).find(".form-can-change");
+      const increaseValueContainerEl = $(formContainer).find('.increase-value-container');
+      switch (typeValue) {
+        case 'value':
+          valueContainerEl.attr('style', '');
+          speedrunContainerEl.attr('style', 'display:none !important');
+          canChangeChekbox.attr('style', '');
+          valueEl.prop('type', 'number');
+          valueEl.prop('placeholder', 'Activity Default Value');
+          targetContainerEl.attr('style', '');
+          increaseValueContainerEl.attr('style', '');
+          
+          targetEl.prop('placeholder', 'Count Target');
+          break;
+
+        case 'count':
+          speedrunContainerEl.attr('style', 'display:none !important');
+          valueContainerEl.attr('style', 'display: none !important');
+          canChangeChekbox.attr('style', 'display: none !important');
+          targetContainerEl.attr('style', '');
+          targetEl.prop('placeholder', 'Count Target');
+          increaseValueContainerEl.attr('style', 'display:none !important');
+          break;
+
+        case 'badhabit':
+          valueContainerEl.attr('style', '');
+          speedrunContainerEl.attr('style', 'display:none !important');
+          canChangeChekbox.attr('style', '');
+          valueEl.prop('type', 'number');
+          valueEl.prop('placeholder', 'Activity Default Value');
+          targetContainerEl.attr('style', '');
+          increaseValueContainerEl.attr('style', '');
+          
+          targetEl.prop('placeholder', 'Count Target');
+          break;
+      
+        case 'speedrun':
+          speedrunContainerEl.attr('style', '');
+          valueContainerEl.attr('style', 'display:none !important');
+          canChangeChekbox.attr('style', 'display: none !important');
+          targetContainerEl.attr('style', '');
+          valueEl.prop('type', 'text');
+          valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 00ms')
+          increaseValueContainerEl.attr('style', 'display:none !important');
+          break;
+
+        case 'alarm':
+          speedrunContainerEl.attr('style', 'display:none !important');
+          valueContainerEl.attr('style', 'display:none !important');
+          canChangeChekbox.attr('style', 'display: none !important');
+          targetContainerEl.attr('style', 'display: none !important');
+          increaseValueContainerEl.attr('style', '');
+          break;
+
+        default:
+          break;
+      }
+      
+    })
+  }
+  
   initialize() {
+    console.log('==== initializeFORM =====')
     this.fetchActivities();
+
+    this.changeTypeListener('.form-add-activity');
+    this.changeTypeListener('#edit_form');
 
     $("input[type=color]").spectrum({
       showInput: true,
@@ -222,10 +404,7 @@ class FormView {
     });
 
     // event handler
-    $("#submit-btn").on("click", () => this.handleClickSubmitButton());
-    $("body").on("change", "#is_use_textfield", (evt) =>
-      this.handleChangeUseTextfield(evt.target.checked)
-    );
+    $("#submit-btn").on("click", () => this.handleClickSubmitButton('.form-add-activity'));
     $("body").on("click", ".btn-delete-activity", (evt) =>
       this.handleClickDeleteButton(evt.target)
     );
@@ -235,12 +414,17 @@ class FormView {
     $("body").on("click", "#btn-update-activity", (evt) =>
       this.handleClickUpdateButton(evt.target)
     );
-    $("body").on("change", "#is_use_textfield2", (evt) =>
-      this.handleChangeUseTextfield(evt.target.checked, true)
-    );
+
+    // $('#addActivityBtnTop').prop('disabled', true)
   }
 }
 
+// window.isActivityInitialized = typeof window.isActivityInitialized == 'undefined' ? null : window.isActivityInitialized;
+
 jQuery(async function () {
-  new FormView().initialize();
+  if(!window.isActivityInitialized && $('#activity_table').length) {
+    new FormView().initialize();
+
+    window.isActivityInitialized = true;
+  }
 });

@@ -1,0 +1,56 @@
+<div class="form-group d-flex flex-nowrap align-items-center">
+    <label for="title">Title</label>
+    <input type="text" name="title" class="form-control" placeholder="Activity Title">
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center">
+    <label for="description">Description</label>
+    <input type="text" name="description" class="form-control" placeholder="Activity Description">
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center">
+    <label for="color">Color</label>
+    <input type="color" name="color" class="form-control" placeholder="Color" value="#4e73df">
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center">
+    <label for="title">Type</label>
+    <div>
+        <select class="form-control" name="type" style="width:auto;">
+            <option value="value">Value</option>
+            <option value="count">Count (Textfield)</option>
+            <option value="speedrun">Speedrun</option>
+            {# <option value="alarm">Alarm</option> #}
+            <option value="badhabit">Bad Habit</option>
+        </select>
+    </div>
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center value-container">
+    <label for="value">Value</label>
+    <input type="number" name="value" class="form-control" placeholder="Activity Default Value">
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center value-speedrun-container" style="display: none !important;">
+    <label for="value">Value</label>
+    <div class="d-flex">
+        <input type="number" placeholder="h" name="hour" class="form-control" style="width: 70px">
+        <input type="number" placeholder="m" name="minute" class="form-control" style="width: 70px">
+        <input type="number" placeholder="s" name="second" class="form-control" style="width: 70px">
+        <input type="number" placeholder="ms" name="millisecond" class="form-control" style="width: 70px">
+    </div>
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center target-container">
+    <label for="target">Target</label>
+    <input type="number" name="target" class="form-control" min="50" placeholder="Count Target">
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center increase-value-container">
+    <label for="value">Increase Value</label>
+    <input type="number" name="increase_value" class="form-control" placeholder="Increase Value" value="1">
+</div>
+<div class="form-group d-flex flex-nowrap align-items-center">
+    <label for="value">Hide</label>
+    <select name="is_hide" class="form-control">
+        <option value="1">Yes</option>
+        <option value="0" selected>No</option>
+    </select>
+</div>
+<div class="form-group form-check form-can-change form-check-inline checkbox-lg">
+    <input type="checkbox" name="is_editable" class="form-check-input">
+    <label class="form-check-label" for="is_editable">Can change value</label>
+</div>

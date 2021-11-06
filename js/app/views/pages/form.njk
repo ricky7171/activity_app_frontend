@@ -6,34 +6,8 @@
 <!-- Form -->
 <div class="form-wrapper" style="display:none">
     <h3 class="mb-2">Add Activity</h3>
-    <div id="demo_form" class="form">
-        <div class="form-group d-flex flex-nowrap align-items-center">
-            <label for="title">Title</label>
-            <input type="text" name="title" id="title" class="form-control" placeholder="Activity Title">
-        </div>
-        <div class="form-group d-flex flex-nowrap align-items-center">
-            <label for="value">Value</label>
-            <input type="text" name="value" id="value" class="form-control" placeholder="Activity Default Value">
-        </div>
-        <div class="form-group d-flex flex-nowrap align-items-center">
-            <label for="target">Target</label>
-            <input type="number" name="target" id="target" class="form-control" min="50" placeholder="Activity Target">
-        </div>
-        <div class="form-group d-flex flex-nowrap align-items-center">
-            <label for="target">Color</label>
-            <input type="color" name="color" id="color" class="form-control" placeholder="Color" value="#4e73df">
-        </div>
-        <div class="form-group form-check form-check-inline checkbox-lg">
-            <input type="checkbox" name="is_editable" id="is_editable" class="form-check-input">
-            <label class="form-check-label" for="is_editable">Can change value</label>
-        </div>
-        <div class="form-group form-check form-check-inline checkbox-lg">
-            <input type="checkbox" name="is_use_textfield" id="is_use_textfield" class="form-check-input">
-            <label class="form-check-label" for="is_use_textfield">Use textfield</label>
-        </div>
-        <div class="form-group d-flex flex-nowrap align-items-center">
-            <label>If you check "Use textfield", then the target will be count of your histories</label>
-        </div>
+    <div id="demo_form" class="form form-add-activity">
+        {% include "templates/components/activity-form.njk" %}
         <div class="form-group text-right">
             <button id="submit-btn" class="btn btn-primary ml-auto">Create Activity</button>
         </div>
@@ -45,10 +19,12 @@
     <table class="table data-table table-bordered" id="activity_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
         <thead>
             <tr>
+                <th>Type</th>
                 <th>Title</th>
-                <th class="action">Value</th>
-                <th class="action">Target</th>
-                <th class="action">Color</th>
+                <th>Value</th>
+                <th>Target</th>
+                <th>Color</th>
+                <th class='description-column'>Description</th>
                 <th class="action" style="width: 150px">Action</th>
             </tr>
         </thead>
@@ -69,34 +45,8 @@
             </div>
             <div class="modal-body">
                 <div id="edit_form" class="form">
-                    <div class="form-group d-flex flex-nowrap align-items-center">
-                        <label for="title2">Title</label>
-                        <input type="text" name="title2" id="title2" class="form-control" placeholder="Activity Title">
-                    </div>
-                    <div class="form-group d-flex flex-nowrap align-items-center">
-                        <label for="value2">Value</label>
-                        <input type="text" name="value2" id="value2" class="form-control" placeholder="Activity Default Value">
-                    </div>
-                    <div class="form-group d-flex flex-nowrap align-items-center">
-                        <label for="target2">Target</label>
-                        <input type="number" name="target2" id="target2" class="form-control" min="50" placeholder="Activity Target">
-                    </div>
-                    <div class="form-group d-flex flex-nowrap align-items-center">
-                        <label for="color2">Color</label>
-                        <input type="color" name="color2" id="color2" class="form-control " placeholder="Color" value="#4e73df">
-                    </div>
-                    <div class="form-group form-check form-check-inline checkbox-lg" style="display:none">
-                        <input type="checkbox" name="is_editable2" id="is_editable2" class="form-check-input">
-                        <label class="form-check-label" for="is_editable2">Can change value</label>
-                    </div>
-                    <div class="form-group form-check form-check-inline checkbox-lg" style="display:none">
-                        <input type="checkbox" name="is_use_textfield2" id="is_use_textfield2" class="form-check-input">
-                        <label class="form-check-label" for="is_use_textfield2">Use textfield</label>
-                    </div>
+                    {% include "templates/components/activity-form.njk" %}
                     <input type="hidden" name="activity_id" value=""/>
-                    <div class="form-group d-flex flex-nowrap align-items-center" style="display:none">
-                        <label>If you check "Use textfield", then the target will be count of your histories</label>
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -109,17 +59,15 @@
 
 {% endblock content %}
 
-{% block header %}
-<link href="/vendor/spectrum-colorpicker/spectrum.css" rel="stylesheet" type="text/css">
-{% endblock header %}
-
 {% block footer %}
 <script type="text/template" data-template="row-activity">
     <tr>
+        <td>${type}</td>
         <td>${title}</td>
         <td>${value}</td>
         <td>${target}</td>
         <td><span style="background-color: ${color}; color: ${textColor}; padding: 4px 10px; border: 1px solid; min-width: 85px; display: inline-block; text-align: center">${color}</span></td>
+        <td>${description}</td>
         <td class="action">
             <button class="btn-edit-activity" activityId="${id}">Edit</button>
             <button class="btn-delete-activity" activityId="${id}">Delete</button>
@@ -133,6 +81,5 @@
         </td>
     </tr>
 </script>
-<script src="/vendor/spectrum-colorpicker/spectrum.js"></script>
 <script src="/js/app/pages/form.js"></script>
 {% endblock footer %}
