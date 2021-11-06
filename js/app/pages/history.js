@@ -90,7 +90,7 @@ class HistoryView {
     if (command.success) {
       const result = command.value;
       if (result.success) {
-        alertHelper.showSuccess("successfully deleted !");
+        alertHelper.showSnackBar("successfully deleted !");
 
         this.fetchHistoriesData();
       }
@@ -207,7 +207,7 @@ class HistoryView {
     if (command.success) {
       const result = command.value;
       if (result.success) {
-        alertHelper.showSuccess("successfully deleted !");
+        alertHelper.showSnackBar("successfully deleted !");
         this.handleClickButtonCancelBulkDelete();
         this.fetchHistoriesData();
         

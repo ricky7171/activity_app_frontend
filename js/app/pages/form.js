@@ -13,7 +13,7 @@ export default class FormView {
       value: "",
       target: "",
       description: "",
-      color: "#4e73df",
+      color: "#3987fd",
     };
 
     this.activityService = new ActivityService(new ActivityDataProxy());
@@ -324,6 +324,7 @@ export default class FormView {
       const valueEl = $(formContainer).find('input[name=value]');
       const valueContainerEl = $(formContainer).find('.value-container');
       const targetContainerEl = $(formContainer).find('.target-container');
+      const targetLabelEl = targetContainerEl.find('label')
       const speedrunContainerEl = $(formContainer).find('.value-speedrun-container');
       const canChangeChekbox = $(formContainer).find(".form-can-change");
       const increaseValueContainerEl = $(formContainer).find('.increase-value-container');
@@ -336,6 +337,7 @@ export default class FormView {
           valueEl.prop('placeholder', 'Activity Default Value');
           targetContainerEl.attr('style', '');
           increaseValueContainerEl.attr('style', '');
+          targetLabelEl.html('Target');
           
           targetEl.prop('placeholder', 'Count Target');
           break;
@@ -347,6 +349,7 @@ export default class FormView {
           targetContainerEl.attr('style', '');
           targetEl.prop('placeholder', 'Count Target');
           increaseValueContainerEl.attr('style', 'display:none !important');
+          targetLabelEl.html('Target');
           break;
 
         case 'badhabit':
@@ -359,6 +362,7 @@ export default class FormView {
           increaseValueContainerEl.attr('style', '');
           
           targetEl.prop('placeholder', 'Count Target');
+          targetLabelEl.html('Target');
           break;
       
         case 'speedrun':
@@ -369,6 +373,7 @@ export default class FormView {
           valueEl.prop('type', 'text');
           valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 00ms')
           increaseValueContainerEl.attr('style', 'display:none !important');
+          targetLabelEl.html('Target Count');
           break;
 
         case 'alarm':
@@ -377,6 +382,7 @@ export default class FormView {
           canChangeChekbox.attr('style', 'display: none !important');
           targetContainerEl.attr('style', 'display: none !important');
           increaseValueContainerEl.attr('style', '');
+          targetLabelEl.html('Target');
           break;
 
         default:
@@ -393,15 +399,8 @@ export default class FormView {
     this.changeTypeListener('.form-add-activity');
     this.changeTypeListener('#edit_form');
 
-    $("input[type=color]").spectrum({
-      showInput: true,
-      className: "full-spectrum",
-      showInitial: true,
-      showPalette: true,
-      showSelectionPalette: true,
-      maxSelectionSize: 10,
-      preferredFormat: "hex",
-    });
+    colorHelper.initColorInput('input[type=color]')
+    
 
     // event handler
     $("#submit-btn").on("click", () => this.handleClickSubmitButton('.form-add-activity'));

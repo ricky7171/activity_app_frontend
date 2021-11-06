@@ -40,7 +40,7 @@ class HistoryService extends BusinessService {
   bulkInsertCommand(attributes) {
     if (typeof attributes.history == "string") {
       const plainInput = attributes.history;
-      attributes.history = plainInput.split("\n").map((row) => {
+      attributes.history = plainInput.split("\n").filter(v => v).map((row) => {
         const result = this.parseImportFormat(row);
 
         if (attributes.use_textfield == "1") {

@@ -1,10 +1,12 @@
-import axios from "axios";
+import Axios from "axios";
 import * as alertHelper from "./../core/\alert_helper";
 
 const message =
 {
     "connection": "Check your internet connection !"
 };
+
+export const axios = Axios;
 
 axios.interceptors.response.use((response) => response, (error) => {
     // catch CORS error
@@ -15,7 +17,6 @@ axios.interceptors.response.use((response) => response, (error) => {
     }
     return Promise.reject(error)
   })
-
 const server = "http://backendrecord.gofitness.club";
 // export const server = "http://localhost:8000";
 
@@ -302,13 +303,17 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
     }
 
     try {
-        return await axios({
+        const response = await axios({
             method: method,
             url: url + additionalUrl,
             data: dataRequest,
         }).then((r) => r.data)
+
+        Promise.resolve(response);
+        return response;
     } catch (error) {
         console.log("🚀 ~ file: api.js ~ line 218 ~ requestApi ~ error", error)
+        Promise.reject(error.response.data);
         return error.response.data;
     }
 }

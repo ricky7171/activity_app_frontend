@@ -6,7 +6,7 @@ import MediaGalleryService from "../../business_logic/service/mediaGalleryServic
 import CategoryDataProxy from "../../data_proxy/categoryDataProxy";
 import CategoryService from "../../business_logic/service/categoryService";
 import { chunkArray } from "../../business_logic/shared/utils";
-
+import { axios } from "../../infra/api";
 export default class MediaGalleryComponent {
   constructor() {
     this.mediaService = new MediaGalleryService(new MediaGalleryDataProxy());
@@ -80,7 +80,6 @@ export default class MediaGalleryComponent {
   
   async fetchCategories() {
     const command = await this.categoryService.getByTypeCommand('media').execute();
-    console.log("🚀 ~ file: media-gallery.js ~ line 75 ~ MediaGalleryComponent ~ fetchCategories ~ command", command)
 
     if (command.success) {
       const data = command.value;
@@ -160,7 +159,7 @@ export default class MediaGalleryComponent {
     }
 
     if(attributes.type == 'video') {
-      const thumbnailSource = await getVideoCover(attributes.file);
+      const thumbnailSource = await getVideoCover(attributes.file, 1);
       attributes.thumbnail = thumbnailSource;
     }
 
@@ -204,16 +203,22 @@ export default class MediaGalleryComponent {
     const wrapper = $(el).closest('.form-media-wrapper');
     const attributes = await this.getValueForm(wrapper);
 
-    const loadingLabel = '<i class="fa fa-spin fa-spinner"></i> Save Changes';
+    let loadingLabel = '<i class="fa fa-spin fa-spinner"></i> Save Changes';
     let label = loadingLabel;
     $(el).html(label);
     $(el).prop('disabled', true);
 
+    axios.defaults.onUploadProgress = (progressEvent) => {
+      const progres = Math.round( (progressEvent.loaded * 100) / progressEvent.total )
+
+      $(el).html(`<i class="fa fa-spin fa-spinner"></i> Save Changes ${progres}%`);
+    }
+    
     const command = await this.mediaService.insertCommand(attributes).execute();
     if (command.success == false) {
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
-      label = 'Save Changess';
+      label = 'Save Changes';
       
       $(el).html(label);
       $(el).prop('disabled', false);
@@ -222,14 +227,17 @@ export default class MediaGalleryComponent {
     
     if(command.success) {
       const data = command.value;
+      label = 'Save Changes';
       if(data.success) {
-        label = 'Save Changess';
 
         if(typeof callback == 'function') {
           callback();
         }
 
         this.resetForm(wrapper);
+        alertHelper.showSnackBar('Successfully Uploaded');
+      } else {
+        alertHelper.showError('Upload failed');
       }
     }
 
@@ -258,7 +266,7 @@ export default class MediaGalleryComponent {
     if (command.success == false) {
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
-      label = 'Save Changess';
+      label = 'Save Changes';
       $(el).html(label);
       $(el).prop('disabled', false);
       return;
@@ -267,13 +275,14 @@ export default class MediaGalleryComponent {
     if(command.success) {
       const data = command.value;
       if(data.success) {
-        label = 'Save Changess';
+        label = 'Save Changes';
 
         if(typeof callback == 'function') {
           callback();
         }
 
         this.resetCategoryForm(wrapper);
+        alertHelper.showSnackBar('Successfully Saved');
       }
     }
 
@@ -379,6 +388,5 @@ export default class MediaGalleryComponent {
     // assign event to category actions
     $('body').on('click', '.btn-edit-category', (evt) => this.handleEditCategory(evt.target));
     $('body').on('click', '.btn-delete-category', (evt) => this.handleDeleteCategory(evt.target));
-
   }
 }

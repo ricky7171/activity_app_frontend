@@ -1,3 +1,16 @@
+
+<div class="form-group d-flex flex-nowrap align-items-center">
+    <label for="title">Type</label>
+    <div>
+        <select class="form-control" name="type" style="width:auto;">
+            <option value="value">Number Count</option>
+            <option value="count">Text Count</option>
+            <option value="speedrun">Speedrun</option>
+            {# <option value="alarm">Alarm</option> #}
+            <option value="badhabit">Bad Habit</option>
+        </select>
+    </div>
+</div>
 <div class="form-group d-flex flex-nowrap align-items-center">
     <label for="title">Title</label>
     <input type="text" name="title" class="form-control" placeholder="Activity Title">
@@ -8,26 +21,14 @@
 </div>
 <div class="form-group d-flex flex-nowrap align-items-center">
     <label for="color">Color</label>
-    <input type="color" name="color" class="form-control" placeholder="Color" value="#4e73df">
-</div>
-<div class="form-group d-flex flex-nowrap align-items-center">
-    <label for="title">Type</label>
-    <div>
-        <select class="form-control" name="type" style="width:auto;">
-            <option value="value">Value</option>
-            <option value="count">Count (Textfield)</option>
-            <option value="speedrun">Speedrun</option>
-            {# <option value="alarm">Alarm</option> #}
-            <option value="badhabit">Bad Habit</option>
-        </select>
-    </div>
+    <input type="color" name="color" class="form-control" placeholder="Color" value="#3987fd">
 </div>
 <div class="form-group d-flex flex-nowrap align-items-center value-container">
     <label for="value">Value</label>
     <input type="number" name="value" class="form-control" placeholder="Activity Default Value">
 </div>
 <div class="form-group d-flex flex-nowrap align-items-center value-speedrun-container" style="display: none !important;">
-    <label for="value">Value</label>
+    <label for="value">Target Duration</label>
     <div class="d-flex">
         <input type="number" placeholder="h" name="hour" class="form-control" style="width: 70px">
         <input type="number" placeholder="m" name="minute" class="form-control" style="width: 70px">

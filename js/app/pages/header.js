@@ -12,7 +12,7 @@ class HeaderView {
             value: "",
             target: "",
             description: "",
-            color: "#4e73df",
+            color: "#3987fd",
         };
 
         this.activityService = new ActivityService(new ActivityDataProxy());
@@ -91,17 +91,7 @@ class HeaderView {
     
 
     initialize() {
-
-        $("input[type=color]").spectrum({
-            showInput: true,
-            className: "full-spectrum",
-            showInitial: true,
-            showPalette: true,
-            showSelectionPalette: true,
-            maxSelectionSize: 10,
-            preferredFormat: "hex",
-        });
-
+        colorHelper.initColorInput('input[type=color]')
 
         $("body").on('click', '#addActivityBtnTop', (evt) =>
             this.handleClickAddActivityButtonTop()

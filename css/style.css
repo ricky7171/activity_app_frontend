@@ -287,7 +287,7 @@ input[type=checkbox], input[type=radio] {
 * Form page
 */
 .form-group label {
-    min-width: 90px;
+    min-width: 150px !important;
 }
 
 form.not-editable input:not([type="checkbox"]) {
