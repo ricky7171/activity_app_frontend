@@ -323,6 +323,7 @@ export default class FormView {
       const targetEl = $(formContainer).find('input[name=target]');
       const valueEl = $(formContainer).find('input[name=value]');
       const valueContainerEl = $(formContainer).find('.value-container');
+      const valueLabelEl = valueContainerEl.find('label')
       const targetContainerEl = $(formContainer).find('.target-container');
       const targetLabelEl = targetContainerEl.find('label')
       const speedrunContainerEl = $(formContainer).find('.value-speedrun-container');
@@ -334,7 +335,8 @@ export default class FormView {
           speedrunContainerEl.attr('style', 'display:none !important');
           canChangeChekbox.attr('style', '');
           valueEl.prop('type', 'number');
-          valueEl.prop('placeholder', 'Activity Default Value');
+          valueEl.prop('placeholder', 'Count Default Value');
+          valueLabelEl.html('Default Input')
           targetContainerEl.attr('style', '');
           increaseValueContainerEl.attr('style', '');
           targetLabelEl.html('Target');
@@ -356,6 +358,7 @@ export default class FormView {
           valueContainerEl.attr('style', '');
           speedrunContainerEl.attr('style', 'display:none !important');
           canChangeChekbox.attr('style', '');
+          valueLabelEl.html('Value')
           valueEl.prop('type', 'number');
           valueEl.prop('placeholder', 'Activity Default Value');
           targetContainerEl.attr('style', '');
@@ -414,7 +417,9 @@ export default class FormView {
       this.handleClickUpdateButton(evt.target)
     );
 
-    // $('#addActivityBtnTop').prop('disabled', true)
+    if($('#activity_table').length) {
+      $('#addActivityBtnTop').hide();
+    }
   }
 }
 

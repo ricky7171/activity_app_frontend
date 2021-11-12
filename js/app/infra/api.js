@@ -96,26 +96,6 @@ var listApi = {
         url: server + "/api/setting",
         withToken: false,
     },
-    "applicationlog.get": {
-        method: 'GET',
-        url: server + "/api/application_logs",
-        withToken: false,
-    },
-    "applicationlog.add" : {
-        method : "POST",
-        url: server + "/api/application_logs",
-        withToken: false,
-    },
-    "applicationlog.delete" : {
-        method : "DELETE",
-        url: server + "/api/application_logs",
-        withToken: false,
-    },
-    "applicationlog.update" : {
-        method : "PATCH",
-        url: server + "/api/application_logs",
-        withToken: false,
-    },
     "mediaGallery.get": {
         method: 'GET',
         url: server + "/api/media-galleries",
@@ -154,6 +134,26 @@ var listApi = {
     "category.update" : {
         method : "PATCH",
         url: server + "/api/categories",
+        withToken: false,
+    },
+    "applicationLog.get": {
+        method: 'GET',
+        url: server + "/api/application-logs",
+        withToken: false,
+    },
+    "applicationLog.add" : {
+        method : "POST",
+        url: server + "/api/application-logs",
+        withToken: false,
+    },
+    "applicationLog.delete" : {
+        method : "DELETE",
+        url: server + "/api/application-logs",
+        withToken: false,
+    },
+    "applicationLog.update" : {
+        method : "PATCH",
+        url: server + "/api/application-logs",
         withToken: false,
     },
 };

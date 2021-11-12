@@ -5,11 +5,12 @@
 {% block content %}
 <!-- Form -->
 <div class="form-wrapper" style="display:none">
-    <h3 class="mb-2">Add Activity</h3>
+    {# <h3 class="mb-2">Add Activity</h3> #}
     <div id="demo_form" class="form form-add-activity">
-        {% include "templates/components/activity-form.njk" %}
+        {# {% include "templates/components/activity-form.njk" %} #}
         <div class="form-group text-right">
-            <button id="submit-btn" class="btn btn-primary ml-auto">Create Activity</button>
+            {# <button type="button" id="submit-btn" class="btn btn-primary ml-auto">Create Activity</button> #}
+            <button type="button" class="btn btn-primary ml-auto" data-toggle="modal" data-target="#modalAddActivity">Create Activity</button>
         </div>
     </div>
     {# </form> #}

@@ -314,9 +314,11 @@ class HomeView {
     if(this.is_hide) {
       this.is_hide = false;
       data = this.tempData;
+      $('#seeAllActivity').html('Hide');
     } else {
       this.is_hide = true;
       data = this.tempData.filter(v => !v.is_hide);
+      $('#seeAllActivity').html('See All');
     }
 
     this.showActivitiesData(data)
