@@ -307,8 +307,22 @@ function copyAssets(cb) {
     });
 }
 
+// copy pwa
+function copyPwa(cb) {
+  const listSource = [
+    './manifest.json',
+    './serviceWorker.js'
+  ];
+  return gulp.src(listSource)
+    .pipe(gulp.dest(config.DESTINATION_PATH))
+    .on('end', () => {
+      console.log('TASK COMPLETE COPY PWA')
+      cb();
+    });
+}
+
 // Define complex tasks
-const build = gulp.series(modules, gulp.parallel(css, js, copyAssets, compileNunjucks));
+const build = gulp.series(modules, gulp.parallel(copyPwa, css, js, copyAssets, compileNunjucks));
 // const watchCmd = gulp.series(build, gulp.parallel(watchFiles, browserSync));
 const watchCmd = gulp.series(watchFiles);
 const dev = gulp.parallel(watchFiles, serve);
@@ -326,3 +340,5 @@ exports.default = build;
 exports.compile = compileNunjucks;
 exports.serve = serve;
 exports.dev = dev;
+exports.copyPwa = copyPwa;
+exports.copyAssets = copyAssets;

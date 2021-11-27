@@ -64,7 +64,7 @@ export default class FormView {
     $(".list-activity").append(
       activities.map(function (activityData, i) {
         var html = templateHelper.render(rowActivitiesTpl, {
-          type: activityData["type"],
+          type: activityData["type_text"],
           title: activityData["title"],
           value: activityData["value"],
           target: activityData["target"],
@@ -129,8 +129,9 @@ export default class FormView {
 
       if(typeof options.callbackSuccess == 'function') {
         options.callbackSuccess()
-      } else {
-        // - refresh activities data
+      }
+
+      if($("div.form-wrapper").length) {
         this.fetchActivities();
       }
       loadingHelper.toggleLoading(false);
@@ -318,81 +319,90 @@ export default class FormView {
   }
   
   changeTypeListener(formContainer) {
-    $('body').on('change', `${formContainer} select[name=type]`, function (evt) {
-      const typeValue = $(this).val();
-      const targetEl = $(formContainer).find('input[name=target]');
-      const valueEl = $(formContainer).find('input[name=value]');
-      const valueContainerEl = $(formContainer).find('.value-container');
-      const valueLabelEl = valueContainerEl.find('label')
-      const targetContainerEl = $(formContainer).find('.target-container');
-      const targetLabelEl = targetContainerEl.find('label')
-      const speedrunContainerEl = $(formContainer).find('.value-speedrun-container');
-      const canChangeChekbox = $(formContainer).find(".form-can-change");
-      const increaseValueContainerEl = $(formContainer).find('.increase-value-container');
-      switch (typeValue) {
-        case 'value':
-          valueContainerEl.attr('style', '');
-          speedrunContainerEl.attr('style', 'display:none !important');
-          canChangeChekbox.attr('style', '');
-          valueEl.prop('type', 'number');
-          valueEl.prop('placeholder', 'Count Default Value');
-          valueLabelEl.html('Default Input')
-          targetContainerEl.attr('style', '');
-          increaseValueContainerEl.attr('style', '');
-          targetLabelEl.html('Target');
-          
-          targetEl.prop('placeholder', 'Count Target');
-          break;
-
-        case 'count':
-          speedrunContainerEl.attr('style', 'display:none !important');
-          valueContainerEl.attr('style', 'display: none !important');
-          canChangeChekbox.attr('style', 'display: none !important');
-          targetContainerEl.attr('style', '');
-          targetEl.prop('placeholder', 'Count Target');
-          increaseValueContainerEl.attr('style', 'display:none !important');
-          targetLabelEl.html('Target');
-          break;
-
-        case 'badhabit':
-          valueContainerEl.attr('style', '');
-          speedrunContainerEl.attr('style', 'display:none !important');
-          canChangeChekbox.attr('style', '');
-          valueLabelEl.html('Value')
-          valueEl.prop('type', 'number');
-          valueEl.prop('placeholder', 'Activity Default Value');
-          targetContainerEl.attr('style', '');
-          increaseValueContainerEl.attr('style', '');
-          
-          targetEl.prop('placeholder', 'Count Target');
-          targetLabelEl.html('Target');
-          break;
-      
-        case 'speedrun':
-          speedrunContainerEl.attr('style', '');
-          valueContainerEl.attr('style', 'display:none !important');
-          canChangeChekbox.attr('style', 'display: none !important');
-          targetContainerEl.attr('style', '');
-          valueEl.prop('type', 'text');
-          valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 00ms')
-          increaseValueContainerEl.attr('style', 'display:none !important');
-          targetLabelEl.html('Target Count');
-          break;
-
-        case 'alarm':
-          speedrunContainerEl.attr('style', 'display:none !important');
-          valueContainerEl.attr('style', 'display:none !important');
-          canChangeChekbox.attr('style', 'display: none !important');
-          targetContainerEl.attr('style', 'display: none !important');
-          increaseValueContainerEl.attr('style', '');
-          targetLabelEl.html('Target');
-          break;
-
-        default:
-          break;
+      console.log('updated')
+      const handleChange = function (el) {
+        const typeValue = $(el).val();
+        const targetEl = $(formContainer).find('input[name=target]');
+        const valueEl = $(formContainer).find('input[name=value]');
+        const valueContainerEl = $(formContainer).find('.value-container');
+        const valueLabelEl = valueContainerEl.find('label')
+        const targetContainerEl = $(formContainer).find('.target-container');
+        const targetLabelEl = targetContainerEl.find('label')
+        const speedrunContainerEl = $(formContainer).find('.value-speedrun-container');
+        const canChangeChekbox = $(formContainer).find(".form-can-change");
+        const increaseValueContainerEl = $(formContainer).find('.increase-value-container');
+        switch (typeValue) {
+          case 'value':
+            valueContainerEl.attr('style', '');
+            speedrunContainerEl.attr('style', 'display:none !important');
+            canChangeChekbox.attr('style', '');
+            valueEl.prop('type', 'number');
+            valueEl.prop('placeholder', 'Count Default Value');
+            valueLabelEl.html('Default Input')
+            targetContainerEl.attr('style', '');
+            increaseValueContainerEl.attr('style', '');
+            targetLabelEl.html('Target');
+            
+            targetEl.prop('placeholder', 'Count Target');
+            break;
+  
+          case 'count':
+            speedrunContainerEl.attr('style', 'display:none !important');
+            valueContainerEl.attr('style', 'display: none !important');
+            canChangeChekbox.attr('style', 'display: none !important');
+            targetContainerEl.attr('style', '');
+            targetEl.prop('placeholder', 'Count Target');
+            increaseValueContainerEl.attr('style', 'display:none !important');
+            targetLabelEl.html('Target');
+            break;
+  
+          case 'badhabit':
+            valueContainerEl.attr('style', '');
+            speedrunContainerEl.attr('style', 'display:none !important');
+            canChangeChekbox.attr('style', '');
+            valueLabelEl.html('Value')
+            valueEl.prop('type', 'number');
+            valueEl.prop('placeholder', 'Activity Default Value');
+            targetContainerEl.attr('style', '');
+            increaseValueContainerEl.attr('style', '');
+            
+            targetEl.prop('placeholder', 'Count Target');
+            targetLabelEl.html('Target');
+            break;
+        
+          case 'speedrun':
+            speedrunContainerEl.attr('style', '');
+            valueContainerEl.attr('style', 'display:none !important');
+            canChangeChekbox.attr('style', 'display: none !important');
+            targetContainerEl.attr('style', '');
+            valueEl.prop('type', 'text');
+            valueEl.prop('placeholder', 'Time as speed target (TAST). ex:  1h 34m 33s 00ms')
+            increaseValueContainerEl.attr('style', 'display:none !important');
+            targetLabelEl.html('Target Count');
+            break;
+  
+          case 'alarm':
+            speedrunContainerEl.attr('style', 'display:none !important');
+            valueContainerEl.attr('style', 'display:none !important');
+            canChangeChekbox.attr('style', 'display: none !important');
+            targetContainerEl.attr('style', 'display: none !important');
+            increaseValueContainerEl.attr('style', '');
+            targetLabelEl.html('Target');
+            break;
+  
+          default:
+            break;
+        }
+        
       }
       
-    })
+      $('body').on('change', `${formContainer} select[name=type]`, function(){
+        handleChange(this);
+      })
+      $(`${formContainer} select[name=type]`).each(function(el) {
+        console.log('dari sini')
+        handleChange(this)
+      })
   }
   
   initialize() {

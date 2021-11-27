@@ -303,6 +303,7 @@ export default class MediaGalleryComponent {
     }
     const selectedTemplate = $(template[source.type]).text();
     const content = {
+      media_id: source.id,
       source: source.value_url
     }
 
@@ -343,6 +344,27 @@ export default class MediaGalleryComponent {
       if(data.success) {
         $('#modalFormMedia').modal('hide');
         this.fetchCategories();
+      }
+    }
+    
+  }
+
+  async handleDeleteMedia(el) {
+    var result = await alertHelper.showConfirmation("Your media will be delete and cannot be restore");
+
+    // - if user cancel delete
+    if(!result.isConfirmed) return;
+
+    const wrapper = $(el).closest('#modalDetailMedia');
+    const mediaId = wrapper.find('input[name=media_id]').val();
+
+    const command = await this.mediaService.destroyCommand(mediaId).execute();
+    if(command.success) {
+      const data = command.value;
+      if(data.success) {
+        $('#modalDetailMedia').modal('hide');
+        this.fetchMediaGallery();
+        alertHelper.showSnackBar('Successfully Deleted');
       }
     }
     
@@ -388,5 +410,6 @@ export default class MediaGalleryComponent {
     // assign event to category actions
     $('body').on('click', '.btn-edit-category', (evt) => this.handleEditCategory(evt.target));
     $('body').on('click', '.btn-delete-category', (evt) => this.handleDeleteCategory(evt.target));
+    $('body').on('click', '.btn-delete-media', (evt) => this.handleDeleteMedia(evt.target));
   }
 }

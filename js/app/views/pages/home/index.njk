@@ -136,9 +136,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalDetailMediaLabel">Preview</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <div>
+                    
+                        <button type="button" class="btn btn-sm btn-danger btn-delete-media">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="modal-body p-0">
                 </div>
@@ -277,7 +283,7 @@
                 <div class="input-group input-activity-group">
                     ${value_activity_html}
                     <div class="input-group-append">
-                        <a href="#" class="btn btn-primary btn-add-value border-0" role="button">${title}</a>
+                        <button type="button" class="btn btn-primary btn-add-value border-0" role="button">${title}</button>
                     </div>
                 </div>
                 <div class="changepos-btn-wrapper">
@@ -323,7 +329,7 @@
                         <input type="number" placeholder="ms" name="millisecond" id="millisecond" class="form-control border border-1 text-center input-activity-value h-100" style="width: 25%">
                     </div>
                     <div class="input-group-append">
-                        <a href="#" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</a>
+                        <button type="button" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</button>
                     </div>
                 </div>
                 <div class="changepos-btn-wrapper">
@@ -380,15 +386,19 @@
     </div>
 </script>
 <script type="text/template" data-template="media-detail-youtube-template">
+    <input type="hidden" name="media_id" value="${media_id}"/>
     <iframe width="100%" height="500" src="https://www.youtube.com/embed/${source}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </script>
 <script type="text/template" data-template="media-detail-youtube-template">
+    <input type="hidden" name="media_id" value="${media_id}"/>
     <img src="${source}" alt="" style="width: 100%" />
 </script>
 <script type="text/template" data-template="media-detail-image-template">
+    <input type="hidden" name="media_id" value="${media_id}"/>
     <img src="${source}" alt="" style="width: 100%" />
 </script>
 <script type="text/template" data-template="media-detail-video-template">
+    <input type="hidden" name="media_id" value="${media_id}"/>
     <video width="100%" height="500" controls>
         <source src="${source}">
         Your browser does not support the video tag.

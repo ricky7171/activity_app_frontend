@@ -176,6 +176,7 @@ class ReportListView {
             "score" : activity["score"],
             "count" : activity["count"],
             "redscore" : activity['is_red'],
+            "redcount" : activity['is_red_count'],
         });
       })
     );
