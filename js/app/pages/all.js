@@ -14,7 +14,8 @@ class GlobalView {
     const btnText = `${dateTimeHelper.getCurrentMonth()} Report`;
     const btnLink = `/report/list.html?year=${currentYear}&month=${currentMonth}`;
 
-    $("#reportBtnTop").html(btnText).attr("href", btnLink);
+    // $("#reportBtnTop").html(btnText).attr("href", btnLink);
+    $("#reportBtnTop").attr("href", btnLink);
   }
 
   async setSettingObject() {

@@ -6,12 +6,12 @@ class HistoryDataProxy extends HttpDataProxy {
   }
 
   insert(data) {
-    if (data.use_textfield) {
-      data.value_textfield = data.value;
-      delete data.value;
-    }
+    // if (data.use_textfield) {
+    //   data.value_textfield = data.value;
+    //   delete data.value;
+    // }
 
-    delete data.use_textfield;
+    // delete data.use_textfield;
 
     return this._handleResponseFrom(
       this._api.requestApi(`${this._entity}.add`, data)
@@ -29,9 +29,26 @@ class HistoryDataProxy extends HttpDataProxy {
     );
   }
 
-  getHistoryRange() {
+  getHistoryRange(params) {
+    let additionalUrl = "";
+
+    if(params && params.year) {
+      additionalUrl = `?year=${params.year}`;
+    }
+    
     return this._handleResponseFrom(
-      this._api.requestApi(`${this._entity}.getHistoryRange`)
+      this._api.requestApi(`${this._entity}.getHistoryRange`, {}, additionalUrl)
+    );
+  }
+
+  bulkDestroy(historiesIds) {
+    const body = {
+      history: historiesIds
+    };
+    console.log('check body on histordataproxy blukdelete');
+    console.log(body);
+    return this._handleResponseFrom(
+      this._api.requestApi(`${this._entity}.bulkDelete`, body)
     );
   }
 }

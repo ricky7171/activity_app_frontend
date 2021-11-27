@@ -30,6 +30,7 @@ class ImportView {
     ).text();
 
     //render template
+    $("#importer").append("<option disabled selected value> -- select an option -- </option>");
     $("#importer").append(
       activities.map(function (activity, i) {
         return templateHelper.render(optionActivityTpl, {
@@ -57,6 +58,7 @@ class ImportView {
     const command = await this.historyService
       .bulkInsertCommand(attributes)
       .execute();
+    console.log("🚀 ~ file: import.js ~ line 61 ~ ImportView ~ handleClickButtonSubmit ~ command", command)
 
     if (command.success == false) {
       const firstErrorMsg = command.errors[0].message;
@@ -64,7 +66,14 @@ class ImportView {
       return;
     }
 
-    alertHelper.showSuccess("successfully added !");
+    const result = command.value;
+    if(result.success) {
+      alertHelper.showSuccess("successfully added !");
+
+    } else {
+      
+    }
+
   }
 
   initialize() {

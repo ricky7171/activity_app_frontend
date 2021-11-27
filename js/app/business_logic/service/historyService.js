@@ -21,31 +21,48 @@ class HistoryService extends BusinessService {
     return Promise.resolve([new FieldRequiredRule("id", attr)]);
   }
 
+  parseImportFormat(row) {
+    const rowSplitted = row.split(", ");
+    const attr = {
+      date: rowSplitted[0],
+      value: rowSplitted[1],
+      time: rowSplitted[2],
+    };
+
+    if (rowSplitted.length < 3) {
+      attr.time = null;
+      attr.value = rowSplitted[1];
+    }
+
+    return attr;
+  }
+
   bulkInsertCommand(attributes) {
     if (typeof attributes.history == "string") {
       const plainInput = attributes.history;
-      attributes.history = plainInput.split("\n").map(function (row) {
-        const rowSplitted = row.split(", ");
+      attributes.history = plainInput.split("\n").filter(v => v).map((row) => {
+        const result = this.parseImportFormat(row);
+
         if (attributes.use_textfield == "1") {
           return {
-            date: rowSplitted[0],
-            time: rowSplitted[1],
-            value_textfield: rowSplitted[2],
-          };
-        } else {
-          return {
-            date: rowSplitted[0],
-            time: rowSplitted[1],
-            value: rowSplitted[2],
+            date: result.date,
+            time: result.time,
+            value_textfield: result.value,
           };
         }
+
+        return result;
       });
     }
+
+    // console.log({attributes})
+    // return Promise.resolve();
 
     const dataProxy = this.dataProxy;
     return new Command({
       _getRules() {
         return Promise.resolve([
+          new FieldRequiredRule("activity_id", attributes, null, 'Please choose activity first !'),
           new CanBulkInsertHistoryRule(
             attributes.history,
             attributes.use_textfield
@@ -58,12 +75,22 @@ class HistoryService extends BusinessService {
     });
   }
 
-  getHistoryRangeCommand() {
+  getHistoryRangeCommand(params) {
     const dataProxy = this.dataProxy;
 
     return new Command({
       _onValidationSuccess() {
-        return dataProxy.getHistoryRange();
+        return dataProxy.getHistoryRange(params);
+      },
+    });
+  }
+
+  bulkDestroyCommand(historiesIds) {
+    const dataProxy = this.dataProxy;
+
+    return new Command({
+      _onValidationSuccess() {
+        return dataProxy.bulkDestroy(historiesIds);
       },
     });
   }

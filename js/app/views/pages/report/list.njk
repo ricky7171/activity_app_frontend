@@ -4,7 +4,15 @@
 
 {% block content %}
 <div class="content-container" style="display: none">
-<a id="btnBack" href="/report/index.html" class="btn btn-primary mb-4"><i class="fa fa-arrow-left"></i> Back</a>
+<div style="display:flex; justify-content: space-between">
+    <div>
+        <a id="btnBack" style="display:none" href="/report/index.html" class="btn btn-primary mb-4"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+    <div>
+        <select id="monthSelection" class="form-control" style="display:none">
+        </select>
+    </div>
+</div>
 
 <h3 id="titleContent">Report</h3>
 
@@ -65,7 +73,7 @@
         </td>
         <td>${target}</td>
         <td class='red-score-${redscore}'>${score}</td>
-        <td>${count}</td>
+        <td class='red-score-${redcount}'>${count}</td>
     </tr>
 </script>
 
@@ -91,6 +99,28 @@
     <tr>
         <th colspan="2">Score</th>
         <th>${score}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Target</th>
+        <th>${target}</th>
+    </tr>
+    <tr style="${leftStyle}">
+        <th colspan="2">Left</th>
+        <th>${left}</th>
+    </tr>
+</script>
+<script type="text/template" data-template="row-footer-report-detail-activity-speedrun">
+    <tr>
+        <th colspan="2">Best Time</th>
+        <th>${best_time}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Average Time</th>
+        <th>${average_time}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Total Count</th>
+        <th>${count}</th>
     </tr>
     <tr>
         <th colspan="2">Target</th>

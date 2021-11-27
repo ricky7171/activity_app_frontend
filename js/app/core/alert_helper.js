@@ -1,5 +1,5 @@
 export function showSnackBar(text, duration = 3) {
-    var snackbarEl = $($.parseHTML('<div class="show" id="snackbar">' + text + '</div>'));
+    var snackbarEl = $($.parseHTML('<div class="show" id="snackbar" style="z-index:99999999999999999">' + text + '</div>'));
     $("body").append(snackbarEl);
     setTimeout(function () { snackbarEl.removeClass("show"); }, 3000);
 }
@@ -26,4 +26,16 @@ export function showWarning(text) {
         text: text,
         icon: 'warning'
     })
+}
+
+export async function showConfirmation(text) {
+    return Swal.fire({
+        title: 'Are you sure?',
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    });
 }

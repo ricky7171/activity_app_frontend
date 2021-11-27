@@ -8,9 +8,85 @@
   <input type="checkbox" class="custom-control-input" id="toggleBeepSound">
   <label class="custom-control-label" for="toggleBeepSound">Enable  Beep Sound</label>
 </div>
+
+<div class="form-wrapper mt-5">
+    <h3 class="mb-2">Add Application Log</h3>
+    <div id="application_log_form" class="form">
+        <div class="form-group d-flex flex-nowrap align-items-center">
+            <label class="label-form" for="title">Version</label>
+            <input type="text" name="application_log_version" id="application_log_version" class="form-control" placeholder="v 0.2">
+        </div>
+        <div class="form-group d-flex flex-nowrap align-items-center">
+            <label class="label-form" for="value">Description</label>
+            <input type="text" name="application_log_description" id="application_log_description" class="form-control" placeholder="This application have new features x,y,z">
+        </div>
+        <div class="form-group text-right">
+            <button id="submit-application-log-btn" class="btn btn-primary ml-auto">Create Application Log</button>
+        </div>
+    </div>
+    {# </form> #}
+</div>
+
+<div class="table-application-log" style="display:none">
+    <h3 class="mb-2">List Application Log</h3>
+    <table class="table data-table table-bordered" id="application_log_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+        <thead>
+            <tr>
+                <th>Version</th>
+                <th>Description</th>
+                <th class="action" style="width: 150px">Action</th>
+            </tr>
+        </thead>
+        <tbody class="list-application-log">
+            <!-- template row application log -->
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="modalEditApplicationLog" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditLabel">Edit Application Log</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="edit_form_application_log" class="form">
+                    <div class="form-group d-flex flex-nowrap align-items-center">
+                        <label for="version2">Version</label>
+                        <input type="text" name="version2" id="version2" class="form-control" placeholder="Application log version">
+                    </div>
+                    <div class="form-group d-flex flex-nowrap align-items-center">
+                        <label for="description2">Description</label>
+                        <input type="text" name="value2" id="description2" class="form-control" placeholder="Application log description">
+                    </div>
+                    <input type="hidden" name="application_log_id" value=""/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn-update-application-log" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
 
 {% block footer %}
+<script type="text/template" data-template="row-application-log">
+    <tr>
+        <td>${version}</td>
+        <td>${description}</td>
+        <td class="action">
+            <button class="btn-edit-application-log" applicationLogId="${id}">Edit</button>
+            <button class="btn-delete-application-log" applicationLogId="${id}">Delete</button>
+        </td>
+    </tr>
+</script>
+
 <script type="text/template" data-template="option-activity">
     <option value="${id}" useTextfield=${useTextfield}>${title}</option>
 </script>

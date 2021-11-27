@@ -12,21 +12,36 @@ class CanBulkInsertHistoryRule extends Rule {
     if (!this.inputHistories) {
       this._invalidate("Please fill data");
     } else {
-        // checkFormat
-        let isValidFormat = true;
-        this.inputHistories.forEach((history) => {
-          const keyValue = this.useTextfield ? "value_textfield" : "value";
-    
-          if (!history.date || !history.time || !history[keyValue]) {
-            isValidFormat = false;
-          }
-        });
-    
-        if (isValidFormat == false) {
-            this._invalidate("Your input format is wrong !");
-        }
-    }
+      // checkFormat
+      let isValidFormat = true;
+      this.inputHistories.forEach((history) => {
+        const keyValue = this.useTextfield ? "value_textfield" : "value";
 
+        if (!history.date || !history[keyValue]) {
+          isValidFormat = false;
+        }
+
+        if (history.time) {
+          // validate format time
+          const split = history.time.split(":");
+
+          if (split.length < 3) {
+            isValidFormat = false;
+          } else {
+            split.forEach((t) => {
+              if (t.length > 2) {
+                isValidFormat = false;
+              }
+            });
+          }
+
+        }
+      });
+
+      if (isValidFormat == false) {
+        this._invalidate("Your input format is wrong !");
+      }
+    }
 
     return Promise.resolve();
   }

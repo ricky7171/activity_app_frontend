@@ -1,10 +1,12 @@
-import axios from "axios";
+import Axios from "axios";
 import * as alertHelper from "./../core/\alert_helper";
 
 const message =
 {
     "connection": "Check your internet connection !"
 };
+
+export const axios = Axios;
 
 axios.interceptors.response.use((response) => response, (error) => {
     // catch CORS error
@@ -15,9 +17,8 @@ axios.interceptors.response.use((response) => response, (error) => {
     }
     return Promise.reject(error)
   })
-
-// const server = "https://activity-app-database.herokuapp.com";
-export const server = "http://activity_app_backend.test";
+// const server = "https://backendrecord.gofitness.club";
+export const server = "http://localhost:8000";
 
 var listApi = {
     "activity.get": {
@@ -80,6 +81,11 @@ var listApi = {
         url : server + "/api/histories",
         withToken : false,
     },
+    "history.bulkDelete" : {
+        method : "POST",
+        url : server + "/api/histories/bulkDelete",
+        withToken : false,
+    },
     "setting.get": {
         method: 'GET',
         url: server + "/api/setting",
@@ -90,7 +96,75 @@ var listApi = {
         url: server + "/api/setting",
         withToken: false,
     },
+    "mediaGallery.get": {
+        method: 'GET',
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "mediaGallery.add" : {
+        method : "POST",
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "mediaGallery.delete" : {
+        method : "DELETE",
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "mediaGallery.update" : {
+        method : "PATCH",
+        url: server + "/api/media-galleries",
+        withToken: false,
+    },
+    "category.get": {
+        method: 'GET',
+        url: server + "/api/categories",
+        withToken: false,
+    },
+    "category.add" : {
+        method : "POST",
+        url: server + "/api/categories",
+        withToken: false,
+    },
+    "category.delete" : {
+        method : "DELETE",
+        url: server + "/api/categories",
+        withToken: false,
+    },
+    "category.update" : {
+        method : "PATCH",
+        url: server + "/api/categories",
+        withToken: false,
+    },
+    "applicationLog.get": {
+        method: 'GET',
+        url: server + "/api/application-logs",
+        withToken: false,
+    },
+    "applicationLog.add" : {
+        method : "POST",
+        url: server + "/api/application-logs",
+        withToken: false,
+    },
+    "applicationLog.delete" : {
+        method : "DELETE",
+        url: server + "/api/application-logs",
+        withToken: false,
+    },
+    "applicationLog.update" : {
+        method : "PATCH",
+        url: server + "/api/application-logs",
+        withToken: false,
+    },
 };
+
+function isIterable(variable) {
+    if(typeof variable[Symbol.iterator] === 'function') {
+        return true;
+    }
+
+    return false;
+}
 
 //this function will process message to readable message (not object)
 //example : 
@@ -98,11 +172,24 @@ var listApi = {
 //this function will return :
 //"The username field is required., other error"
 function processMessage(message) {
+    console.log("🚀 MESSAGE ERROR -> ", message)
     var result = "";
     var listMessage = [];
 
-    for (var [key, value] of message) {
-        listMessage.push(value.toString());
+    if(Array.isArray(message)) {
+        for(var i = 0;i<message.length;i++) {
+            if(typeof(message[i]) == 'string') {
+                listMessage.push(message[i]);
+            }
+        }
+    } else if(isIterable(message)) {
+        for (var [key, value] of message) {
+            listMessage.push(value.toString());
+        }
+    } else if(typeof message == 'object') {
+        Object.keys(message).forEach(attrName => {
+            listMessage.push(message[attrName].toString());
+        });
     }
 
     if (listMessage.length > 0) {
@@ -199,7 +286,8 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         }
 
     }
-
+    console.log("check dataRequest");
+    console.log(dataRequest);
     //1. prepare params or formData
     var dataRequest = null;
     dataRequest = bodyRequest;
@@ -214,18 +302,18 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         return resultReturn;
     }
 
-    // console.log("check datarequest");
-    // console.log(dataRequest);
-    // console.log(method);
-
     try {
-        return await axios({
+        const response = await axios({
             method: method,
             url: url + additionalUrl,
             data: dataRequest,
         }).then((r) => r.data)
+
+        Promise.resolve(response);
+        return response;
     } catch (error) {
         console.log("🚀 ~ file: api.js ~ line 218 ~ requestApi ~ error", error)
+        Promise.reject(error.response.data);
         return error.response.data;
     }
 }
