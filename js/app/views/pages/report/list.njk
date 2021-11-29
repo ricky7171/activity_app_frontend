@@ -34,6 +34,21 @@
             </tbody>
         </table>
     </div>
+    <div class="table-responsive">
+        <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>Target</th>
+                    <th>Score</th>
+                    <th>Ct</th>
+                </tr>
+            </thead>
+            <tbody class="data-activity-speedrun-summary">
+                <!-- template row activity summary -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- report detail activity section -->
@@ -111,8 +126,12 @@
 </script>
 <script type="text/template" data-template="row-footer-report-detail-activity-speedrun">
     <tr>
-        <th colspan="2">Best Time</th>
+        <th colspan="2">Best Record</th>
         <th>${best_time}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Best Record (All Time)</th>
+        <th>${best_record_alltime}</th>
     </tr>
     <tr>
         <th colspan="2">Average Time</th>

@@ -376,9 +376,14 @@ form.not-editable input:not([type="checkbox"]) {
 
 
 @media only screen and (max-width: 768px) {
-    /* For mobile phones: */
-    #activity_top_area .form-group:not(.form-check) {
+    /* #activity_top_area .form-group:not(.form-check) {
         flex-direction: column;
         align-items: flex-start !important;
+    } */
+
+    #activity_top_area .value-speedrun-container input {
+        width: 40px !important;
+        padding: .1rem;
+        text-align: center;
     }
 }

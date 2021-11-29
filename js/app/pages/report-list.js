@@ -116,10 +116,14 @@ class ReportListView {
       const result = command.value;
       if (result.success) {
         const activitySummary = this.getActivitiesSummaryFromResult(
-          result.response.data
+          result.response.data.filter(v => v.type !== 'speedrun')
         );
         this._reportData = result.response.data;
         this.showActivitiesSummary(activitySummary);
+
+        const activitySummarySpeedrun = result.response.data.filter(v => v.type == 'speedrun')
+        this.showActivitiesSummary(activitySummarySpeedrun, '.data-activity-speedrun-summary');
+
         loadingHelper.toggleLoading(false);
         $(".report-summary-activity").show();
         $('.content-container').show();
@@ -148,7 +152,7 @@ class ReportListView {
     }
   }
 
-  showActivitiesSummary(activities) {
+  showActivitiesSummary(activities, tbodyClassName = '.data-activity-summary') {
     console.log("check data");
     console.log(activities);
 
@@ -157,7 +161,7 @@ class ReportListView {
     $(".report-detail-activity").hide();
 
     //clear histories
-    $(".report-summary-activity .data-activity-summary").empty();
+    $(`.report-summary-activity ${tbodyClassName}`).empty();
 
     //prepare template
     var rowActivitySummaryTpl = $(
@@ -165,13 +169,17 @@ class ReportListView {
     ).text();
 
     //render html
-    $(".report-summary-activity .data-activity-summary").append(activities.map(function(activity) {
+    $(`.report-summary-activity ${tbodyClassName}`).append(activities.map(function(activity) {
         // var redScore = activity["score"] < activity["target"];
         // console.log("check redscore");
+        let title = activity["title"];
+        if(activity.type == 'speedrun') {
+          title += '<br/>' + activity.value;
+        }
         // console.log(redScore);
         return templateHelper.render(rowActivitySummaryTpl, {
             "activity_id" : activity["id"],
-            "activity_name" : activity["title"],
+            "activity_name" : title,
             "target" : activity["target"],
             "score" : activity["score"],
             "count" : activity["count"],
@@ -207,10 +215,14 @@ class ReportListView {
     ).text();
 
     //render html
+    let title = detailActivity["title"];
+    if(detailActivity.type == 'speedrun') {
+      title += '<br/>' + detailActivity.value;
+    }
     //- render heading
     $(".report-detail-activity").prepend(
       templateHelper.render(reportHeadingTpl, {
-        activity_name: detailActivity["title"],
+        activity_name: title,
         year: detailActivity["year"],
         month: detailActivity["month"],
       })
@@ -244,6 +256,7 @@ class ReportListView {
         target: detailActivity["target"],
         left: detailActivity["left"],
         best_time: detailActivity["best_time"],
+        best_record_alltime: detailActivity["best_record_alltime"],
         average_time: detailActivity["score"],
         count: detailActivity["count"],
         leftStyle: leftStyle

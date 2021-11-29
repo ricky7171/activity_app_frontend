@@ -33,6 +33,24 @@
             <!-- template row activity -->
         </tbody>
     </table>
+    <div class="mt-2">
+        <h3 class="mb-2">List Speedrun</h3>
+        <table class="table data-table table-bordered" id="speedrun_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Time Target</th>
+                    <th>Target</th>
+                    <th>Color</th>
+                    <th class='description-column'>Description</th>
+                    <th class="action" style="width: 150px">Action</th>
+                </tr>
+            </thead>
+            <tbody class="list-activity-speedrun">
+                <!-- template row activity -->
+            </tbody>
+        </table>
+    </dov>
 </div>
 
 <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
@@ -67,7 +85,21 @@
         <td>${title}</td>
         <td>${value}</td>
         <td>${target}</td>
-        <td><span style="background-color: ${color}; color: ${textColor}; padding: 4px 10px; border: 1px solid; min-width: 85px; display: inline-block; text-align: center">${color}</span></td>
+        <td><span style="background-color: ${color}; color: ${textColor}; padding: 4px 10px; border: 1px solid; min-width: 50px; display: inline-block; text-align: center">&nbsp;</span></td>
+        <td>${description}</td>
+        <td class="action">
+            <button class="btn-edit-activity" activityId="${id}">Edit</button>
+            <button class="btn-delete-activity" activityId="${id}">Delete</button>
+        </td>
+    </tr>
+</script>
+
+<script type="text/template" data-template="row-activity-speedrun">
+    <tr>
+        <td>${title}</td>
+        <td>${value}</td>
+        <td>${target}</td>
+        <td><span style="background-color: ${color}; color: ${textColor}; padding: 4px 10px; border: 1px solid; min-width: 50px; display: inline-block; text-align: center">&nbsp;</span></td>
         <td>${description}</td>
         <td class="action">
             <button class="btn-edit-activity" activityId="${id}">Edit</button>
@@ -83,4 +115,4 @@
     </tr>
 </script>
 <script src="/js/app/pages/form.js"></script>
-{% endblock footer %}
+{% endblock footer %} 

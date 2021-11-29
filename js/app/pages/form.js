@@ -59,11 +59,34 @@ export default class FormView {
 
     //prepare template
     var rowActivitiesTpl = $('script[data-template="row-activity"').text();
+    var rowSpeedrunTpl = $('script[data-template="row-activity-speedrun"').text();
 
     //generate row activity, then put it on .list-activity
-    $(".list-activity").append(
-      activities.map(function (activityData, i) {
+    $(".list-activity").replaceWith(
+      activities.filter(v => v.type !== 'speedrun').map(function (activityData, i) {
         var html = templateHelper.render(rowActivitiesTpl, {
+          type: activityData["type_text"],
+          title: activityData["title"],
+          value: activityData["value"],
+          target: activityData["target"],
+          description: activityData["description"],
+          color: activityData["color"],
+          id: activityData["id"],
+          textColor: colorHelper.isDark(activityData["color"])
+            ? "#ffffff"
+            : "#000000",
+        });
+
+        html = $(html);
+        html.data("activity", activityData);
+
+        return html;
+      })
+    );
+
+    $(".list-activity-speedrun").replaceWith(
+      activities.filter(v => v.type == 'speedrun').map(function (activityData, i) {
+        var html = templateHelper.render(rowSpeedrunTpl, {
           type: activityData["type_text"],
           title: activityData["title"],
           value: activityData["value"],
