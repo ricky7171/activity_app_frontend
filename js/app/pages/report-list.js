@@ -144,7 +144,13 @@ class ReportListView {
 
           const ranges = data[0].range;
           const currentValue = `${params.month}-${params.year}`;
-          const options = ranges.map(r => `<option value="${r.month}-${r.year}" ${`${r.month}-${r.year}` === currentValue ? 'selected': ''}>${dateTimeHelper.monthToText(r.month)} ${r.year}</option>`)
+          let options = ranges.map(r => `<option value="${r.month}-${r.year}" ${`${r.month}-${r.year}` === currentValue ? 'selected': ''}>${dateTimeHelper.monthToText(r.month)} ${r.year}</option>`)
+
+          const check = ranges.filter(v => v.year == params.year && v.month === params.month).length;
+          if(!check) {
+            const optionForCurrentMonth = `<option value="${params.month}-${params.year}" selected>${dateTimeHelper.monthToText(params.month)} ${params.year}</option>`;
+            options = [ optionForCurrentMonth, ...options];
+          }
 
           $('#monthSelection').html(options.toString());
         }
