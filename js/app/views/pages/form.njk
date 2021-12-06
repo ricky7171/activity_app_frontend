@@ -34,10 +34,11 @@
         </tbody>
     </table>
     <div class="mt-2">
-        <h3 class="mb-2">List Speedrun</h3>
+        <h3 class="mb-2">List Stopwatch</h3>
         <table class="table data-table table-bordered" id="speedrun_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
             <thead>
                 <tr>
+                    <th>Criteria</th>
                     <th>Title</th>
                     <th>Time Target</th>
                     <th>Target</th>
@@ -96,6 +97,7 @@
 
 <script type="text/template" data-template="row-activity-speedrun">
     <tr>
+        <td>${criteria}</td>
         <td>${title}</td>
         <td>${value}</td>
         <td>${target}</td>

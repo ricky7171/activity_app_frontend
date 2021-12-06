@@ -94,6 +94,7 @@ export default class FormView {
           description: activityData["description"],
           color: activityData["color"],
           id: activityData["id"],
+          criteria: activityData["criteria"],
           textColor: colorHelper.isDark(activityData["color"])
             ? "#ffffff"
             : "#000000",
@@ -327,6 +328,8 @@ export default class FormView {
       }
 
       attributes.value = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
+
+      attributes.criteria = $(formContainer).find("select[name=criteria]").val();
     }
 
     if(type == 'alarm') {

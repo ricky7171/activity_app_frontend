@@ -68,7 +68,6 @@ class ReportListView {
   }
 
   getDetailActivityFromResult(result, id, dataMonthAndYear) {
-    console.log("🚀 ~ file: report-list.js ~ line 67 ~ ReportListView ~ getDetailActivityFromResult ~ result", result)
     //find activity detail
     let detailActivity = {};
     for (let i = 0; i < result.length; i++) {
@@ -146,7 +145,7 @@ class ReportListView {
           const currentValue = `${params.month}-${params.year}`;
           let options = ranges.map(r => `<option value="${r.month}-${r.year}" ${`${r.month}-${r.year}` === currentValue ? 'selected': ''}>${dateTimeHelper.monthToText(r.month)} ${r.year}</option>`)
 
-          const check = ranges.filter(v => v.year == params.year && v.month === params.month).length;
+          const check = ranges.filter(v => v.year == params.year && v.month == params.month).length;
           if(!check) {
             const optionForCurrentMonth = `<option value="${params.month}-${params.year}" selected>${dateTimeHelper.monthToText(params.month)} ${params.year}</option>`;
             options = [ optionForCurrentMonth, ...options];
@@ -190,7 +189,7 @@ class ReportListView {
             "score" : activity["score"],
             "count" : activity["count"],
             "redscore" : activity['is_red'],
-            "redcount" : activity['is_red_count'],
+            "redcount" : activity.type == 'speedrun' ? activity['is_red_count'] : false,
         });
       })
     );
