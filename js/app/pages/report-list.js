@@ -268,13 +268,14 @@ class ReportListView {
       })
     );
     $("#btnBack").show();
-    // change button back action
+    $('#monthSelection').hide();
+      // change button back action
     $("#btnBack").on("click", function (e) {
-      console.log("clickkkk");
       e.preventDefault();
 
       $(".report-summary-activity").show();
       $(".report-detail-activity").hide();
+      $('#monthSelection').show();
 
       $("#btnBack").off();
       $("#btnBack").hide();
