@@ -85,7 +85,8 @@ class HomeView {
         let contentActivityRowTextfield = {
           title: activityData.title,
           activity_id: activityData.id,
-          placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field'
+          placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field',
+          score_target: `${activityData.score} / ${activityData.target}`,
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -120,6 +121,7 @@ class HomeView {
           activity_id: activityData.id,
           value: activityData.value,
           increase_value: activityData.increase_value,
+          score_target: `${activityData.score} / ${activityData.target}`,
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -136,6 +138,7 @@ class HomeView {
           title: activityData.title,
           activity_id: activityData.id,
           value_activity_html: valueActivityHtml,
+          score_target: `${activityData.score} / ${activityData.target}`,
         };
   
         // modify template change color of button
@@ -157,6 +160,7 @@ class HomeView {
         let contentActivityRowSpeedrun = {
           title: activityData.title,
           activity_id: activityData.id,
+          score_target: `${activityData.score} / ${activityData.target}`,
         };
   
         // modify template change color of button
@@ -324,6 +328,19 @@ class HomeView {
     this.showActivitiesData(data)
   }
 
+  handleClickTargetButton(evt) {
+    if($('.activity-input-container').is(':hidden')) {
+      $('.activity-input-container').show();
+      $('.activity-target-container').hide();
+      $('#targetBtn').html('Target');
+    } else {
+      $('.activity-input-container').hide();
+      $('.activity-target-container').show();
+      $('#targetBtn').html('Hide Target');
+    }
+
+  }
+  
   initialize() {
     var thisObject = this;
     thisObject.fetchActivities();
@@ -354,6 +371,10 @@ class HomeView {
 
     $('body').on('click', '#seeAllActivity', function(evt){
       thisObject.handleClickSeeAllButton(evt)
+    });
+
+    $('body').on('click', '#targetBtn', function(evt){
+      thisObject.handleClickTargetButton(evt)
     });
   }
 }
