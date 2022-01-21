@@ -258,6 +258,13 @@ export default class FormView {
     // modalEdit
     //   .find("#is_use_textfield2")
     //   .prop("checked", activityData.use_textfield == 1);
+
+    if(Number(window.setting.point_system)) {
+      modalEdit.find("input[name=bonus_value]").val(activityData.bonus_value);
+      modalEdit.find("input[name=penalty_value]").val(activityData.penalty_value);
+      modalEdit.find("input[name=point_weight]").val(activityData.point_weight || 1);
+    }
+    
     modalEdit.find("input[name=activity_id]").val(activityData.id);
     modalEdit.modal("show");
   }
@@ -341,6 +348,12 @@ export default class FormView {
       attributes.increase_value = $(formContainer).find('input[name=increase_value]').val()
     }
 
+    if(Number(window.setting.point_system)) {
+      attributes.bonus_value = $(formContainer).find('input[name=bonus_value]').val();
+      attributes.penalty_value = $(formContainer).find('input[name=penalty_value]').val();
+      attributes.point_weight = $(formContainer).find('input[name=point_weight]').val();
+    }
+    
     return attributes;
   }
   
@@ -426,7 +439,6 @@ export default class FormView {
         handleChange(this);
       })
       $(`${formContainer} select[name=type]`).each(function(el) {
-        console.log('dari sini')
         handleChange(this)
       })
   }
@@ -439,6 +451,12 @@ export default class FormView {
     this.changeTypeListener('#edit_form');
 
     colorHelper.initColorInput('input[type=color]')
+
+    $('.point-system-form input[name=bonus_value]').on('change', function(){
+      const container = $(this).closest('.point-system-form');
+      const penaltyValue = Math.floor(Number($(this).val()) / 2);
+      container.find('input[name=penalty_value]').val(penaltyValue)
+    })
     
 
     // event handler
@@ -461,10 +479,24 @@ export default class FormView {
 
 // window.isActivityInitialized = typeof window.isActivityInitialized == 'undefined' ? null : window.isActivityInitialized;
 
-jQuery(async function () {
+jQuery(async function ($) {
   if(!window.isActivityInitialized && $('#activity_table').length) {
     new FormView().initialize();
 
     window.isActivityInitialized = true;
+  }
+
+  if(!window.setting && !window.settingInterval) {
+    window.settingInterval = setInterval(function(){
+      if(window.setting) {
+        console.log('ketemu ')
+        window.clearInterval(window.settingInterval);
+        if(window.setting && Number(window.setting.point_system)) {
+          $('.point-system-form').show();
+        } else {
+          $('.point-system-form').hide();
+        }
+      } 
+    }, 500)
   }
 });

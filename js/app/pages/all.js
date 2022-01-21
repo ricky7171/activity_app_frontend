@@ -25,6 +25,12 @@ class GlobalView {
 
       if (result.response && result.response.data) {
         window.setting = result.response.data;
+
+        if(Number(window.setting.point_system)) {
+          $('.section-point-menu').show();
+        } else {
+          $('.section-point-menu').hide();
+        }
       }
     }
   }
@@ -37,4 +43,20 @@ class GlobalView {
 
 jQuery(async function () {
   new GlobalView().initialize();
+
+  if(!window.setting) {
+    var localSetting = window.localStorage.getItem('SETTING_ACTIVITY');
+    if(localSetting) {
+      localSetting = JSON.parse(localSetting);
+    }
+    window.setting = localSetting
+  }
+
+  if(window.setting) {
+    if(Number(window.setting.point_system)) {
+      $('.section-point-menu').show();
+    } else {
+      $('.section-point-menu').hide();
+    }
+  }
 });

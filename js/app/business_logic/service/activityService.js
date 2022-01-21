@@ -32,6 +32,10 @@ class ActivityService extends BusinessService {
       rules.push(new FieldRequiredRule("criteria", attr))
     }
 
+    if(Number(window.setting.point_system)) {
+      rules.push(new FieldRequiredRule("point_weight", attr));
+    }
+
     return Promise.resolve(rules);
   }
 
@@ -60,6 +64,10 @@ class ActivityService extends BusinessService {
 
     if(attr.type == 'speedrun') {
       rules.push(new FieldRequiredRule("criteria", attr))
+    }
+    
+    if(Number(window.setting.point_system)) {
+      rules.push(new FieldRequiredRule("point_weight", attr));
     }
     
     return Promise.resolve(rules);

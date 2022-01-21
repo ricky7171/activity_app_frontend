@@ -18,14 +18,21 @@ class SettingView {
     this.tableApplicationLog = $(".table-application-log");
   }
 
+  updateLocalSetting(setting) {
+    window.localStorage.setItem('SETTING_ACTIVITY', JSON.stringify(setting));
+    window.setting = setting;
+  }
+
   async fetchSettingData() {
     const command = await this.settingService.getAllCommand().execute();
     if (command.success) {
       const result = command.value;
       if (result.success) {
         const setting = result.response.data;
+        this.updateLocalSetting(setting);
         // set value
         $("#toggleBeepSound").prop("checked", setting.beep_sound == 1);
+        $("#togglePointSystem").prop("checked", setting.point_system == 1);
       }
     }
   }
@@ -97,6 +104,34 @@ class SettingView {
 
       if (result.success) {
         alertHelper.showSnackBar("Successfully saved !", 1);
+      }
+
+      const localSetting = window.setting;
+      localSetting.beep_sound = value;
+      this.updateLocalSetting(localSetting);
+    }
+  }
+
+  async handleChangePointSystem(evt) {
+    const value = $(evt.target).prop("checked") ? 1 : 0;
+
+    const command = await this.settingService.saveCommand('point_system', value).execute();
+    if (command.success) {
+      const result = command.value;
+      const localSetting = window.setting;
+      
+      if (result.success) {
+        alertHelper.showSnackBar("Successfully saved !", 1);
+        if(value) {
+          $('.point-system-form').show();
+          $('.section-point-menu').show();
+        } else {
+          $('.point-system-form').hide();
+          $('.section-point-menu').hide();
+        }
+
+        localSetting.point_system = value;
+        this.updateLocalSetting(localSetting);
       }
     }
   }
@@ -223,6 +258,10 @@ class SettingView {
 
     $("#toggleBeepSound").on("change", (evt) =>
       this.handleChangeBeepSound(evt)
+    );
+
+    $("#togglePointSystem").on("change", (evt) =>
+      this.handleChangePointSystem(evt)
     );
 
     $("body").on("click", "#submit-application-log-btn", (evt) => 

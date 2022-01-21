@@ -156,6 +156,31 @@ var listApi = {
         url: server + "/api/application-logs",
         withToken: false,
     },
+    "pointTransaction.get": {
+        method: "GET",
+        url : server + "/api/point-transactions",
+        widthToken: false,
+    },
+    "pointTransaction.delete" : {
+        method : "DELETE",
+        url : server + "/api/point-transactions",
+        withToken : false,
+    },
+    "pointTransaction.getHistoryRange": {
+        method: 'GET',
+        url: server + "/api/point-transactions/getHistoryRange",
+        withToken: false,
+    },
+    "pointTransaction.update" : {
+        method : "PATCH",
+        url : server + "/api/point-transactions",
+        withToken : false,
+    },
+    "pointTransaction.bulkDelete" : {
+        method : "POST",
+        url : server + "/api/point-transactions/bulkDelete",
+        withToken : false,
+    },
 };
 
 function isIterable(variable) {

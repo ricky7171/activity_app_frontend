@@ -188,11 +188,16 @@ class ReportListView {
             "target" : activity["target"],
             "score" : activity["score"],
             "count" : activity["count"],
+            "point" : activity["point"],
             "redscore" : activity['is_red'],
             "redcount" : activity.type == 'speedrun' ? activity['is_red_count'] : false,
         });
       })
-    );
+
+      );
+    if(Number(window.setting.point_system)) {
+      $('.section-point-menu').show();
+    }
   }
 
   showDetailActivity(detailActivity) {
@@ -264,7 +269,8 @@ class ReportListView {
         best_record_alltime: detailActivity["best_record_alltime"],
         average_time: detailActivity["score"],
         count: detailActivity["count"],
-        leftStyle: leftStyle
+        leftStyle: leftStyle,
+        point: detailActivity["point"],
       })
     );
     $("#btnBack").show();
@@ -280,6 +286,11 @@ class ReportListView {
       $("#btnBack").off();
       $("#btnBack").hide();
     });
+
+    
+    if(Number(window.setting.point_system)) {
+      $('.section-point-menu').show();
+    }
   }
 
   handleClickActivityTitle(evt) {

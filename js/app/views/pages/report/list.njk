@@ -27,6 +27,7 @@
                     <th>Target</th>
                     <th>Score</th>
                     <th>Count</th>
+                    <th class="section-point-menu" style="display:none">Point</th>
                 </tr>
             </thead>
             <tbody class="data-activity-summary">
@@ -42,6 +43,7 @@
                     <th>Target</th>
                     <th>Avg/month</th>
                     <th>Score</th>
+                    <th class="section-point-menu" style="display:none">Point</th>
                 </tr>
             </thead>
             <tbody class="data-activity-speedrun-summary">
@@ -89,6 +91,7 @@
         <td>${target}</td>
         <td class='red-score-${redscore}'>${score}</td>
         <td class='red-score-${redcount}'>${count}</td>
+        <td class='section-point-menu' style="display:none">${point}</td>
     </tr>
 </script>
 
@@ -123,6 +126,10 @@
         <th colspan="2">Left</th>
         <th>${left}</th>
     </tr>
+    <tr class='section-point-menu' style="display:none">
+        <th colspan="2">Point</th>
+        <th>${point}</th>
+    </tr>
 </script>
 <script type="text/template" data-template="row-footer-report-detail-activity-speedrun">
     <tr>
@@ -148,6 +155,10 @@
     <tr style="${leftStyle}">
         <th colspan="2">Left</th>
         <th>${left}</th>
+    </tr>
+    <tr class='section-point-menu' style="display:none">
+        <th colspan="2">Point</th>
+        <th>${point}</th>
     </tr>
 </script>
 <script src="vendor/footable-bootstrap/js/footable.min.js"></script>
