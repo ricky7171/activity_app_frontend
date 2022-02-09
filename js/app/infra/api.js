@@ -9,6 +9,11 @@ const message =
 export const axios = Axios;
 
 axios.interceptors.response.use((response) => response, (error) => {
+    if(error.response.status === 401) {
+        window.localStorage.removeItem('APP_USER');
+        window.localStorage.removeItem('APP_SID');
+        window.location.replace(`${window.location.origin}/login.html`)
+    }
     // catch CORS error
     if (typeof error.response === 'undefined') {
       error.response = ('A network error occurred. '
@@ -17,7 +22,9 @@ axios.interceptors.response.use((response) => response, (error) => {
     }
     return Promise.reject(error)
   })
-// const server = "https://backendrecord.gofitness.club";
+// export const server = "https://backendrecord.gofitness.club";
+// export const server = "https://stagingbackendrecord.gofitness.club";
+// export const server = "https://activityapi.demo.masuk.id";
 export const server = "http://localhost:8000";
 
 var listApi = {
@@ -332,6 +339,9 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
             method: method,
             url: url + additionalUrl,
             data: dataRequest,
+            headers: {
+                'Authorization': `Bearer ${window.localStorage.getItem('APP_SID')}`
+            }
         }).then((r) => r.data)
 
         Promise.resolve(response);

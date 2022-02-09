@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Custom fonts for this template -->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Custom stylesheet -->
+    <link rel="stylesheet" href="/css/style.min.css">
+    <link href="/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css">
+    
+    <link rel="icon" 
+        type="image/png" 
+          href="https://upload.wikimedia.org/wikipedia/commons/6/63/Fitness_logo_watchos.png">
+    <link href="/vendor/spectrum-colorpicker/spectrum.css" rel="stylesheet" type="text/css">
+    <link rel="manifest" href="/manifest.json" />
+    <!-- ios support -->
+    <link rel="apple-touch-icon" href="/assets/img/icon/orig72.png" />
+    <link rel="apple-touch-icon" href="/assets/img/icon/orig96.png" />
+    <link rel="apple-touch-icon" href="/assets/img/icon/orig128.png" />
+    <style>
+        body {
+            background-color: #4e73df;
+            background-image: linear-gradient(180deg,#4e73df 10%,#224abe 100%);
+        }
+
+        .box {
+            background-color: white;
+            padding: 40px;
+            color: #333333;
+            width: 40vw;
+            border-radius: 10px;
+            box-shadow: 0px 0 15px #4e4c4cbf;
+        }
+
+        @media screen and (max-width: 992px) {
+            .box {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex justify-content-center align-items-center mt-5 text-black flex-column">
+        <div class="text-center box">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Fitness_logo_watchos.png" alt="" srcset="" height="130px">
+            <h2 class="text-center font-weight-bold">Activity App</h2>
+            <div class="mt-5 d-flex flex-column" style="gap: 10px;">
+                <button id="doLogin" class="btn btn-primary"><i class="fab fa-google"></i> Sign in with Google</button>
+                <!-- <button class="btn btn-outline-primary"><i class="fab fa-google"></i> Sign up with Google</button> -->
+            </div>
+        </div>
+    </div>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="/js/sb-admin-2.min.js"></script>
+
+
+    <!-- Sweetalert plugin -->
+    <script src="/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+
+    <!-- Main Custom Script -->
+    <script src="/js/main.js"></script>
+    <script src="js/app/pages/login.js"></script>
+</body>
+</html>

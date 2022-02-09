@@ -42,6 +42,20 @@ class GlobalView {
 }
 
 jQuery(async function () {
+  if(!window.localStorage.getItem('APP_USER') || !window.localStorage.getItem('APP_SID')) {
+    window.location.replace(`${window.location.origin}/login.html`);
+  }
+  
+  const userDetail = JSON.parse(atob(window.localStorage.getItem('APP_USER')))
+  $('#userDropdown').find('#userName').html(userDetail.name);
+  $('#userDropdown').find('#userImg').attr('src', userDetail.avatar || `${window.location.origin}/assets/img/avatar.png`);
+  
+  $('#btnLogout').click(function(){
+    window.localStorage.removeItem('APP_USER');
+    window.localStorage.removeItem('APP_SID');
+    window.location.replace(`${window.location.origin}/login.html`);
+  })
+  
   new GlobalView().initialize();
 
   if(!window.setting) {
