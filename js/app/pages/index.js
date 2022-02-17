@@ -8,6 +8,7 @@ import ActivityDataProxy from "../data_proxy/activityDataProxy";
 import HistoryService from "../business_logic/service/historyService";
 import HistoryDataProxy from "../data_proxy/historyDataProxy";
 import MediaGalleryComponent from "./components/media-gallery";
+import FormView from "./form"
 
 class HomeView {
   constructor() {
@@ -87,6 +88,9 @@ class HomeView {
           activity_id: activityData.id,
           placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field',
           score_target: `${activityData.score} / ${activityData.target}`,
+          color: activityData.color,
+          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
+          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -122,6 +126,9 @@ class HomeView {
           value: activityData.value,
           increase_value: activityData.increase_value,
           score_target: `${activityData.score} / ${activityData.target}`,
+          color: activityData.color,
+          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
+          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -139,6 +146,9 @@ class HomeView {
           activity_id: activityData.id,
           value_activity_html: valueActivityHtml,
           score_target: `${activityData.score} / ${activityData.target}`,
+          color: activityData.color,
+          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
+          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
         };
   
         // modify template change color of button
@@ -161,6 +171,9 @@ class HomeView {
           title: activityData.title,
           activity_id: activityData.id,
           score_target: `${activityData.score} / ${activityData.target}`,
+          color: activityData.color,
+          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
+          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
         };
   
         // modify template change color of button
@@ -338,7 +351,134 @@ class HomeView {
       $('.activity-target-container').show();
       $('#targetBtn').html('Hide Target');
     }
+  }
 
+  handleClickEditButton(evt) {
+    $('#titleSection').find('h3').html('Edit');
+    $('#titleSection').show();
+    
+    $('.btn-section-action').hide();
+    $('#doneAction').show();
+
+    this.showActivitiesData(this.tempData)
+
+    $('.btn-add-value').addClass('btn-mw')
+
+    $('.activity-input-container').hide();
+    $('.activity-target-container').hide();
+    $('.activity-edit-container').show();
+  }
+
+  handleClickDoneButton(evt) {
+    $('#titleSection').hide();
+    
+    $('.btn-section-action').show();
+    $('#doneAction').hide();
+
+    this.showActivitiesData(this.tempData.filter(v => !v.is_hide))
+
+    $('.btn-add-value').removeClass('btn-mw')
+
+    $('.activity-input-container').show();
+    $('.activity-target-container').hide();
+    $('.activity-edit-container').hide();
+  }
+
+  async handleClickButtonHideActivity(evt) {
+    const activityId = $(evt).closest('.activity-edit-container').attr('activityid');
+
+    if(!activityId) {
+      console.log('no activity id selected')
+    } else {
+      const selected = this.tempData.filter(d => d.id == activityId)[0];
+
+      const attributes = {
+        id: activityId,
+        is_hide: Number(!selected.is_hide),
+        without_validation: true,
+      }
+      const command = await this.activityService
+      .updateCommand(attributes)
+      .execute();
+
+      if (command.success == false) {
+        const firstErrorMsg = command.errors[0].message;
+        alertHelper.showError(firstErrorMsg);
+        return;
+      }
+  
+      const result = command.value;
+      if (result.success) {
+        alertHelper.showSnackBar("Successfully updated !", 1);
+        // refresh activities data
+        this.tempData = this.tempData.map(d => {
+          if(d.id == activityId) {
+            d.is_hide = attributes.is_hide;
+          }
+          
+          return d;
+        })
+        $('[data-toggle="tooltip"]').tooltip('hide');
+        this.showActivitiesData(this.tempData);
+        $('.activity-input-container').hide();
+        $('.activity-target-container').hide();
+        $('.activity-edit-container').show();
+        $('.btn-add-value').addClass('btn-mw')
+      }
+    }
+  }
+
+
+  handleClickButtonColorActivity(evt) {
+    const activityId = $(evt).closest('.activity-edit-container').attr('activityid');
+    const selected = this.tempData.filter(d => d.id == activityId)[0];
+    var modal = $('#modalEditColor');
+    modal.find('input[name=activity_id]').val(selected.id);
+    colorHelper.updateColorOfInput(modal.find('input[name=color]'), selected.color);
+
+    $('#modalEditColor').modal('show');
+  }
+  
+  async handleClickButtonSaveModalEditColor(evt) {
+    const modal = $('#modalEditColor');
+    const activityId = modal.find('input[name=activity_id]').val();
+    const color = modal.find('input[name=color]').val();
+
+    const attributes = {
+      id: activityId,
+      color,
+      without_validation: true,
+    }
+    const command = await this.activityService
+    .updateCommand(attributes)
+    .execute();
+
+    if (command.success == false) {
+      const firstErrorMsg = command.errors[0].message;
+      alertHelper.showError(firstErrorMsg);
+      return;
+    }
+
+    const result = command.value;
+    if (result.success) {
+      alertHelper.showSnackBar("Successfully updated !", 1);
+      // refresh activities data
+      this.tempData = this.tempData.map(d => {
+        if(d.id == activityId) {
+          d.color = attributes.color;
+        }
+        
+        return d;
+      })
+      $('[data-toggle="tooltip"]').tooltip('hide');
+      this.showActivitiesData(this.tempData);
+      $('.activity-input-container').hide();
+      $('.activity-target-container').hide();
+      $('.activity-edit-container').show();
+      $('.btn-add-value').addClass('btn-mw')
+
+      $('#modalEditColor').modal('hide');
+    }
   }
   
   initialize() {
@@ -359,6 +499,22 @@ class HomeView {
     $("body").on('keyup', ".input-activity-value", function (evt) {
       evt.key === 'Enter' ? thisObject.handleClickButtonAddValue(null, $(this)) : null
     });
+    
+    $('body').on('click', '.btn-edit-hide', function(evt){
+      thisObject.handleClickButtonHideActivity(evt.target);;
+    })
+
+    $('body').on('click', '.btn-edit-color', function(evt){
+      thisObject.handleClickButtonColorActivity(evt.target);;
+    })
+
+    $('body').on('click', '#saveModalEdit', function(evt){
+      thisObject.handleClickButtonSaveModalEditColor(evt.target);
+    })
+
+    $('body').on('click', '#doneAction', function(evt){
+      thisObject.handleClickDoneButton(evt.target);
+    })
 
     const media = new MediaGalleryComponent();
     media.initiate();
@@ -376,6 +532,53 @@ class HomeView {
     $('body').on('click', '#targetBtn', function(evt){
       thisObject.handleClickTargetButton(evt)
     });
+
+    $('body').on('click', '#editBtn', function(evt){
+      thisObject.handleClickEditButton(evt)
+    });
+
+    $(document).ready(function(){
+      colorHelper.initColorInput('#modalEditColor input[type=color]', {
+        flat: true,
+        showInput: true,
+      })
+
+      const formView = new FormView();
+      $("body").on("click", ".btn-edit-activity", (evt) => {
+        const activityId = $(evt.target).closest('.activity-edit-container').attr('activityid');
+        const selected = thisObject.tempData.filter(d => d.id == activityId)[0];
+        formView.handleClickEditButton(evt.target, selected)
+      });
+
+      $("body").on("click", "#btn-update-activity", (evt) =>
+        formView.handleClickUpdateButton({
+          callbackSuccess: function(newAttributes){
+            const selected = thisObject.tempData.filter(d => d.id == newAttributes.id)[0];
+
+            thisObject.tempData = thisObject.tempData.map(d => {
+              if(d.id == selected.id) {
+                return {...d, ...newAttributes}
+              }
+              
+              return d;
+            })
+            $('[data-toggle="tooltip"]').tooltip('hide');
+            thisObject.showActivitiesData(thisObject.tempData);
+            $('.activity-input-container').hide();
+            $('.activity-target-container').hide();
+            $('.activity-edit-container').show();
+            $('.btn-add-value').addClass('btn-mw')
+          }
+        })
+      );
+
+      // $('#float-wrapper').sortable({
+      //     containerSelector: 'div.draggable',
+      //     itemSelector: 'div.draggable-item',
+      // })
+    })
+
+
   }
 }
 

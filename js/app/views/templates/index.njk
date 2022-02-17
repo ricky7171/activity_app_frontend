@@ -180,6 +180,22 @@
         border: 1px solid #d1d3e2;
         background-color: #fff;
     }
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        opacity: 0.5;
+        z-index: 2000;
+    }
+
+    .draggable .draggable-item.placeholder {
+        position: relative;
+    }
+    .draggable .draggable-item.placeholder:before {
+        position: absolute;
+    }
     </style>
 </head>
 
@@ -328,6 +344,13 @@
 </div>
 <script src="/vendor/spectrum-colorpicker/spectrum.js"></script>
 <script src="/js/app/pages/header.js"></script>
+
+<script>
+  $('[data-toggle="tooltip"]').tooltip()
+    $('body').tooltip({
+        selector: '[data-toggle="tooltip"]'
+    });
+</script>
 </body>
 
 </html>

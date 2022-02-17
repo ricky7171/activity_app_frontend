@@ -226,11 +226,12 @@ export default class FormView {
     }
   }
 
-  async handleClickEditButton(evt) {
+  async handleClickEditButton(evt, activityData = null) {
     const btn = $(evt);
-    const tr = btn.closest("tr");
-    const activityData = tr.data("activity");
-    console.log("🚀 ~ file: form.js ~ line 204 ~ FormView ~ handleClickEditButton ~ activityData", activityData)
+    if(!activityData) {
+      const tr = btn.closest("tr");
+      activityData = tr.data("activity");
+    }
     const modalEdit = $("#modalEdit");
 
     if(activityData.type == 'speedrun') {
@@ -269,7 +270,7 @@ export default class FormView {
     modalEdit.modal("show");
   }
 
-  async handleClickUpdateButton() {
+  async handleClickUpdateButton(options = {}) {
     const allValue = this.getValueFromForm('#modalEdit');
 
     if(allValue === false) {
@@ -295,7 +296,12 @@ export default class FormView {
     if (result.success) {
       alertHelper.showSnackBar("Successfully updated !", 1);
       // refresh activities data
-      this.fetchActivities();
+
+      if(typeof options.callbackSuccess == 'function') {
+        options.callbackSuccess(attributes)
+      } else {
+        this.fetchActivities();
+      }
 
       $("#modalEdit").modal("hide");
     }

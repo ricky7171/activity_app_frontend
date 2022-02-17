@@ -42,32 +42,32 @@ class ActivityService extends BusinessService {
   _getRulesForUpdateCommand(attr) {
     const rules = [
       new FieldRequiredRule("id", attr),
-      // new ValidTextFieldActivityRule(attr),
-      new FieldRequiredRule("type", attr),
-      new FieldRequiredRule("title", attr),
-      // new FieldRequiredRule("value", "value", attr),
-      // new FieldRequiredRule("target", attr),
-      new FieldRequiredRule("color", attr),
     ];
 
-    if(['speedrun', 'value', 'badhabit'].indexOf(attr.type) >= 0) {
-      rules.push(new FieldRequiredRule("value", attr));
-    }
-
-    if(attr.type !== 'alarm') {
-      rules.push(new FieldRequiredRule("target", attr));
-    }
-
-    if(['speedrun', 'count'].indexOf(attr.type) < 0) {
-      rules.push(new FieldRequiredRule("increase_value", attr))
-    }
-
-    if(attr.type == 'speedrun') {
-      rules.push(new FieldRequiredRule("criteria", attr))
-    }
-    
-    if(Number(window.setting.point_system)) {
-      rules.push(new FieldRequiredRule("point_weight", attr));
+    if(!attr.without_validation) {
+      rules.push(new FieldRequiredRule("type", attr))
+      rules.push(new FieldRequiredRule("title", attr))
+      rules.push(new FieldRequiredRule("color", attr))
+      
+      if(['speedrun', 'value', 'badhabit'].indexOf(attr.type) >= 0) {
+        rules.push(new FieldRequiredRule("value", attr));
+      }
+  
+      if(attr.type !== 'alarm') {
+        rules.push(new FieldRequiredRule("target", attr));
+      }
+  
+      if(['speedrun', 'count'].indexOf(attr.type) < 0) {
+        rules.push(new FieldRequiredRule("increase_value", attr))
+      }
+  
+      if(attr.type == 'speedrun') {
+        rules.push(new FieldRequiredRule("criteria", attr))
+      }
+      
+      if(Number(window.setting.point_system)) {
+        rules.push(new FieldRequiredRule("point_weight", attr));
+      }
     }
     
     return Promise.resolve(rules);
