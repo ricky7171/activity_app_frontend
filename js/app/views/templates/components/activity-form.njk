@@ -5,7 +5,7 @@
         <select class="form-control" name="type" style="width:auto;">
             <option value="value">Number Count</option>
             <option value="count">Text Count</option>
-            <option value="speedrun">Speedrun</option>
+            <option value="speedrun">Stopwatch</option>
             {# <option value="alarm">Alarm</option> #}
             <option value="badhabit">Bad Habit</option>
         </select>
@@ -27,13 +27,22 @@
     <label for="value">Value</label>
     <input type="number" name="value" class="form-control" placeholder="Activity Default Value">
 </div>
-<div class="form-group d-flex flex-nowrap align-items-center value-speedrun-container" style="display: none !important;">
-    <label for="value">Target Duration</label>
-    <div class="d-flex">
-        <input type="number" placeholder="h" name="hour" class="form-control" style="width: 70px">
-        <input type="number" placeholder="m" name="minute" class="form-control" style="width: 70px">
-        <input type="number" placeholder="s" name="second" class="form-control" style="width: 70px">
-        <input type="number" placeholder="ms" name="millisecond" class="form-control" style="width: 70px">
+<div class="value-speedrun-container" style="display: none !important;">
+    <div class="form-group d-flex flex-nowrap align-items-center">
+        <label for="value">Target Duration</label>
+        <div class="d-flex">
+            <input type="number" placeholder="h" name="hour" class="form-control" style="width: 70px">
+            <input type="number" placeholder="m" name="minute" class="form-control" style="width: 70px">
+            <input type="number" placeholder="s" name="second" class="form-control" style="width: 70px">
+            <input type="number" placeholder="ms" name="millisecond" class="form-control" style="width: 70px">
+        </div>
+    </div>
+    <div class="form-group d-flex flex-nowrap align-items-center">
+        <label for="value">Criteria</label>
+        <select name="criteria" class="form-control">
+            <option value="longer" selected>Longer Better</option>
+            <option value="shorter">Shorter Better</option>
+        </select>
     </div>
 </div>
 <div class="form-group d-flex flex-nowrap align-items-center target-container">

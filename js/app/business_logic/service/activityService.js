@@ -28,6 +28,10 @@ class ActivityService extends BusinessService {
       rules.push(new FieldRequiredRule("increase_value", attr))
     }
 
+    if(attr.type == 'speedrun') {
+      rules.push(new FieldRequiredRule("criteria", attr))
+    }
+
     return Promise.resolve(rules);
   }
 
@@ -52,6 +56,10 @@ class ActivityService extends BusinessService {
 
     if(['speedrun', 'count'].indexOf(attr.type) < 0) {
       rules.push(new FieldRequiredRule("increase_value", attr))
+    }
+
+    if(attr.type == 'speedrun') {
+      rules.push(new FieldRequiredRule("criteria", attr))
     }
     
     return Promise.resolve(rules);

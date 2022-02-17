@@ -68,10 +68,10 @@ class HomeView {
     function changeColorBtnActivity(color, el) {
       if (color) {
         el.find(".btn-add-value").css("background-color", color);
-        el.find(".btn-add-value").css(
-          "color",
-          colorHelper.isDark(color) ? "#ffffff" : "#000000"
-        );
+        // el.find(".btn-add-value").css(
+        //   "color",
+        //   colorHelper.isDark(color) ? "#ffffff" : "#000000"
+        // );
       } else {
         el.find(".btn-add-value").css("background-color", "");
         el.find(".btn-add-value").css("color", "");
