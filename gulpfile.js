@@ -112,6 +112,12 @@ function modules(cb) {
       ],
       dest: config.DESTINATION_PATH+'/vendor/jquery',
     },
+    touchDnd: {
+      source: [
+        './node_modules/touch-dnd/*',
+      ],
+      dest: config.DESTINATION_PATH+'/vendor/touch-dnd',
+    },
     sweetalert2: {
       source: './node_modules/sweetalert2/dist/**/*',
       dest: config.DESTINATION_PATH+'/vendor/sweetalert2'

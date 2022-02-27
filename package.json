@@ -76,6 +76,7 @@
         "spectrum-colorpicker": "^1.8.1",
         "sweetalert2": "^11.0.19",
         "tinycolor2": "^1.4.2",
+        "touch-dnd": "^1.2.1",
         "vinyl": "^2.2.1",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"
