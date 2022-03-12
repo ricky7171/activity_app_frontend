@@ -448,6 +448,16 @@ export default class FormView {
         handleChange(this)
       })
   }
+
+  // showPointForm() {
+    // if(window.setting && Number(window.setting.point_system)) {
+    //   console.log('show point form')
+    //   $('.point-system-form').show();
+    // } else {
+    //   $('.point-system-form').hide();
+    //   console.log('hide point form')
+    // }
+  // }
   
   initialize() {
     console.log('==== initializeFORM =====')
@@ -486,23 +496,21 @@ export default class FormView {
 // window.isActivityInitialized = typeof window.isActivityInitialized == 'undefined' ? null : window.isActivityInitialized;
 
 jQuery(async function ($) {
+  const formView = new FormView();
   if(!window.isActivityInitialized && $('#activity_table').length) {
-    new FormView().initialize();
+    formView.initialize();
 
     window.isActivityInitialized = true;
   }
 
-  if(!window.setting && !window.settingInterval) {
-    window.settingInterval = setInterval(function(){
-      if(window.setting) {
-        console.log('ketemu ')
-        window.clearInterval(window.settingInterval);
-        if(window.setting && Number(window.setting.point_system)) {
-          $('.point-system-form').show();
-        } else {
-          $('.point-system-form').hide();
-        }
-      } 
-    }, 500)
-  }
+  // formView.showPointForm();
+
+  // if(!window.setting && !window.settingInterval) {
+  //   window.settingInterval = setInterval(function(){
+  //     if(window.setting) {
+  //       window.clearInterval(window.settingInterval);
+  //       formView.showPointForm();
+  //     } 
+  //   }, 500)
+  // }
 });

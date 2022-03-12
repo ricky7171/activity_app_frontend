@@ -25,7 +25,9 @@ class GlobalView {
 
       if (result.response && result.response.data) {
         window.setting = result.response.data;
-
+        window.localStorage.setItem('SETTING_ACTIVITY', JSON.stringify(window.setting));
+        this.onSettingInitialized();
+        
         if(Number(window.setting.point_system)) {
           $('.section-point-menu').show();
         } else {
@@ -35,6 +37,18 @@ class GlobalView {
     }
   }
 
+  onSettingInitialized() {
+    if(window.setting) {
+      if(Number(window.setting.point_system)) {
+        console.log('show point form')
+        $('.point-system-form').show();
+      }
+    } else {
+      $('.point-system-form').hide();
+      console.log('hide point form')
+    }
+  }
+  
   initialize() {
     this.changeReportTextToCurrentMonth();
     this.setSettingObject();
@@ -56,7 +70,8 @@ jQuery(async function () {
     window.location.replace(`${window.location.origin}/login.html`);
   })
   
-  new GlobalView().initialize();
+  const globalView = new GlobalView();
+  globalView.initialize();
 
   if(!window.setting) {
     var localSetting = window.localStorage.getItem('SETTING_ACTIVITY');
@@ -66,11 +81,5 @@ jQuery(async function () {
     window.setting = localSetting
   }
 
-  if(window.setting) {
-    if(Number(window.setting.point_system)) {
-      $('.section-point-menu').show();
-    } else {
-      $('.section-point-menu').hide();
-    }
-  }
+  globalView.onSettingInitialized();
 });

@@ -89,8 +89,8 @@ class HomeView {
           placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field',
           score_target: `${activityData.score} / ${activityData.target}`,
           color: activityData.color,
-          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
-          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
+          colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
+          titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -127,8 +127,8 @@ class HomeView {
           increase_value: activityData.increase_value,
           score_target: `${activityData.score} / ${activityData.target}`,
           color: activityData.color,
-          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
-          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
+          colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
+          titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -147,8 +147,8 @@ class HomeView {
           value_activity_html: valueActivityHtml,
           score_target: `${activityData.score} / ${activityData.target}`,
           color: activityData.color,
-          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
-          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
+          colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
+          titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
         };
   
         // modify template change color of button
@@ -172,8 +172,8 @@ class HomeView {
           activity_id: activityData.id,
           score_target: `${activityData.score} / ${activityData.target}`,
           color: activityData.color,
-          colorBtnHide: activityData.is_hide ? 'text-primary' : '',
-          titleBtnHide: activityData.is_hide ? 'Show' : 'Hide',
+          colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
+          titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
         };
   
         // modify template change color of button
@@ -343,12 +343,14 @@ class HomeView {
 
   handleClickTargetButton(evt) {
     if($('.activity-input-container').is(':hidden')) {
-      $('.activity-input-container').show();
-      $('.activity-target-container').hide();
+      // $('.activity-input-container').show();
+      // $('.activity-target-container').hide();
+      this.toggleActivityPage('input', true)
       $('#targetBtn').html('Target');
     } else {
-      $('.activity-input-container').hide();
-      $('.activity-target-container').show();
+      // $('.activity-input-container').hide();
+      // $('.activity-target-container').show();
+      this.toggleActivityPage('target', true)
       $('#targetBtn').html('Hide Target');
     }
   }
@@ -364,12 +366,11 @@ class HomeView {
 
     $('.btn-add-value').addClass('btn-mw')
 
-    $('.activity-input-container').hide();
-    $('.activity-target-container').hide();
-    $('.activity-edit-container').show();
+    this.toggleActivityPage('edit', true)
   }
 
   handleClickDoneButton(evt) {
+    this.disableDraggable();
     $('#titleSection').hide();
     
     $('.btn-section-action').show();
@@ -379,9 +380,13 @@ class HomeView {
 
     $('.btn-add-value').removeClass('btn-mw')
 
-    $('.activity-input-container').show();
-    $('.activity-target-container').hide();
-    $('.activity-edit-container').hide();
+    // $('.activity-input-container').show();
+    // $('.activity-target-container').hide();
+    // $('.activity-edit-container').hide();
+    // this.toggleActivityPage('input', true)
+    this.is_hide = false;
+    window.asyik = this.tempData
+    this.handleClickSeeAllButton();
   }
 
   async handleClickButtonHideActivity(evt) {
@@ -480,6 +485,122 @@ class HomeView {
       $('#modalEditColor').modal('hide');
     }
   }
+
+  async updateAfterDrag(wrapper) {
+    const value = this.getCurrentPositionActivity(wrapper);
+    const resp = await this.activityService.updatePositionCommand(value).execute();
+    if(resp.success) {
+      this.tempData = this.tempData.map(data => ({
+        ...data,
+        position: value.indexOf(data.id) < 0 ? data.position : value.indexOf(data.id),
+      })).sort((a,b) => a.position - b.position)
+
+      window.hasilUpdate = ({
+        value,
+        tempData: this.tempData,
+      })
+    }
+  }
+  
+  getCurrentPositionActivity(wrapper) {
+    return $(`${wrapper} .draggable-item`).map((idx, el) => Number($(el).attr('data-id'))).toArray()
+  }
+  
+  enableDraggable() {
+    $('body').addClass('scroll-contain')
+    
+    if(!$('.row-activity').hasClass('draggable-item')) {
+      $('.row-activity').addClass('draggable-item')
+    }
+
+    if(!$('.row-activity').hasClass('sortable-initialized')) {
+      $('#float-wrapper').sortable({ 
+        accept: '*',
+        activeClass: '',
+        cancel: '',
+        connectWith: false,
+        disabled: false,
+        forcePlaceholderSize: false,
+        handle: false,
+        initialized: false,
+        items: 'div.draggable-item',
+        placeholder: 'placeholder',
+        placeholderTag: null,
+        receiveHandler: null
+      }).off('sortable:update').on('sortable:update', (...args) => this.updateAfterDrag('#float-wrapper'))
+
+      $('#text-wrapper').sortable({ 
+        accept: '*',
+        activeClass: '',
+        cancel: '',
+        connectWith: false,
+        disabled: false,
+        forcePlaceholderSize: false,
+        handle: false,
+        initialized: false,
+        items: 'div.draggable-item',
+        placeholder: 'placeholder',
+        placeholderTag: null,
+        receiveHandler: null
+      }).off('sortable:update').on('sortable:update', (...args) => this.updateAfterDrag('#text-wrapper'))
+
+      $('.row-activity').addClass('sortable-initialized')
+    }
+    
+  }
+
+  disableDraggable() {
+    $('body').removeClass('scroll-contain')
+
+    $('.row-activity').removeClass('draggable-item')
+
+    if($('.row-activity').hasClass('sortable-initialized')) {
+      $('.row-activity').removeClass('sortable-initialized')
+      $('#float-wrapper').sortable('destroy')
+      $('#text-wrapper').sortable('destroy')
+    }
+  }
+
+  async handleClickRearrangeButton(evt) {
+    $('#titleSection').find('h3').html('Rearrange');
+    $('#titleSection').show();
+    
+    $('.btn-section-action').hide();
+    $('#doneAction').show();
+
+    this.showActivitiesData(this.tempData)
+
+    this.toggleActivityPage('rearrange', true)
+
+    this.enableDraggable()
+  }
+
+  toggleActivityPage(targetKey, visible) {
+    const keyList = {
+      input: '.activity-input-container',
+      target: '.activity-target-container',
+      edit: '.activity-edit-container', 
+      rearrange: '.activity-rearrange-container'
+    };
+
+    Object.keys(keyList).forEach((key) => {
+      const className = keyList[key];
+      
+      if(key === targetKey) {
+        if(visible) {
+          $(className).show();
+        } else {
+          $(className).hide();
+        }
+      } else {
+        if(visible) {
+          $(className).hide();
+        } else {
+          $(className).show()
+        }
+      }
+    })
+  }
   
   initialize() {
     var thisObject = this;
@@ -535,6 +656,11 @@ class HomeView {
 
     $('body').on('click', '#editBtn', function(evt){
       thisObject.handleClickEditButton(evt)
+    });
+
+    
+    $('body').on('click', '#rearrangeBtn', function(evt){
+      thisObject.handleClickRearrangeButton(evt)
     });
 
     $(document).ready(function(){

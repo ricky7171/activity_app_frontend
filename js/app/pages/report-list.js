@@ -188,7 +188,7 @@ class ReportListView {
             "target" : activity["target"],
             "score" : activity["score"],
             "count" : activity["count"],
-            "point" : activity["point"],
+            "point" : activity["point"] === null ? 'N/A' : activity["point"],
             "redscore" : activity['is_red'],
             "redcount" : activity.type == 'speedrun' ? activity['is_red_count'] : false,
         });
@@ -270,7 +270,7 @@ class ReportListView {
         average_time: detailActivity["score"],
         count: detailActivity["count"],
         leftStyle: leftStyle,
-        point: detailActivity["point"],
+        point: detailActivity["point"] === null ? 'N/A' : detailActivity["point"],
       })
     );
     $("#btnBack").show();

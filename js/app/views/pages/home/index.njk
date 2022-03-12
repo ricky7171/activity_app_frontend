@@ -10,7 +10,8 @@
                 <h3 class="font-weight-bold text-dark">Edit</h3>
             </div>
         </div>
-        <div id="buttonSection" class="mb-3 text-right">
+        <div id="buttonSection" class="mb-3 text-right" style="white-space: nowrap;">
+            <button class="btn btn-link btn-section-action" id="rearrangeBtn" type="button">Rearrange</button>
             <button class="btn btn-link btn-section-action" id="editBtn" type="button">Edit</button>
             <button class="btn btn-link btn-section-action" id="targetBtn" type="button">Target</button>
             <button class="btn btn-link btn-section-action" id="seeAllActivity" type="button">See All</button>
@@ -259,12 +260,17 @@
     background: #ddd;
 }
 
+
+.btn-step {
+    margin: 0 !important;
+}
+
 .activity-input-float button.step-up {
-    right:0;
+    right:10px;
 }
 
 .activity-input-float button.step-down {
-    left:0;
+    left:10px;
 }
 
 .row-activity-float .btn, .btn-mw {
@@ -290,6 +296,22 @@
     font-size: 23px;
     padding: 0 10px;
 }
+
+.activity-rearrange-container, .activity-rearrange-container * {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+.activity-rearrange-container:active, .activity-rearrange-container *:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}
+.scroll-contain {
+    overscroll-behavior: contain;
+}
 </style>
 {%endblock header %}
 
@@ -297,7 +319,7 @@
 <!-- Template -->
 
 <script type="text/template" data-template="row-activity-float">
-    <div class="draggable-item row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0">
+    <div class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center">
                 <div class="input-group input-activity-group">
@@ -306,10 +328,10 @@
                         <button type="button" class="btn btn-primary btn-add-value border-0" role="button">${title}</button>
                     </div>
                 </div>
-                <div class="changepos-btn-wrapper">
+                {# <div class="changepos-btn-wrapper">
                     <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
                     <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div>
+                </div> #}
             </div>
         </div>
     </div>
@@ -317,7 +339,7 @@
 
 
 <script type="text/template" data-template="row-activity-speedrun">
-    <div class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0">
+    <div class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center">
                 <div class="input-group input-activity-group">
@@ -351,22 +373,25 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="activity-rearrange-container h-100" style="display:none">
+                            <div class="form-control border border-1 input-activity-value h-100 text-center bg-gray-200" value=''></div>
+                        </div>
                     </div>
                     <div class="input-group-append">
                         <button type="button" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</button>
                     </div>
                 </div>
-                <div class="changepos-btn-wrapper">
+                {# <div class="changepos-btn-wrapper">
                     <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
                     <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div>
+                </div> #}
             </div>
         </div>
     </div>
 </script>
 
 <script type="text/template" data-template="row-activity-textfield">
-    <div class="row mb-3 row-activity row-activity-textfield">
+    <div class="row mb-3 row-activity row-activity-textfield" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center"> 
                 <div class="input-group input-activity-group">
@@ -391,14 +416,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="activity-rearrange-container form-control border border-1 input-activity-value h-100 text-center bg-gray-200" style="display:none">${placeholder}</div>
                     <div class="input-group-append">
                         <button class="btn btn-primary btn-add-value border-0" type="button">${title}</button>
                     </div>
                 </div>
-                <div class="changepos-btn-wrapper">
+                {# <div class="changepos-btn-wrapper">
                     <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
                     <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div>
+                </div> #}
             </div>
         </div>
     </div>
@@ -432,6 +458,9 @@
                 </div>
             </div>
         </div>
+        <div class="activity-rearrange-container h-100" style="display:none">
+            <div class="form-control border border-1 input-activity-value h-100 text-center bg-gray-200">${value}</div>
+        </div>
     </div>
 </script>
 
@@ -459,6 +488,9 @@
                 </button>
             </div>
         </div>
+    </div>
+    <div class="activity-rearrange-container w-50" style="flex: 1 1 auto; display:none">
+        <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center">${value}</div>
     </div>
 </script>
 
@@ -503,5 +535,5 @@
     </div>
 </li>
 </script>
-<script src="js/app/pages/index.js"></script>
+<script src="js/app/pages/index.js?v=1"></script>
 {% endblock footer %}
