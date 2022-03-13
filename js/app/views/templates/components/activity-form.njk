@@ -23,9 +23,19 @@
     <label for="color">Color</label>
     <input type="color" name="color" class="form-control" placeholder="Color" value="#3987fd">
 </div>
-<div class="form-group d-flex flex-nowrap align-items-center value-container">
-    <label for="value">Value</label>
-    <input type="number" name="value" class="form-control" placeholder="Activity Default Value">
+<div class="row"> 
+    <div class="col-9">
+        <div class="form-group d-flex flex-nowrap align-items-center value-container">
+            <label for="value">Value</label>
+            <input type="number" name="value" class="form-control" placeholder="Activity Default Value">
+        </div>
+    </div>
+    <div class="col-3 p-0">
+        <div class="form-group form-check form-can-change form-check-inline checkbox-lg">
+            <input type="checkbox" name="is_editable" class="form-check-input" checked>
+            <label class="form-check-label" for="is_editable" >Editable</label>
+        </div>
+    </div>
 </div>
 <div class="value-speedrun-container" style="display: none !important;">
     <div class="form-group d-flex flex-nowrap align-items-center">
@@ -46,7 +56,7 @@
     </div>
 </div>
 <div class="form-group d-flex flex-nowrap align-items-center target-container">
-    <label for="target">Target</label>
+    <label for="target">Monthly Target</label>
     <input type="number" name="target" class="form-control" min="50" placeholder="Count Target">
 </div>
 <div class="form-group d-flex flex-nowrap align-items-center increase-value-container">
@@ -60,7 +70,8 @@
         <option value="0" selected>No</option>
     </select>
 </div>
-<div class="point-system-form" style="display:none">
+<div class="point-system-form mt-4" style="display:none">
+    <h4 class="font-weight-bold">Point System</h4>
     <div class="form-group d-flex flex-nowrap align-items-center">
         <label for="value">Bonus Value</label>
         <input type="number" name="bonus_value" class="form-control" placeholder="Bonus Value" value="">
@@ -73,8 +84,4 @@
         <label for="value">Point Weight</label>
         <input type="number" name="point_weight" class="form-control" placeholder="Point Weight" value="1">
     </div>
-</div>
-<div class="form-group form-check form-can-change form-check-inline checkbox-lg">
-    <input type="checkbox" name="is_editable" class="form-check-input" checked>
-    <label class="form-check-label" for="is_editable" >Can change value</label>
 </div>

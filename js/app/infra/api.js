@@ -189,6 +189,11 @@ var listApi = {
         url : server + "/api/point-transactions/bulkDelete",
         withToken : false,
     },
+    "auth.profile": {
+        method: 'GET',
+        url : server + "/api/auth/profile",
+        withToken : false,
+    }
 };
 
 function isIterable(variable) {

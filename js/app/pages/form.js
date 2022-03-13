@@ -386,7 +386,7 @@ export default class FormView {
             valueLabelEl.html('Default Input')
             targetContainerEl.attr('style', '');
             increaseValueContainerEl.attr('style', '');
-            targetLabelEl.html('Target');
+            targetLabelEl.html('Monthly Target');
             
             targetEl.prop('placeholder', 'Count Target');
             break;
@@ -398,7 +398,7 @@ export default class FormView {
             targetContainerEl.attr('style', '');
             targetEl.prop('placeholder', 'Count Target');
             increaseValueContainerEl.attr('style', 'display:none !important');
-            targetLabelEl.html('Target');
+            targetLabelEl.html('Monthly Target');
             break;
   
           case 'badhabit':
@@ -412,7 +412,7 @@ export default class FormView {
             increaseValueContainerEl.attr('style', '');
             
             targetEl.prop('placeholder', 'Count Target');
-            targetLabelEl.html('Target');
+            targetLabelEl.html('Monthly Target');
             break;
         
           case 'speedrun':
@@ -432,7 +432,7 @@ export default class FormView {
             canChangeChekbox.attr('style', 'display: none !important');
             targetContainerEl.attr('style', 'display: none !important');
             increaseValueContainerEl.attr('style', '');
-            targetLabelEl.html('Target');
+            targetLabelEl.html('Monthly Target');
             break;
   
           default:

@@ -1,10 +1,13 @@
 import * as dateTimeHelper from "./../core/datetime_helper";
 import SettingService from "../business_logic/service/settingService";
 import SettingDataProxy from "../data_proxy/settingDataProxy";
+import AuthService from "../business_logic/service/authService";
+import AuthDataProxy from "../data_proxy/authDataProxy";
 
 class GlobalView {
   constructor() {
     this.settingService = new SettingService(new SettingDataProxy());
+    this.authService = new AuthService(new AuthDataProxy());
   }
 
   changeReportTextToCurrentMonth() {
@@ -48,10 +51,36 @@ class GlobalView {
       console.log('hide point form')
     }
   }
+
+  async getProfile() {
+    const command = await this.authService.getProfileCommand().execute();
+    if (command.success) {
+      const result = command.value;
+      const userDetail = result.response.data;
+
+      window.localStorage.setItem('APP_USER', btoa(JSON.stringify(userDetail)))
+      
+      this.setUserDetail(userDetail)
+    }
+  }
+
+  setUserDetail(userDetail) {
+    $('#userDropdown').find('#userName').html(userDetail.name);
+    $('#userDropdown').find('#userImg').attr('src', userDetail.avatar || `${window.location.origin}/assets/img/avatar.png`);
+    const point = Number(userDetail.total_points);
+    if(point < 0) {
+      $('#userTotalPoint').attr('class', 'text-danger')
+    } else {
+      $('#userTotalPoint').attr('class', 'text-success')
+    }
+    
+    $('#userTotalPoint').html(point);
+  }
   
   initialize() {
     this.changeReportTextToCurrentMonth();
     this.setSettingObject();
+    this.getProfile();
   }
 }
 
@@ -59,10 +88,6 @@ jQuery(async function () {
   if(!window.localStorage.getItem('APP_USER') || !window.localStorage.getItem('APP_SID')) {
     window.location.replace(`${window.location.origin}/login.html`);
   }
-  
-  const userDetail = JSON.parse(atob(window.localStorage.getItem('APP_USER')))
-  $('#userDropdown').find('#userName').html(userDetail.name);
-  $('#userDropdown').find('#userImg').attr('src', userDetail.avatar || `${window.location.origin}/assets/img/avatar.png`);
   
   $('#btnLogout').click(function(){
     window.localStorage.removeItem('APP_USER');
@@ -73,6 +98,9 @@ jQuery(async function () {
   const globalView = new GlobalView();
   globalView.initialize();
 
+  const userDetail = JSON.parse(atob(window.localStorage.getItem('APP_USER')))
+  globalView.setUserDetail(userDetail)
+  
   if(!window.setting) {
     var localSetting = window.localStorage.getItem('SETTING_ACTIVITY');
     if(localSetting) {

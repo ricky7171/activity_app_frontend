@@ -312,6 +312,9 @@
 .scroll-contain {
     overscroll-behavior: contain;
 }
+.form-control {
+    height: 40px !important;
+}
 </style>
 {%endblock header %}
 
@@ -355,8 +358,8 @@
                         <div class="activity-target-container h-100" style="display:none">
                             <input class="form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled>
                         </div>
-                        <div class="activity-edit-container h-100" activityId='${activity_id}' style="display:none">
-                            <div class="form-control border border-1 input-activity-value h-100 text-center d-flex align-items-center justify-content-between">
+                        <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
+                            <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
                                 <div>
                                     ${value}
                                 </div>
@@ -398,8 +401,8 @@
                     <input type="text" class="activity-input-container form-control border border-1 input-activity-value h-100" activityId='${activity_id}' placeholder="${placeholder}" aria-label="" style="${style}">
                     <input class="activity-target-container form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled style="display:none">
                     
-                    <div class="activity-edit-container form-control border border-1 input-activity-value h-100 text-center" activityId='${activity_id}' style="display:none">
-                        <div class="d-flex align-items-center justify-content-between">
+                    <div class="activity-edit-container form-control border border-1 input-activity-value text-center" activityId='${activity_id}' style="display:none">
+                        <div class="h-100 d-flex align-items-center justify-content-between">
                             <div>
                                 ${value}
                             </div>
@@ -440,8 +443,8 @@
         <div class="activity-target-container h-100" style="display:none">
             <input class="form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled>
         </div>
-        <div class="activity-edit-container h-100" activityId='${activity_id}' style="display:none">
-            <div class="form-control border border-1 input-activity-value h-100 text-center d-flex align-items-center justify-content-between">
+        <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
+            <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
                 <div>
                     ${value}
                 </div>
@@ -466,13 +469,13 @@
 
 <script type="text/template" data-template="disabled-value-activity-template">
     <div class="activity-input-container w-50" style="flex: 1 1 auto;" >
-        <p class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center" activityId='${activity_id}' value='${value}' style="${style}">${value}</p>
+        <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center" activityId='${activity_id}' value='${value}' style="${style}">${value}</div>
     </div>
     <div class="activity-target-container w-50" style="flex: 1 1 auto; display:none">
-        <p class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center">${score_target}</p>
+        <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center">${score_target}</div>
     </div>
-    <div class="activity-edit-container h-100" activityId='${activity_id}' style="flex: 1 1 auto; display:none">
-        <div class="form-control border border-1 input-activity-value h-100 text-center d-flex align-items-center justify-content-between">
+    <div class="activity-edit-container" activityId='${activity_id}' style="flex: 1 1 auto; display:none">
+        <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
             <div>
                 ${value}
             </div>
