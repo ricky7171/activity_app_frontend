@@ -33,6 +33,7 @@ class SettingView {
         // set value
         $("#toggleBeepSound").prop("checked", setting.beep_sound == 1);
         $("#togglePointSystem").prop("checked", setting.point_system == 1);
+        $("#toggleParentalInspection").prop("checked", setting.parental_inspection == 1);
       }
     }
   }

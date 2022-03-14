@@ -26,8 +26,8 @@ axios.interceptors.response.use((response) => response, (error) => {
 // export const server = "https://backend.myrecord.club";
 // export const server = "https://stagingbackendrecord.gofitness.club";
 // export const server = "https://activityapi.demo.masuk.id";
-export const server = "https://stagingbackend.myrecord.club";
-// export const server = "http://localhost:8000";
+// export const server = "https://stagingbackend.myrecord.club";
+export const server = "http://localhost:8000";
 
 var listApi = {
     "activity.get": {

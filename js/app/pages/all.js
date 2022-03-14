@@ -36,6 +36,12 @@ class GlobalView {
         } else {
           $('.section-point-menu').hide();
         }
+
+        if(Number(window.setting.parental_inspection)) {
+          $('.section-parentalInspection-menu').show();
+        } else {
+          $('.section-parentalInspection-menu').hide();
+        }
       }
     }
   }
