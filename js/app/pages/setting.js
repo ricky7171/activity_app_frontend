@@ -44,12 +44,10 @@ class SettingView {
     this.tableApplicationLog.hide();
     loadingHelper.toggleLoading(true);
     const command = await this.applicationLogService.getAllCommand().execute();
-    console.log(command);
     loadingHelper.toggleLoading(false);
 
     if (command.success) {
       const applicationLogData = command.value;
-      console.log(applicationLogData);
       if (applicationLogData.success) {
         this.showApplicationLogData(applicationLogData.response.data);
         this.tableApplicationLog.show();
@@ -136,15 +134,34 @@ class SettingView {
     }
   }
 
+  async handleChangeParentalInspection(evt) {
+    const value = $(evt.target).prop("checked") ? 1 : 0;
+
+    const command = await this.settingService.saveCommand('parental_inspection', value).execute();
+    if (command.success) {
+      const result = command.value;
+      const localSetting = window.setting;
+      
+      if (result.success) {
+        alertHelper.showSnackBar("Successfully saved !", 1);
+        if(value) {
+          $('.section-parentalInspection-menu').show();
+        } else {
+          $('.section-parentalInspection-menu').hide();
+        }
+
+        localSetting.parental_inspection = value;
+        this.updateLocalSetting(localSetting);
+      }
+    }
+  }
+
   async handleSubmitApplicationLog(evt) {
     // - gett data
     const attributes = {
       version : $("#application_log_version").val(),
       description : $("#application_log_description").val(),
     }
-
-    console.log("check attributes");
-    console.log(attributes);
 
     // - show loading
     loadingHelper.toggleLoading(true);
@@ -182,8 +199,6 @@ class SettingView {
     const modalEdit = $("#modalEditApplicationLog");
 
     // set form
-    console.log('check application log data');
-    console.log(applicationLogData);
     modalEdit.find("#version2").val(applicationLogData.version);
     modalEdit.find("#description2").val(applicationLogData.description);
     modalEdit.find("input[name=application_log_id]").val(applicationLogData.id);
@@ -200,10 +215,7 @@ class SettingView {
     const command = await this.applicationLogService
       .updateCommand(attributes)
       .execute();
-    console.log(
-      "🚀 ~ file: form.js ~ line 187 ~ FormView ~ handleClickUpdateApplicationLog ~ command",
-      command
-    );
+
     if (command.success == false) {
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
@@ -262,6 +274,10 @@ class SettingView {
 
     $("#togglePointSystem").on("change", (evt) =>
       this.handleChangePointSystem(evt)
+    );
+
+    $("#toggleParentalInspection").on("change", (evt) =>
+      this.handleChangeParentalInspection(evt)
     );
 
     $("body").on("click", "#submit-application-log-btn", (evt) => 
