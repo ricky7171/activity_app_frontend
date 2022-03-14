@@ -62,7 +62,7 @@ export default class FormView {
     var rowSpeedrunTpl = $('script[data-template="row-activity-speedrun"').text();
 
     //generate row activity, then put it on .list-activity
-    $(".list-activity").replaceWith(
+    $(".list-activity").html(
       activities.filter(v => v.type !== 'speedrun').map(function (activityData, i) {
         var html = templateHelper.render(rowActivitiesTpl, {
           type: activityData["type_text"],
@@ -84,7 +84,7 @@ export default class FormView {
       })
     );
 
-    $(".list-activity-speedrun").replaceWith(
+    $(".list-activity-speedrun").html(
       activities.filter(v => v.type == 'speedrun').map(function (activityData, i) {
         var html = templateHelper.render(rowSpeedrunTpl, {
           type: activityData["type_text"],
