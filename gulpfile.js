@@ -129,6 +129,22 @@ function modules(cb) {
     tinyColor: {
       source: './node_modules/tinycolor2/dist/**/*',
       dest: config.DESTINATION_PATH+'/vendor/tinycolor2'
+    },
+    videoRecord: {
+      source: './node_modules/videojs-record/dist/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/videojs-record',
+    },
+    recordRtc: {
+      source: './node_modules/recordrtc/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/recordrtc',
+    },
+    webRtcAdapter: {
+      source: './node_modules/webrtc-adapter/out/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/webrtc-adapter',
+    },
+    videoJs: {
+      source: './node_modules/video.js/dist/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/videojs'
     }
   }
 
@@ -348,3 +364,4 @@ exports.serve = serve;
 exports.dev = dev;
 exports.copyPwa = copyPwa;
 exports.copyAssets = copyAssets;
+exports.modules = modules;

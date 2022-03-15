@@ -7,6 +7,29 @@ import CategoryDataProxy from "../../data_proxy/categoryDataProxy";
 import CategoryService from "../../business_logic/service/categoryService";
 import { chunkArray } from "../../business_logic/shared/utils";
 import { axios } from "../../infra/api";
+import { applyVideoWorkaround } from "../../core/browser_workarounds";
+
+function base64toBlob(base64Data, contentType) {
+  contentType = contentType || '';
+  var sliceSize = 1024;
+  var byteCharacters = atob(base64Data);
+  var bytesLength = byteCharacters.length;
+  var slicesCount = Math.ceil(bytesLength / sliceSize);
+  var byteArrays = new Array(slicesCount);
+
+  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+      var begin = sliceIndex * sliceSize;
+      var end = Math.min(begin + sliceSize, bytesLength);
+
+      var bytes = new Array(end - begin);
+      for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+          bytes[i] = byteCharacters[offset].charCodeAt(0);
+      }
+      byteArrays[sliceIndex] = new Uint8Array(bytes);
+  }
+  return new Blob(byteArrays, { type: contentType });
+}
+
 export default class MediaGalleryComponent {
   constructor() {
     this.mediaService = new MediaGalleryService(new MediaGalleryDataProxy());
@@ -146,17 +169,37 @@ export default class MediaGalleryComponent {
 
   async getValueForm(wrapper) {
     var attributes = {
-      type: wrapper.find('select[name=type]').val(),
+      type: null,
       category_id: wrapper.find('select[name=category_id]').val(),
     }
+
+    if(wrapper.find('select[name=type]:visible').length) {
+      attributes.type = wrapper.find('select[name=type]').val()
+    } else {
+      attributes.type = wrapper.find('input[name=type]').val()
+    }
+
+    const modalType = wrapper.find('[name=modal_type]').val();
+    console.log("🚀 ~ file: media-gallery .js ~ line 177 ~ MediaGalleryComponent ~ getValueForm ~ modalType", modalType)
+    
     if(attributes.type == 'youtube') {
       attributes.value = wrapper.find('input[name=youtube_link]').val();
     } else {
-      const files = wrapper.find('input[name=file]').prop('files');
-      if(files.length) {
-        attributes.file = files[0];
+      if(modalType === 'camera') {
+        if(attributes.type === 'image') {
+          attributes.file = base64toBlob(photoRecordPlayer.recordedData.substr(photoRecordPlayer.recordedData.indexOf(',')+1), 'image/png')
+        } else {
+          attributes.file = videoRecordPlayer.recordedData;
+        }
+      } else {
+        const files = wrapper.find('input[name=file]').prop('files');
+        if(files.length) {
+          attributes.file = files[0];
+        }
       }
     }
+    
+    console.log("🚀 ~ file: media-gallery.js ~ line 186 ~ MediaGalleryComponent ~ getValueForm ~ attributes", attributes)
 
     if(attributes.type == 'video') {
       const thumbnailSource = await getVideoCover(attributes.file, 1);
@@ -369,10 +412,99 @@ export default class MediaGalleryComponent {
     }
     
   }
+
+  async handleShownModalCamera() {
+    console.log('modal camera muncul')
+    
+    if(!window.photoRecordPlayer) {
+      this.initiateVideoAudio('image', 'myPhoto', 'photoRecordPlayer');
+    }
+
+    if(!window.videoRecordPlayer) {
+      this.initiateVideoAudio('video', 'myVideo', 'videoRecordPlayer');
+    }
+    
+    $('.vjs-device-button').click()
+  }
+
+  initiateVideoAudio(type, videoIdEl, playerName) {
+    console.log('akwekfask', {
+      type,
+      videoIdEl,
+      playerName,
+    })
+    applyVideoWorkaround();
+
+    var options = {
+      controls: true,
+      bigPlayButton: false,
+      width: 640,
+      height: 480,
+      fluid: false,
+      // aspectRatio: '9:16',
+      // fill: true,
+      responsive: true,
+      plugins: {
+          record: {
+              audio: true,
+              video: true,
+              debug: true,
+              maxLength: 60 * 30, // 30 minutes
+          }
+      }
+    };
+
+    if(type === 'image') {
+      options.plugins.record = {
+        ...options.plugins.record,
+        imageOutputType: 'dataURL',
+        imageOutputFormat: 'image/png',
+        imageOutputQuality: 0.92,
+        image: {
+          // image media constraints: set resolution of camera
+          width: { min: 640, ideal: 640, max: 1280 },
+          height: { min: 480, ideal: 480, max: 920 }
+        },
+      }
+    }
+
+    const player = videojs(videoIdEl, options, function() {
+        // print version information at startup
+        var msg = 'Using video.js ' + videojs.VERSION +
+            ' with videojs-record ' + videojs.getPluginVersion('record') +
+            ' and recordrtc ' + RecordRTC.version;
+        videojs.log(msg);
+    });
+    
+    // error handling
+    player.on('deviceError', function() {
+        console.log('device error:', player.deviceErrorCode);
+    });
+    
+    player.on('error', function(element, error) {
+        console.error(error);
+    });
+    
+    // user clicked the record button and started recording
+    player.on('startRecord', function() {
+        console.log('started recording!');
+    });
+    
+    // user completed recording and stream is available
+    player.on('finishRecord', function() {
+        // the blob object contains the recorded data that
+        // can be downloaded by the user, stored on server etc.
+        // console.log('finished recording: ', player.recordedData);
+    });
+
+    window[playerName] = player;
+
+  }
   
   initiate() {
+    const thisObject = this;
     this.handleChangeType($('.form-media-wrapper select[name=type]')[0]);
-    $('.form-media-wrapper select[name=type]').on('change', this.handleChangeType)
+    $('.form-media-wrapper [name=type]').on('change', this.handleChangeType)
     $('.form-media-wrapper input[name=file]').on('change', (evt) => this.generatePreview(evt.target))
     $('.form-media-wrapper input[name=youtube_link]').on('keyup change', (evt) => this.generatePreview(evt.target))
     $('.form-media-wrapper .btn-save-media').on('click', (evt) => {
@@ -407,9 +539,83 @@ export default class MediaGalleryComponent {
     this.fetchMediaGallery();
     this.fetchCategories();
 
+    $('#btnMediaImage').on('click', function() {
+      $('#modalFormMedia').find('#home-tab .modal-title').html('Upload Image');
+      $('#modalFormMedia').find('.video-type').hide();
+      $('#modalFormMedia').find('.image-type').show();
+
+      $('#modalFormMedia').find('input[name=type]').trigger('change');
+    })
+
+    $('#btnMediaVideo').on('click', function() {
+      $('#modalFormMedia').find('#home-tab .modal-title').html('Upload Video');
+      $('#modalFormMedia').find('.video-type').show();
+      $('#modalFormMedia').find('.image-type').hide();
+
+      $('#modalFormMedia').find('select[name=type]').val('video').trigger('change');
+    })
+
     // assign event to category actions
     $('body').on('click', '.btn-edit-category', (evt) => this.handleEditCategory(evt.target));
     $('body').on('click', '.btn-delete-category', (evt) => this.handleDeleteCategory(evt.target));
     $('body').on('click', '.btn-delete-media', (evt) => this.handleDeleteMedia(evt.target));
+
+    $('#modalFormMediaCamera').on('shown.bs.modal', (evt) => this.handleShownModalCamera(evt.target))
+    $('#modalFormMediaCamera').on('hidden.bs.modal', (evt) => {
+      $('#takePhoto').attr('class', 'btn btn-warning').html('<i class="fa fa-camera"></i> Take Photo')
+      $('#recordVideo').attr('class', 'btn btn-warning').html('<i class="fa fa-video"></i> Record Video')
+
+      $('#photoPlayer').find('.vjs-camera-button.vjs-icon-replay').click();
+      $('#videoPlayer').find('.vjs-record-button.vjs-icon-record-stop').click();
+    })
+
+    $('#recordVideo').off().on('click', function() {
+      $('#photoPlayer').hide();
+      $('#videoPlayer').show();
+      $('#modalFormMediaCamera').find('input[name=type]').val('video')
+
+      const currentState = $(this).data('state');
+      if(currentState === 'process') {
+        $(this).data('state', 'idle');
+        $(this).attr('class', 'btn btn-warning').html('<i class="fa fa-video"></i> Record Video')
+        // videoRecordPlayer.record().stop();
+        $('#videoPlayer').find('.vjs-record-button.vjs-icon-record-stop').click();
+      } else {
+        $(this).data('state', 'process');
+        $(this).attr('class', 'btn btn-danger').html('<i class="fa fa-stop-circle"></i> Stop Record')
+        // videoRecordPlayer.record().start();
+        $('#videoPlayer').find('.vjs-record-button.vjs-icon-record-start').click();
+      }
+      
+    })
+
+    $('#takePhoto').on('click', function() {
+      $('#photoPlayer').show();
+      $('#videoPlayer').hide();
+      $('#modalFormMediaCamera').find('input[name=type]').val('image')
+
+      const currentState = $(this).data('state');
+      if(currentState === 'process') {
+        $(this).data('state', 'idle');
+        $('#photoPlayer').find('.vjs-camera-button.vjs-icon-replay').click();
+        $(this).attr('class', 'btn btn-warning').html('<i class="fa fa-camera"></i> Take Photo')
+      } else {
+        photoRecordPlayer.record().start();
+        
+        $(this).data('state', 'process');
+        $(this).attr('class', 'btn btn-info').html('<i class="fa fa-camera"></i> Retake Photo')
+      }
+    })
+
+    $('.form-media-wrapper .btn-save-camera').on('click', (evt) => {
+      console.log('save camera')
+      this.handleSaveMedia(evt.target, () => {
+        if($('#modalFormMediaCamera').length) {
+          $('#modalFormMediaCamera').modal('hide');
+
+          this.fetchMediaGallery();
+        }
+      })
+    })
   }
 }
