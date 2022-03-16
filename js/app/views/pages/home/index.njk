@@ -37,7 +37,10 @@
                 </div>
             </div>
             <div>
-                <button class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-plus"></i></button>
+                {# <button class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-plus"></i></button> #}
+                <button class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMediaCamera"><i class="fa fa-camera"></i></button>
+                <button id="btnMediaImage" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-image"></i></button>
+                <button id="btnMediaVideo" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-video"></i></button>
                 <div class="modal fade" id="modalFormMedia" tabindex="-1" role="dialog" aria-labelledby="modalFormMediaLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -70,13 +73,17 @@
                                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                     <div class="form-media-wrapper">
                                         <div class="modal-body">
-                                            <div class="form-group">
-                                                <label>Type</label>
-                                                <select name="type" class="form-control">
-                                                    <option value="image" selected>Image</option>
-                                                    <option value="video">Video</option>
-                                                    <option value="youtube">Youtube</option>
-                                                </select>
+                                            <div class="video-type" style="display:none">
+                                                <div class="form-group">
+                                                    <label>Type</label>
+                                                    <select name="type" class="form-control">
+                                                        <option value="video" selected>Video</option>
+                                                        <option value="youtube">Youtube</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="image-type" style="display: none">
+                                                <input type="hidden" name="type" value="image" />
                                             </div>
                                             <div class="form-group">
                                                 <label>Category</label>
@@ -131,6 +138,49 @@
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal fade" id="modalFormMediaCamera" tabindex="-1" role="dialog" aria-labelledby="modalFormMediaCameraLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalFormMediaCameraLabel">Camera</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="form-media-wrapper">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select name="category_id" class="form-control">
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="modal_type" value="camera"/>
+                                    <input type="hidden" name="type" value=""/>
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div id="photoPlayer" class="player-container">
+                                            <video id="myPhoto" playsinline class="video-el video-js vjs-default-skin"></video>
+                                        </div>
+                                        <div id="videoPlayer" class="player-container" style="display:none">
+                                            <video id="myVideo" playsinline class="video-el video-js vjs-default-skin"></video>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <button type="button" class="btn btn-warning" id="takePhoto"><i class="fa fa-camera"></i> Take Photo</button>
+                                        <button type="button" class="btn btn-warning" id="recordVideo"><i class="fa fa-video"></i> Record Video</button>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary btn-save-camera">
+                                        Save changes
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -315,7 +365,26 @@
 .form-control {
     height: 40px !important;
 }
+.video-el {
+    background-color: #ddd;
+    width: 100% !important;
+}
+
+.video-js {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-container {
+    width: 100%;
+}
+.vjs-record-canvas canvas {
+    width: 100%;
+}
 </style>
+<link rel="stylesheet" href="vendor/videojs/video-js.min.css">
+<link rel="stylesheet" href="vendor/videojs-record/css/videojs.record.min.css">
 {%endblock header %}
 
 {% block footer %}
@@ -538,5 +607,9 @@
     </div>
 </li>
 </script>
+<script src="vendor/recordrtc/RecordRTC.min.js"></script>
+<script src="vendor/videojs/video.js"></script>
+<script src="vendor/videojs-record/videojs.record.js"></script>
+<script src="vendor/webrtc-adapter/adapter.js"></script>
 <script src="js/app/pages/index.js?v=1"></script>
 {% endblock footer %}
