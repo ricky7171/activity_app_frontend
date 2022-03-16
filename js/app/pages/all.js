@@ -49,12 +49,10 @@ class GlobalView {
   onSettingInitialized() {
     if(window.setting) {
       if(Number(window.setting.point_system)) {
-        console.log('show point form')
         $('.point-system-form').show();
       }
     } else {
       $('.point-system-form').hide();
-      console.log('hide point form')
     }
   }
 

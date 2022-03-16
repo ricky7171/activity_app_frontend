@@ -160,10 +160,12 @@ export default class MediaGalleryComponent {
     if(value == 'youtube') {
       wrapper.find('.file-media').hide();
       wrapper.find('.youtube-link-input').show();
+      wrapper.find('.media-input-dropzone').hide();
     } else {
       wrapper.find('.file-media').show();
       wrapper.find('.youtube-link-input').hide();
-      wrapper.find('.file-media').find('input[name=file]').prop('accept', `${value}/*`)
+      wrapper.find('.media-input-dropzone').show();
+      wrapper.find('input[type=file]').find('input[name=file]').prop('accept', `${value}/*`)
     }
   }
 
@@ -180,7 +182,6 @@ export default class MediaGalleryComponent {
     }
 
     const modalType = wrapper.find('[name=modal_type]').val();
-    console.log("🚀 ~ file: media-gallery .js ~ line 177 ~ MediaGalleryComponent ~ getValueForm ~ modalType", modalType)
     
     if(attributes.type == 'youtube') {
       attributes.value = wrapper.find('input[name=youtube_link]').val();
@@ -199,8 +200,6 @@ export default class MediaGalleryComponent {
       }
     }
     
-    console.log("🚀 ~ file: media-gallery.js ~ line 186 ~ MediaGalleryComponent ~ getValueForm ~ attributes", attributes)
-
     if(attributes.type == 'video') {
       const thumbnailSource = await getVideoCover(attributes.file, 1);
       attributes.thumbnail = thumbnailSource;
@@ -214,6 +213,8 @@ export default class MediaGalleryComponent {
     wrapper.find('input[name=file]').val('').trigger('change');
     wrapper.find('input[name=file]').prop('files', null);
     wrapper.find('.preview-area').css('background-image', '');
+
+    this.setPreviewDropZone(wrapper, null)
   }
 
   resetCategoryForm(wrapper) {
@@ -238,8 +239,13 @@ export default class MediaGalleryComponent {
         imageSource = URL.createObjectURL(attributes.thumbnail);
       }
     }
-  
-    wrapper.find('.preview-area').css('background-image', `url(${imageSource})`)
+    
+    if(attributes.type === 'image' || attributes.type === 'video') {
+      this.setPreviewDropZone(wrapper.find('.dropzone-container'), imageSource)
+    } else {
+      wrapper.find('.preview-area').css('background-image', `url(${imageSource})`)
+    }
+    
   }
 
   async handleSaveMedia(el, callback) {
@@ -333,6 +339,30 @@ export default class MediaGalleryComponent {
     $(el).prop('disabled', false);
   }
   
+
+  handleFileDropZone(container, files) {
+    if(files.length) {
+      const fileUrl = URL.createObjectURL(files[0]);
+
+      this.setPreviewDropZone(container, fileUrl);
+    } else {
+      this.setPreviewDropZone(container, '');
+    }
+  }
+
+  setPreviewDropZone(container, img) {
+    if(img) {
+      container.find('.dropzone-action').show();
+      container.find('.dropzone-info').hide();
+      container.find('.dropzone-area').css('background-image', `url(${img})`);
+    } else {
+      container.find('.dropzone-action').hide();
+      container.find('.dropzone-info').show();
+      container.find('.dropzone-area').css('background-image', '');
+      container.find('input[type=file]').val()
+    }
+  }
+  
   showDetail(el) {
     if($(el).is('img')) {
       el = $(el).closest('.media-content-item');
@@ -414,8 +444,6 @@ export default class MediaGalleryComponent {
   }
 
   async handleShownModalCamera() {
-    console.log('modal camera muncul')
-    
     if(!window.photoRecordPlayer) {
       this.initiateVideoAudio('image', 'myPhoto', 'photoRecordPlayer');
     }
@@ -428,11 +456,6 @@ export default class MediaGalleryComponent {
   }
 
   initiateVideoAudio(type, videoIdEl, playerName) {
-    console.log('akwekfask', {
-      type,
-      videoIdEl,
-      playerName,
-    })
     applyVideoWorkaround();
 
     var options = {
@@ -616,6 +639,63 @@ export default class MediaGalleryComponent {
           this.fetchMediaGallery();
         }
       })
+    })
+
+
+
+    // handle dropzone
+    $('.dropzone-area').on('click', function(e) {
+      e.stopPropagation()
+      const inputFile = $(this).find('input[type=file]')
+
+      inputFile.click();
+    })
+
+    $('.dropzone-area input[type=file]').on('click', function(e){
+      e.stopPropagation();
+    })
+
+    
+
+    $('.dropzone-area input[type=file]').on('change', function(e){
+      const files = e.target.files;
+      const container = $(this).closest('.dropzone-container')
+
+      thisObject.handleFileDropZone(container, files)
+    })
+
+    $('.dropzone-container .btn-cancel').on('click', function() {
+      const container = $(this).closest('.dropzone-container');
+
+      container.find('input[type=file]').val('');
+      
+      container.find('.dropzone-action').hide();
+      container.find('.dropzone-info').show();
+      container.find('.dropzone-area').css('background-image', '');
+    })
+
+    $('.dropzone-area').on('dragenter dragover dragleave drop', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    })
+
+    $('.dropzone-area').on('dragenter dragover', function(e) {
+      $(this).addClass('dropzone-hightlight');
+    })
+
+    $('.dropzone-area').on('dragleave drop', function(e) {
+      $(this).removeClass('dropzone-hightlight');
+    })
+
+    $('.dropzone-area').on('drop', function(e) {
+      const container = $(this).closest('.dropzone-container');
+      const dt = e.originalEvent.dataTransfer;
+      const files = dt.files;
+      container.find('input[type=file]')[0].files = files;
+
+      thisObject.generatePreview(e.target)
+      // thisObject.handleFileDropZone(container, files)
+      // thisObject.generatePreview
     })
   }
 }

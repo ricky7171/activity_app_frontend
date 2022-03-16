@@ -173,7 +173,6 @@ class PointTransactionView {
   }
 
   handleClickButtonCancelBulkDelete(evt) {
-    console.log("handleclickbuttoncancelbulkdelete");
     // - show button select bulk delete
     $(".btn-select-bulk-delete").show();
 

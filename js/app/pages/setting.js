@@ -270,7 +270,6 @@ class SettingView {
   
   async handleClickSaveEmailParent(evt) {
     const email = $('#emailParent').val();
-    console.log("🚀 ~ file: setting.js ~ line 273 ~ SettingView ~ handleClickSaveEmailParent ~ email", email)
 
     const command = await this.authService.updateParentEmailCommand(email).execute();
 
@@ -284,7 +283,6 @@ class SettingView {
     }
 
     const result = command.value;
-    console.log("🚀 ~ file: setting.js ~ line 287 ~ SettingView ~ handleClickSaveEmailParent ~ result", result)
     if(result.success) {
       alertHelper.showSnackBar("Successfully Updated !", 1);
     }

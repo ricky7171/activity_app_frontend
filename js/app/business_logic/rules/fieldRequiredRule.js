@@ -17,11 +17,6 @@ class FieldRequiredRule extends Rule {
 
   _onValidate() {
     this.data = this.data || {};
-    console.log("REQUIRED RULE", {
-      fied: this.field,
-      data: this.data,
-      selected_data: this.data[this.field]
-    })
     if (!this.data[this.field]) {
       this._invalidate(
         this.message ? this.message : this.association + " is required"

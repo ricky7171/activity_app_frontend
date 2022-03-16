@@ -13,7 +13,6 @@ export function playBeepSound() {
 }
 
 export function getVideoCover(file, seekTo = 0.0) {
-    console.log("getting video cover for file: ", file);
     return new Promise((resolve, reject) => {
         // load the file to a video player
         const videoPlayer = document.createElement('video');

@@ -45,8 +45,6 @@ class HistoryDataProxy extends HttpDataProxy {
     const body = {
       history: historiesIds
     };
-    console.log('check body on histordataproxy blukdelete');
-    console.log(body);
     return this._handleResponseFrom(
       this._api.requestApi(`${this._entity}.bulkDelete`, body)
     );

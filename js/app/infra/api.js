@@ -258,7 +258,6 @@ function processMessage(message) {
 //then convert to : 
 //{'already_display_alert' : false, 'is_json' : true, 'message' : '', 'result' : {..data..}, 'success' : true}
 export function processResponse(r, ignoreAlert) {
-    console.log("🚀 ~ file: api.js ~ line 248 ~ processResponse ~ r", r)
     var result =
     {
         "success": false,
@@ -333,8 +332,6 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         }
 
     }
-    console.log("check dataRequest");
-    console.log(dataRequest);
     //1. prepare params or formData
     var dataRequest = null;
     dataRequest = bodyRequest;
@@ -362,7 +359,6 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         Promise.resolve(response);
         return response;
     } catch (error) {
-        console.log("🚀 ~ file: api.js ~ line 218 ~ requestApi ~ error", error)
         Promise.reject(error.response.data);
         return error.response.data;
     }

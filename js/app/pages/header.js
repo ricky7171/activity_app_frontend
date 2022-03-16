@@ -40,8 +40,6 @@ class HeaderView {
 
         // - show error if there is error
         if (command.success == false) {
-            console.log("check command errors");
-            console.log(command.errors);
             const firstErrorMsg = command.errors[0].message;
             alertHelper.showError(firstErrorMsg);
             loadingHelper.toggleLoading(false);
@@ -70,7 +68,6 @@ class HeaderView {
     }
     
     handleClickAddActivityButtonTop() {
-        console.log("clicked");
         $("#modalAddActivity").modal("show");
     }
     

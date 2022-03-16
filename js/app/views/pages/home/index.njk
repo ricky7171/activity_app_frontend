@@ -38,7 +38,7 @@
             </div>
             <div>
                 {# <button class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-plus"></i></button> #}
-                <button class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMediaCamera"><i class="fa fa-camera"></i></button>
+                <button class="btn btn-danger rounded-circle" data-toggle="modal" data-target="#modalFormMediaCamera"><i class="fa fa-camera"></i></button>
                 <button id="btnMediaImage" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-image"></i></button>
                 <button id="btnMediaVideo" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-video"></i></button>
                 <div class="modal fade" id="modalFormMedia" tabindex="-1" role="dialog" aria-labelledby="modalFormMediaLabel" aria-hidden="true">
@@ -90,20 +90,37 @@
                                                 <select name="category_id" class="form-control">
                                                 </select>
                                             </div>
-                                            <div class="form-group file-media">
+                                            {# <div class="form-group file-media">
                                                 <label>Upload</label>
                                                 <div class="custom-file">
                                                     <input name="file" type="file" class="custom-file-input" id="fileMedia" accept="image/*">
                                                     <label class="custom-file-label" for="fileMedia">Choose file</label>
                                                 </div>
+                                            </div> #}
+                                            <div class="youtube-link-input" style="display:none">
+                                                <div class="form-group youtube-link-input">
+                                                    <label>Youtube Link</label>
+                                                    <input type="text" name="youtube_link" class="form-control" placeholder="https://www.youtube.com/watch?v=xxxxxxxx"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Preview</label>
+                                                    <div class="preview-area"></div>
+                                                </div>
                                             </div>
-                                            <div class="form-group youtube-link-input" style="display:none">
-                                                <label>Youtube Link</label>
-                                                <input type="text" name="youtube_link" class="form-control" placeholder="https://www.youtube.com/watch?v=xxxxxxxx"/>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Preview</label>
-                                                <div class="preview-area"></div>
+                                            <div class="media-input-dropzone form-group">
+                                                <label>Upload</label>
+                                                <div class="dropzone-container">
+                                                    <div class="dropzone-area">
+                                                        <div class="dropzone-info text-center">
+                                                            <i class="fa fa-upload"></i><br/>
+                                                            <b>Drop files here or click to upload.</b>
+                                                        </div>
+                                                        <input name="file" type="file" class="custom-file-input" id="fileMedia" accept="image/*" style="display:none">
+                                                    </div>
+                                                    <div class="dropzone-action text-center" style="display: none">
+                                                        <button type="button" class="btn btn-cancel">Cancel</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -363,7 +380,7 @@
     overscroll-behavior: contain;
 }
 .form-control {
-    height: 40px !important;
+    height: 42px !important;
 }
 .video-el {
     background-color: #ddd;

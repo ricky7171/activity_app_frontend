@@ -100,8 +100,6 @@ class ReportListView {
 
     // //fill left
     // detailActivity["left"] = left;
-    console.log("check detailactivity");
-    console.log(detailActivity);
     return detailActivity;
   }
 
@@ -158,8 +156,6 @@ class ReportListView {
   }
 
   showActivitiesSummary(activities, tbodyClassName = '.data-activity-summary') {
-    console.log("check data");
-    console.log(activities);
 
     //show report summary activity and hide report detail activity
     $(".report-summary-activity").show();
@@ -176,12 +172,10 @@ class ReportListView {
     //render html
     $(`.report-summary-activity ${tbodyClassName}`).append(activities.map(function(activity) {
         // var redScore = activity["score"] < activity["target"];
-        // console.log("check redscore");
         let title = activity["title"];
         if(activity.type == 'speedrun') {
           title += '<br/>' + activity.value;
         }
-        // console.log(redScore);
         return templateHelper.render(rowActivitySummaryTpl, {
             "activity_id" : activity["id"],
             "activity_name" : title,
@@ -201,8 +195,6 @@ class ReportListView {
   }
 
   showDetailActivity(detailActivity) {
-    console.log("check data");
-    console.log(detailActivity);
 
     //show report detail activity and hi hide report summary activity
     $(".report-summary-activity").hide();

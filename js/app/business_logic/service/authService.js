@@ -16,7 +16,6 @@ class AuthService extends BusinessService {
   }
 
   updateParentEmailCommand(email) {
-    console.log("🚀 ~ file: authService.js ~ line 19 ~ AuthService ~ updateParentEmailCommand ~ email", email)
     const dataProxy = this.dataProxy;
     const attr = {
       email

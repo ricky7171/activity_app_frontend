@@ -128,8 +128,6 @@ export default class FormView {
 
     // - show error if there is error
     if (command.success == false) {
-      console.log("check command errors");
-      console.log(command.errors);
       const firstErrorMsg = command.errors[0].message;
       alertHelper.showError(firstErrorMsg);
       loadingHelper.toggleLoading(false);
@@ -364,7 +362,6 @@ export default class FormView {
   }
   
   changeTypeListener(formContainer) {
-      console.log('updated')
       const handleChange = function (el) {
         const typeValue = $(el).val();
         const targetEl = $(formContainer).find('input[name=target]');
@@ -460,7 +457,6 @@ export default class FormView {
   // }
   
   initialize() {
-    console.log('==== initializeFORM =====')
     this.fetchActivities();
 
     this.changeTypeListener('.form-add-activity');
