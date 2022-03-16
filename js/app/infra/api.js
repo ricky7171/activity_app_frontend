@@ -194,6 +194,11 @@ var listApi = {
         method: 'GET',
         url : server + "/api/auth/profile",
         withToken : false,
+    },
+    "auth.updateParentEmail": {
+        method: 'PATCH',
+        url: server + "/api/auth/updateParentEmail",
+        withToken: false,
     }
 };
 
@@ -221,14 +226,16 @@ function processMessage(message) {
                 listMessage.push(message[i]);
             }
         }
-    } else if(isIterable(message)) {
-        for (var [key, value] of message) {
-            listMessage.push(value.toString());
-        }
+    } else if(typeof message == 'string') {
+        listMessage.push(message);
     } else if(typeof message == 'object') {
         Object.keys(message).forEach(attrName => {
             listMessage.push(message[attrName].toString());
         });
+    } else if(isIterable(message)) {
+        for (var [key, value] of message) {
+            listMessage.push(value.toString());
+        }
     }
 
     if (listMessage.length > 0) {

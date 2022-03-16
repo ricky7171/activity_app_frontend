@@ -2,6 +2,8 @@ import SettingService from "../business_logic/service/settingService";
 import SettingDataProxy from "../data_proxy/settingDataProxy";
 import ApplicationLogService from "../business_logic/service/applicationLogService";
 import ApplicationLogDataProxy from "../data_proxy/applicationLogDataProxy";
+import AuthService from "../business_logic/service/authService";
+import AuthDataProxy from "../data_proxy/authDataProxy";
 import * as alertHelper from "./../core/alert_helper";
 import * as loadingHelper from "./../core/loading_helper";
 import * as templateHelper from "./../core/template_helper";
@@ -16,6 +18,7 @@ class SettingView {
     this.settingService = new SettingService(new SettingDataProxy());
     this.applicationLogService = new ApplicationLogService(new ApplicationLogDataProxy());
     this.tableApplicationLog = $(".table-application-log");
+    this.authService = new AuthService(new AuthDataProxy());
   }
 
   updateLocalSetting(setting) {
@@ -265,6 +268,28 @@ class SettingView {
     }
   }
   
+  async handleClickSaveEmailParent(evt) {
+    const email = $('#emailParent').val();
+    console.log("🚀 ~ file: setting.js ~ line 273 ~ SettingView ~ handleClickSaveEmailParent ~ email", email)
+
+    const command = await this.authService.updateParentEmailCommand(email).execute();
+
+    loadingHelper.toggleLoading(false);
+
+    if (command.success == false) {
+      const firstErrorMsg = command.errors[0].message;
+      alertHelper.showError(firstErrorMsg);
+      loadingHelper.toggleLoading(false);
+      return;
+    }
+
+    const result = command.value;
+    console.log("🚀 ~ file: setting.js ~ line 287 ~ SettingView ~ handleClickSaveEmailParent ~ result", result)
+    if(result.success) {
+      alertHelper.showSnackBar("Successfully Updated !", 1);
+    }
+  }
+  
   initialize() {
     this.fetchSettingData();
     this.fetchApplicationLogData();
@@ -296,6 +321,10 @@ class SettingView {
     $("body").on("click", ".btn-delete-application-log", (evt) =>
       this.handleClickDeleteApplicationLog(evt.target)
     );
+
+    $('body').on('click', '#btnSaveEmail', (evt) => {
+      this.handleClickSaveEmailParent(evt.target);
+    })
   }
 }
 

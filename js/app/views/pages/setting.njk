@@ -23,9 +23,14 @@
         <input type="checkbox" class="custom-control-input" id="toggleParentalInspection">
         <label class="custom-control-label" for="toggleParentalInspection">Enable Parental Inspection</label>
     </div>
-    <div class="mt-4 section-parentalInspection-menu form-group" style="display: none">
+    <div class="mt-4 section-parentalInspection-menu form-group" style="display: none; max-width: 300px">
         <label class="label-form" for="title">Parent Email</label>
-        <input type="email" name="email" id="emailParent" class="form-control" placeholder="Input parent email">
+        <div class="input-group">
+            <input type="email" name="email" id="emailParent" class="form-control" placeholder="Input parent email">
+            <div class="input-group-append">
+                <button type="button" class="btn btn-primary" id="btnSaveEmail">Save</button>
+            </div>
+        </div>
     </div>
 </div>
 

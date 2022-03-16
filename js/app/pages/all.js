@@ -81,6 +81,11 @@ class GlobalView {
     }
     
     $('#userTotalPoint').html(point);
+
+    if(userDetail.parent_id) {
+      // set value email parent on setting page
+      $('#emailParent').val(userDetail.parent.email)
+    }
   }
   
   initialize() {

@@ -1,4 +1,5 @@
 import { BusinessService, Command } from "peasy-js";
+import { FieldRequiredRule } from "../rules";
 
 class AuthService extends BusinessService {
   constructor(dataProxy) {
@@ -14,6 +15,23 @@ class AuthService extends BusinessService {
     })
   }
 
+  updateParentEmailCommand(email) {
+    console.log("🚀 ~ file: authService.js ~ line 19 ~ AuthService ~ updateParentEmailCommand ~ email", email)
+    const dataProxy = this.dataProxy;
+    const attr = {
+      email
+    }
+    return new Command({
+      _getRules() {
+        return Promise.resolve([
+          new FieldRequiredRule('email', attr)
+        ])
+      },
+      _onValidationSuccess() {
+        return dataProxy.updateParentEmail(email);
+      }
+    })
+  }
   // getApplicationLogs() {
   //   const dataProxy = this.dataProxy;
   //   return new Command({

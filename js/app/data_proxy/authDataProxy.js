@@ -9,9 +9,13 @@ class AuthDataProxy extends HttpDataProxy {
     return this._handleResponseFrom(this._api.requestApi("auth.profile"));
   }
 
-  // getApplicationLogs() {
-  //   return this._handleResponseFrom(this._api.requestApi("applicationlogs.get"));
-  // }
+  updateParentEmail(email) {
+    const data = {
+      email
+    }
+    
+    return this._handleResponseFrom(this._api.requestApi("auth.updateParentEmail", data))
+  }
 }
 
 export default AuthDataProxy;
