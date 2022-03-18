@@ -5,11 +5,11 @@ class ActivityDataProxy extends HttpDataProxy {
     super("activity");
   }
 
-  getByMonthAndYear(month, year) {
+  getByMonthAndYear(month, year, params = {}) {
     return this._handleResponseFrom(
       this._api.requestApi(
         "activity.getByMonthAndYear",
-        {},
+        params,
         `/${month}/${year}`
       )
     );
@@ -27,6 +27,12 @@ class ActivityDataProxy extends HttpDataProxy {
     };
     return this._handleResponseFrom(
       this._api.requestApi("activity.updatePosition", body)
+    );
+  }
+
+  import(values) {
+    return this._handleResponseFrom(
+      this._api.requestApi("activity.import")
     );
   }
 }

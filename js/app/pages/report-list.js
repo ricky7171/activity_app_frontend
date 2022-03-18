@@ -5,12 +5,16 @@ import ActivityService from "../business_logic/service/activityService";
 import ActivityDataProxy from "../data_proxy/activityDataProxy";
 import HistoryService from "../business_logic/service/historyService";
 import HistoryDataProxy from "../data_proxy/historyDataProxy";
+import AuthService from "../business_logic/service/authService";
+import AuthDataProxy from "../data_proxy/authDataProxy";
+import { parseQueryString } from "../core/url_helper";
 
 class ReportListView {
   constructor() {
     this.activityService = new ActivityService(new ActivityDataProxy());
     this.historyService = new HistoryService(new HistoryDataProxy());
     this._reportData = [];
+    this.authService = new AuthService(new AuthDataProxy());
   }
 
   getMonthAndYearFromUrlParameter() {
@@ -107,7 +111,7 @@ class ReportListView {
     loadingHelper.toggleLoading(true);
 
     const command = await this.activityService
-      .getByMonthAndYearCommand(params.month, params.year)
+      .getByMonthAndYearCommand(params.month, params.year, params)
       .execute();
     if (command.success) {
       const result = command.value;
@@ -129,6 +133,7 @@ class ReportListView {
   }
 
   async fetchHistoryRange(params) {
+    console.log("🚀 ~ file: report-list.js ~ line 136 ~ ReportListView ~ fetchHistoryRange ~ params", params)
     const command = await this.historyService.getHistoryRangeCommand(params).execute();
 
     if(command.success) {
@@ -287,7 +292,7 @@ class ReportListView {
 
   handleClickActivityTitle(evt) {
     const activityId = $(evt.target).attr("activityId");
-    const params = this.getMonthAndYearFromUrlParameter();
+    const params = parseQueryString(window.location.search);
     const detailActivity = this.getDetailActivityFromResult(
       this._reportData,
       activityId,
@@ -296,10 +301,31 @@ class ReportListView {
     this.showDetailActivity(detailActivity);
   }
 
+  
+  async fetchDetailStudent(id) {
+    const command = await this.authService.getDetailStudentCommand(id).execute();
+
+    if (command.success) {
+      const result = command.value;
+      if (result.success) {
+        const detail = result.response.data
+        $('#titleReport').html(`${detail.name} Reports`)
+
+        if(Number(detail.settings.point_system)) {
+          $('.section-pointStudent-menu').show();
+        }
+      }
+    }
+  }
+  
   initialize() {
-    const params = this.getMonthAndYearFromUrlParameter();
+    const params = parseQueryString(window.location.search);
     this.fetchActivities(params);
     this.fetchHistoryRange(params);
+
+    if(params.student_id) {
+      this.fetchDetailStudent(params.student_id);
+    }
 
     // event handler
     $("body").on("click", ".activity_button", (evt) =>

@@ -4,6 +4,8 @@ import ApplicationLogService from "../business_logic/service/applicationLogServi
 import ApplicationLogDataProxy from "../data_proxy/applicationLogDataProxy";
 import AuthService from "../business_logic/service/authService";
 import AuthDataProxy from "../data_proxy/authDataProxy";
+import ActivityService from "../business_logic/service/ActivityService";
+import ActivityDataProxy from "../data_proxy/ActivityDataProxy";
 import * as alertHelper from "./../core/alert_helper";
 import * as loadingHelper from "./../core/loading_helper";
 import * as templateHelper from "./../core/template_helper";
@@ -19,6 +21,7 @@ class SettingView {
     this.applicationLogService = new ApplicationLogService(new ApplicationLogDataProxy());
     this.tableApplicationLog = $(".table-application-log");
     this.authService = new AuthService(new AuthDataProxy());
+    this.activityService = new ActivityService(new ActivityDataProxy());
   }
 
   updateLocalSetting(setting) {
@@ -287,6 +290,27 @@ class SettingView {
       alertHelper.showSnackBar("Successfully Updated !", 1);
     }
   }
+
+  async handleClickImportActivities(evt) {
+    const button = $(evt);
+    button.prop('disabled', true).html('<i class="fa fa-spin fa-spinner"></i> Import')
+    const command = await this.activityService.importCommand().execute()
+
+    button.prop('disabled', false).html('<i class="fa fa-file-import"></i> Import')
+
+    if(command.success == false) {
+      const firstErrorMsg = command.errors[0].message;
+      alertHelper.showError(firstErrorMsg);
+      button.prop('disabled', false).html('<i class="fa fa-file-import"></i> Import')
+    }
+
+    const result = command.value;
+    if(result.success) {
+      const { message } = result.response;
+      alertHelper.showSnackBar(`Successfully: ${message}`, 1);
+    }
+
+  }
   
   initialize() {
     this.fetchSettingData();
@@ -322,6 +346,10 @@ class SettingView {
 
     $('body').on('click', '#btnSaveEmail', (evt) => {
       this.handleClickSaveEmailParent(evt.target);
+    })
+
+    $('body').on('click', '#btnImportActivities', (evt) => {
+      this.handleClickImportActivities(evt.target);
     })
   }
 }

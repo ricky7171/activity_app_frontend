@@ -4,6 +4,11 @@ import SettingDataProxy from "../data_proxy/settingDataProxy";
 import AuthService from "../business_logic/service/authService";
 import AuthDataProxy from "../data_proxy/authDataProxy";
 
+// ---- Global Function //
+window.auth = function() {
+  return JSON.parse(atob(window.localStorage.getItem('APP_USER')))
+}
+
 class GlobalView {
   constructor() {
     this.settingService = new SettingService(new SettingDataProxy());
@@ -83,6 +88,14 @@ class GlobalView {
     if(userDetail.parent_id) {
       // set value email parent on setting page
       $('#emailParent').val(userDetail.parent.email)
+    }
+
+    if(userDetail.childs_count > 0) {
+      $('.section-parentalInspectionHasChild-menu').show()
+      
+      let childText = userDetail.childs_count > 1 ? 'students' : 'student';
+
+      $('.childs_count_text').html(`${userDetail.childs_count} ${childText}`)
     }
   }
   

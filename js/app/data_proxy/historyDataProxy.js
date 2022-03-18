@@ -37,7 +37,7 @@ class HistoryDataProxy extends HttpDataProxy {
     }
     
     return this._handleResponseFrom(
-      this._api.requestApi(`${this._entity}.getHistoryRange`, {}, additionalUrl)
+      this._api.requestApi(`${this._entity}.getHistoryRange`, params, additionalUrl)
     );
   }
 

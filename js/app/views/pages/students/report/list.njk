@@ -1,0 +1,168 @@
+{% extends "templates/index.njk" %}
+{% set active_menu = 'students' %}
+{% block title %}Report{% endblock title %}
+
+{% block content %}
+<h3 id="titleReport" style="border-bottom: 1px solid #c9c9c9;padding-bottom: 5px;margin-bottom: 30px;"></h3>
+
+<div class="content-container" style="display: none">
+<div style="display:flex; justify-content: space-between">
+    <div>
+        <a id="btnBack" style="display:none" href="/report/index.html" class="btn btn-primary mb-4"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+    <div>
+        <select id="monthSelection" class="form-control" style="display:none">
+        </select>
+    </div>
+</div>
+
+<h3 id="titleContent">Report</h3>
+
+ <!-- report sumary activity section -->
+<div class="report-summary-activity" style="display:none">
+    <!-- Data Table New -->
+    <div class="table-responsive">
+        <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>Target</th>
+                    <th>Score</th>
+                    <th>Count</th>
+                    <th class="section-pointStudent-menu" style="display:none">Point</th>
+                </tr>
+            </thead>
+            <tbody class="data-activity-summary">
+                <!-- template row activity summary -->
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>Target</th>
+                    <th>Avg/month</th>
+                    <th>Score</th>
+                    <th class="section-pointStudent-menu" style="display:none">Point</th>
+                </tr>
+            </thead>
+            <tbody class="data-activity-speedrun-summary">
+                <!-- template row activity summary -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- report detail activity section -->
+<!-- this report detail show after user click one of activity on summary -->
+<div class="report-detail-activity" style="display:none">
+    <!-- template report Heading -->
+    <!-- Data Table New -->
+    <div class="table-responsive">
+        <table class="table table-bordered data-table" id="detail_table" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody class="data-report-detail-activity">
+                <!-- template row data report detail activity -->
+            </tbody>
+            <tfoot class="total-report-detail-activity">
+                <!-- template row footer report detail activity -->
+            </tfoot>
+        </table>
+    </div>
+</div>
+</div>
+{% endblock content %}
+{% block header %}
+<!-- Page level plugin style -->
+<link href="vendor/footable-bootstrap/css/footable.bootstrap.min.css" rel="stylesheet">
+{% endblock header %}
+{% block footer %}
+<script type="text/template" data-template="row-activity-summary">
+    <tr>
+        <td>
+            <a class="activity_button" activityId="${activity_id}">${activity_name}</a>
+        </td>
+        <td>${target}</td>
+        <td class='red-score-${redscore}'>${score}</td>
+        <td class='red-score-${redcount}'>${count}</td>
+        <td class='section-pointStudent-menu' style="display:none">${point}</td>
+    </tr>
+</script>
+
+<script type="text/template" data-template="report-heading">
+    <div class="report-heading d-flex align-items-center mb-2">
+        <h2 class="report-name h3 mr-4 text-gray-800">${activity_name}</h2>
+        <p class="report-period mb-0">
+            <span class="year">${year}</span>
+            <span class="year">${month}</span>
+        </p>
+    </div>
+</script>
+
+<script type="text/template" data-template="row-data-report-detail-activity">
+    <tr>
+        <td>${date}</td>
+        <td>${time}</td>
+        <td>${value}</td>
+    </tr>
+</script>
+
+<script type="text/template" data-template="row-footer-report-detail-activity">
+    <tr>
+        <th colspan="2">Score</th>
+        <th>${score}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Target</th>
+        <th>${target}</th>
+    </tr>
+    <tr style="${leftStyle}">
+        <th colspan="2">Left</th>
+        <th>${left}</th>
+    </tr>
+    <tr class='section-pointStudent-menu' style="display:none">
+        <th colspan="2">Point</th>
+        <th>${point}</th>
+    </tr>
+</script>
+<script type="text/template" data-template="row-footer-report-detail-activity-speedrun">
+    <tr>
+        <th colspan="2">Best Record</th>
+        <th>${best_time}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Best Record (All Time)</th>
+        <th>${best_record_alltime}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Average Time</th>
+        <th>${average_time}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Total Count</th>
+        <th>${count}</th>
+    </tr>
+    <tr>
+        <th colspan="2">Target</th>
+        <th>${target}</th>
+    </tr>
+    <tr style="${leftStyle}">
+        <th colspan="2">Left</th>
+        <th>${left}</th>
+    </tr>
+    <tr class='section-pointStudent-menu' style="display:none">
+        <th colspan="2">Point</th>
+        <th>${point}</th>
+    </tr>
+</script>
+<script src="vendor/footable-bootstrap/js/footable.min.js"></script>
+<script src="/js/app/pages/report-list.js"></script>
+{% endblock footer %}

@@ -1,0 +1,29 @@
+{% extends "templates/index.njk" %}
+{% set active_menu = 'students' %}
+{% block title %}Report{% endblock title %}
+
+{% block content %}
+<h3 id="titleReport" style="border-bottom: 1px solid #c9c9c9;padding-bottom: 5px;margin-bottom: 30px;"></h3>
+<!-- Report -->
+{% set emptyText = 'Report is empty' %}
+{% include "templates/components/empty-box.njk" %}
+<div class="all-reports">
+    <!-- template year with month -->
+</div>
+{% endblock content %}
+
+{% block footer %}
+<script type="text/template" data-template="year-data">
+    <div class="yearly mb-5">
+        <h2 class="h3 mb-3 text-gray-800">${year}</h2>
+        <ul class="months list-unstyled text-center">
+            ${months_data_html}
+        </ul>
+    </div>
+</script>
+
+<script type="text/template" data-template="month-data">
+    <li><a href="/students/report/list.html?student_id=${student_id}&year=${year_number}&month=${month_number}" class="d-block btn btn-primary">${month_text}</a></li>
+</script>
+<script src="/js/app/pages/report.js"></script>
+{% endblock footer %}

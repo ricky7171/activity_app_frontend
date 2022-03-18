@@ -31,14 +31,26 @@ class AuthService extends BusinessService {
       }
     })
   }
-  // getApplicationLogs() {
-  //   const dataProxy = this.dataProxy;
-  //   return new Command({
-  //     _onValidationSuccess() {
-  //       return dataProxy.getApplicationLogs();
-  //     }
-  //   })
-  // }
+
+  getStudentsCommand() {
+    const dataProxy = this.dataProxy;
+
+    return new Command({
+      _onValidationSuccess() {
+        return dataProxy.getStudents();
+      }
+    })
+  }
+
+  getDetailStudentCommand(id) {
+    const dataProxy = this.dataProxy;
+
+    return new Command({
+      _onValidationSuccess() {
+        return dataProxy.getDetailStudent(id);
+      }
+    })
+  }
 }
 
 export default AuthService;

@@ -60,6 +60,11 @@ var listApi = {
         url: server + "/api/activities/updatePosition",
         withToken: false,
     },
+    "activity.import": {
+        method: "POST",
+        url: server + "/api/activities/importActivitiesForStudents",
+        withToken: false,
+    },
     "history.get": {
         method: "GET",
         url : server + "/api/histories",
@@ -199,6 +204,14 @@ var listApi = {
         method: 'PATCH',
         url: server + "/api/auth/updateParentEmail",
         withToken: false,
+    },
+    "auth.getStudents": {
+        method: 'GET',
+        url: server + "/api/auth/getAllStudents",
+    },
+    "auth.getDetailStudent": {
+        method: 'GET',
+        url: server + "/api/auth/getDetailStudent",
     }
 };
 
@@ -346,15 +359,22 @@ export async function requestApi(nameApi, bodyRequest = {}, additionalUrl = "", 
         return resultReturn;
     }
 
+    const config = {
+        method: method,
+        url: url + additionalUrl,
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('APP_SID')}`
+        }
+    }
+    
+    if(['POST', 'PATCH', 'UPDATE', "DELETE"].includes(method.toUpperCase())) {
+        config.data = dataRequest;
+    } else {
+        config.params = dataRequest;
+    }
+    
     try {
-        const response = await axios({
-            method: method,
-            url: url + additionalUrl,
-            data: dataRequest,
-            headers: {
-                'Authorization': `Bearer ${window.localStorage.getItem('APP_SID')}`
-            }
-        }).then((r) => r.data)
+        const response = await axios(config).then((r) => r.data)
 
         Promise.resolve(response);
         return response;

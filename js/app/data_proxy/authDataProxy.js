@@ -16,6 +16,14 @@ class AuthDataProxy extends HttpDataProxy {
     
     return this._handleResponseFrom(this._api.requestApi("auth.updateParentEmail", data))
   }
+
+  getStudents() {
+    return this._handleResponseFrom(this._api.requestApi("auth.getStudents"))
+  }
+
+  getDetailStudent(id) {
+    return this._handleResponseFrom(this._api.requestApi("auth.getDetailStudent", {}, `/${id}`))
+  }
 }
 
 export default AuthDataProxy;
