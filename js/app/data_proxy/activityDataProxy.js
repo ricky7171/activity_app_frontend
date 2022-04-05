@@ -35,6 +35,15 @@ class ActivityDataProxy extends HttpDataProxy {
       this._api.requestApi("activity.import")
     );
   }
+
+  getDailyReport(params = {}) {
+    return this._handleResponseFrom(
+      this._api.requestApi(
+        "activity.getDailyReport",
+        params,
+      )
+    );
+  }
 }
 
 export default ActivityDataProxy;

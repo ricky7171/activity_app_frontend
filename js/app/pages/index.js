@@ -88,9 +88,11 @@ class HomeView {
           activity_id: activityData.id,
           placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field',
           score_target: `${activityData.score} / ${activityData.target}`,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -126,9 +128,12 @@ class HomeView {
           value: activityData.value,
           increase_value: activityData.increase_value,
           score_target: `${activityData.score} / ${activityData.target}`,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
+          order_number: activityData.position
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -146,9 +151,11 @@ class HomeView {
           activity_id: activityData.id,
           value_activity_html: valueActivityHtml,
           score_target: `${activityData.score} / ${activityData.target}`,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
         };
   
         // modify template change color of button
@@ -171,9 +178,11 @@ class HomeView {
           title: activityData.title,
           activity_id: activityData.id,
           score_target: `${activityData.score} / ${activityData.target}`,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
         };
   
         // modify template change color of button
@@ -514,35 +523,15 @@ class HomeView {
     }
 
     if(!$('.row-activity').hasClass('sortable-initialized')) {
-      $('#float-wrapper').sortable({ 
-        accept: '*',
-        activeClass: '',
-        cancel: '',
-        connectWith: false,
-        disabled: false,
-        forcePlaceholderSize: false,
-        handle: false,
-        initialized: false,
-        items: 'div.draggable-item',
-        placeholder: 'placeholder',
-        placeholderTag: null,
-        receiveHandler: null
-      }).off('sortable:update').on('sortable:update', (...args) => this.updateAfterDrag('#float-wrapper'))
+      $('#float-wrapper').sortable({
+        handle: '#float-wrapper div.draggable-item',
+        onSort: (e) => this.updateAfterDrag('#float-wrapper'),
+      });
 
-      $('#text-wrapper').sortable({ 
-        accept: '*',
-        activeClass: '',
-        cancel: '',
-        connectWith: false,
-        disabled: false,
-        forcePlaceholderSize: false,
-        handle: false,
-        initialized: false,
-        items: 'div.draggable-item',
-        placeholder: 'placeholder',
-        placeholderTag: null,
-        receiveHandler: null
-      }).off('sortable:update').on('sortable:update', (...args) => this.updateAfterDrag('#text-wrapper'))
+      $('#text-wrapper').sortable({
+        handle: '#text-wrapper div.draggable-item',
+        onSort: (e) => this.updateAfterDrag('#text-wrapper'),
+      });
 
       $('.row-activity').addClass('sortable-initialized')
     }
@@ -702,9 +691,24 @@ class HomeView {
       //     containerSelector: 'div.draggable',
       //     itemSelector: 'div.draggable-item',
       // })
+
+      // limit stopwatch input, after type two char, the focus will change to next input
+      $('body').on('keyup', '.speedrun-container .input-activity-value', function(event){
+        var value = $(this).val();
+        var key = event.keyCode || event.charCode;
+  
+        if(value.length >= 2) {
+          $(this).next().focus();
+          $(this).next().val(value.substring(2));
+        }
+
+        if(!value && (key == 8 || key == 46)) {
+          $(this).prev().focus();
+        }
+        
+        $(this).val(value.substring(0, 2));
+      })
     })
-
-
   }
 }
 

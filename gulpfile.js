@@ -145,6 +145,18 @@ function modules(cb) {
     videoJs: {
       source: './node_modules/video.js/dist/**/*',
       dest: config.DESTINATION_PATH+'/vendor/videojs'
+    },
+    jquerySortable: {
+      source: './node_modules/jquery-sortablejs/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/jquery-sortablejs',
+    },
+    sortablejs: {
+      source: './node_modules/sortablejs/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/sortablejs',
+    },
+    datePicker: {
+      source: './node_modules/@chenfengyuan/datepicker/dist/**/*',
+      dest: config.DESTINATION_PATH+'/vendor/datepicker',
     }
   }
 

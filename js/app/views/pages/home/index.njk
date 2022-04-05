@@ -399,6 +399,18 @@
 .vjs-record-canvas canvas {
     width: 100%;
 }
+.is-red-true, .is-red-false {
+    border-left-style: solid !important;
+    border-left-width: 6px !important;
+}
+
+.is-red-true {
+    border-left-color: #ff9899 !important;
+}
+
+.is-red-false {
+    border-left-color: #6ace6b !important;
+}
 </style>
 <link rel="stylesheet" href="vendor/videojs/video-js.min.css">
 <link rel="stylesheet" href="vendor/videojs-record/css/videojs.record.min.css">
@@ -442,16 +454,16 @@
                             </div>
                         </div>
                         <div class="activity-target-container h-100" style="display:none">
-                            <input class="form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled>
+                            <input class="form-control border border-1 input-activity-value h-100 text-center is-red-${is_red}" value='${score_target}' type="text" disabled>
                         </div>
                         <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
                             <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
                                 <div>
-                                    ${value}
+                                    ${order_number}
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                                        <i class="fa fa-eye-slash"></i>
+                                        <i class="fa ${iconBtnHide}"></i>
                                     </button>
                                     <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                                         <i class="fa fa-pencil-alt"></i>
@@ -485,7 +497,7 @@
             <div class="d-flex flex-nowrap text-center"> 
                 <div class="input-group input-activity-group">
                     <input type="text" class="activity-input-container form-control border border-1 input-activity-value h-100" activityId='${activity_id}' placeholder="${placeholder}" aria-label="" style="${style}">
-                    <input class="activity-target-container form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled style="display:none">
+                    <input class="activity-target-container form-control border border-1 input-activity-value h-100 text-center is-red-${is_red}" value='${score_target}' type="text" disabled style="display:none">
                     
                     <div class="activity-edit-container form-control border border-1 input-activity-value text-center" activityId='${activity_id}' style="display:none">
                         <div class="h-100 d-flex align-items-center justify-content-between">
@@ -494,7 +506,7 @@
                             </div>
                             <div class="d-flex align-items-center">
                                 <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                                    <i class="fa fa-eye-slash"></i>
+                                    <i class="fa ${iconBtnHide}"></i>
                                 </button>
                                 <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                                     <i class="fa fa-pencil-alt"></i>
@@ -527,7 +539,7 @@
             <button class="btn-step step-down shadow" type="button">-</button>
         </div>
         <div class="activity-target-container h-100" style="display:none">
-            <input class="form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled>
+            <input class="form-control border border-1 input-activity-value h-100 text-center is-red-${is_red}" value='${score_target}' type="text" disabled>
         </div>
         <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
             <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
@@ -536,7 +548,7 @@
                 </div>
                 <div class="d-flex align-items-center">
                     <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                        <i class="fa fa-eye-slash"></i>
+                        <i class="fa ${iconBtnHide}"></i>
                     </button>
                     <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                         <i class="fa fa-pencil-alt"></i>
@@ -558,7 +570,7 @@
         <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center" activityId='${activity_id}' value='${value}' style="${style}">${value}</div>
     </div>
     <div class="activity-target-container w-50" style="flex: 1 1 auto; display:none">
-        <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center">${score_target}</div>
+        <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center is-red-${is_red}">${score_target}</div>
     </div>
     <div class="activity-edit-container" activityId='${activity_id}' style="flex: 1 1 auto; display:none">
         <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
@@ -567,7 +579,7 @@
             </div>
             <div class="d-flex align-items-center">
                 <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                    <i class="fa fa-eye-slash"></i>
+                    <i class="fa ${iconBtnHide}"></i>
                 </button>
                 <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                     <i class="fa fa-pencil-alt"></i>
