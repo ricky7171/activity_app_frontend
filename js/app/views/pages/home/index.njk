@@ -429,10 +429,12 @@
                         <button type="button" class="btn btn-primary btn-add-value border-0" role="button">${title}</button>
                     </div>
                 </div>
-                {# <div class="changepos-btn-wrapper">
-                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
-                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div> #}
+                <div class="activity-edit-container" style="display:none">
+                    <div class="changepos-btn-wrapper">
+                        <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                        <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -459,7 +461,7 @@
                         <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
                             <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
                                 <div>
-                                    ${order_number}
+                                    <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
@@ -482,10 +484,12 @@
                         <button type="button" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</button>
                     </div>
                 </div>
-                {# <div class="changepos-btn-wrapper">
-                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
-                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div> #}
+                <div class="activity-edit-container" style="display:none">
+                    <div class="changepos-btn-wrapper">
+                        <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                        <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -502,7 +506,7 @@
                     <div class="activity-edit-container form-control border border-1 input-activity-value text-center" activityId='${activity_id}' style="display:none">
                         <div class="h-100 d-flex align-items-center justify-content-between">
                             <div>
-                                ${value}
+                                <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
                             </div>
                             <div class="d-flex align-items-center">
                                 <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
@@ -522,10 +526,12 @@
                         <button class="btn btn-primary btn-add-value border-0" type="button">${title}</button>
                     </div>
                 </div>
-                {# <div class="changepos-btn-wrapper">
-                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
-                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div> #}
+                <div class="activity-edit-container" style="display:none">
+                    <div class="changepos-btn-wrapper">
+                        <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                        <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -544,7 +550,7 @@
         <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
             <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
                 <div>
-                    ${value}
+                    <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
                 </div>
                 <div class="d-flex align-items-center">
                     <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
@@ -575,7 +581,7 @@
     <div class="activity-edit-container" activityId='${activity_id}' style="flex: 1 1 auto; display:none">
         <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
             <div>
-                ${value}
+                <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
             </div>
             <div class="d-flex align-items-center">
                 <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">

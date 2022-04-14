@@ -23,7 +23,7 @@ class ActivityDataProxy extends HttpDataProxy {
 
   updatePosition(values) {
     const body = {
-      position: values,
+      position: values
     };
     return this._handleResponseFrom(
       this._api.requestApi("activity.updatePosition", body)

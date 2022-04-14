@@ -444,6 +444,13 @@ export default class FormView {
       $(`${formContainer} select[name=type]`).each(function(el) {
         handleChange(this)
       })
+
+      $('body').on('change', `${formContainer} input[name=is_ms_enable]`, function() {
+        const isEnableMS = $(this).prop('checked');
+        const formContainer = $(this).closest('value-speedrun-container');
+
+        formContainer.find('input[name=hour]').prop('disabled', isEnableMS)
+      })
   }
 
   // showPointForm() {
