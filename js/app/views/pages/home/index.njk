@@ -11,7 +11,7 @@
             </div>
         </div>
         <div id="buttonSection" class="mb-3 text-right" style="white-space: nowrap;">
-            <button class="btn btn-link btn-section-action" id="rearrangeBtn" type="button">Rearrange</button>
+            {# <button class="btn btn-link btn-section-action" id="rearrangeBtn" type="button">Rearrange</button> #}
             <button class="btn btn-link btn-section-action" id="editBtn" type="button">Edit</button>
             <button class="btn btn-link btn-section-action" id="targetBtn" type="button">Target</button>
             <button class="btn btn-link btn-section-action" id="seeAllActivity" type="button">See All</button>
@@ -41,6 +41,7 @@
                 <button class="btn btn-danger rounded-circle" data-toggle="modal" data-target="#modalFormMediaCamera"><i class="fa fa-camera"></i></button>
                 <button id="btnMediaImage" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-image"></i></button>
                 <button id="btnMediaVideo" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-video"></i></button>
+                <button id="btnMediaYoutube" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fab fa-youtube"></i></button>
                 <div class="modal fade" id="modalFormMedia" tabindex="-1" role="dialog" aria-labelledby="modalFormMediaLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -73,18 +74,7 @@
                                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                     <div class="form-media-wrapper">
                                         <div class="modal-body">
-                                            <div class="video-type" style="display:none">
-                                                <div class="form-group">
-                                                    <label>Type</label>
-                                                    <select name="type" class="form-control">
-                                                        <option value="video" selected>Video</option>
-                                                        <option value="youtube">Youtube</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="image-type" style="display: none">
-                                                <input type="hidden" name="type" value="image" />
-                                            </div>
+                                            <input type="hidden" name="type" value="image" />
                                             <div class="form-group">
                                                 <label>Category</label>
                                                 <select name="category_id" class="form-control">

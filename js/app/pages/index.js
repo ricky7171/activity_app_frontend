@@ -195,6 +195,9 @@ class HomeView {
           .attr("data-activityId", activityData["id"]);
         changeColorBtnActivity(activityData["color"], rowActivitySpeedrunTpl);
   
+        rowActivitySpeedrunTpl.find('input[name=hour]').prop('disabled', activityData.is_ms_enable);
+        rowActivitySpeedrunTpl.find('input[name=millisecond]').prop('disabled', !activityData.is_ms_enable);
+        
         // get html script from modified template
         rowActivitySpeedrunTpl = rowActivitySpeedrunTpl[0].outerHTML;
   
@@ -212,11 +215,14 @@ class HomeView {
   }
 
   getValuePositionOfActivities() {
-    const values = $(".row-activity").map(function () {
+    const values = $(".row-activity").map(function (i) {
       const btnPos = $(this).find(".changepos-btn-wrapper");
       const activityId = btnPos.data("activityid");
 
-      return activityId;
+      return {
+        activity_id: activityId,
+        position: i+1,
+      };
     });
 
     return values.toArray();
@@ -233,18 +239,14 @@ class HomeView {
       var temp = children[newIndex];
       children[newIndex] = children[currentIndex];
       children[currentIndex] = temp;
+
+      const newValue = $(children[newIndex]).find('.input-activity-position').val();
+      const currentValue = $(children[currentIndex]).find('.input-activity-position').val();
+
+      $(children[newIndex]).find('.input-activity-position').val(currentValue);
+      $(children[currentIndex]).find('.input-activity-position').val(newValue);
     }
     $(parentEl).html(children);
-
-    // update position to server
-    const value = this.getValuePositionOfActivities();
-    const resp = await this.activityService.updatePositionCommand(value).execute();
-    if(resp.success) {
-      this.tempData = this.tempData.map(data => ({
-        ...data,
-        position: value.indexOf(data.id) < 0 ? data.position : value.indexOf(data.id),
-      })).sort((a,b) => a.position - b.position)
-    }
   }
 
   handleClickButtonChangePosition(direction, el) {
@@ -389,13 +391,6 @@ class HomeView {
   }
 
   async handleClickDoneButton(evt) {
-    this.disableDraggable();
-    $('#titleSection').hide();
-    
-    $('.btn-section-action').show();
-    $('#doneAction').hide();
-
-
     const activepage = $('#doneAction').data('activepage');
     if(activepage === 'edit') {
       // $('.input-activity-position')
@@ -417,6 +412,11 @@ class HomeView {
       
     }
     
+    this.disableDraggable();
+    $('#titleSection').hide();
+    
+    $('.btn-section-action').show();
+    $('#doneAction').hide();
 
     this.showActivitiesData(this.tempData.filter(v => !v.is_hide))
 

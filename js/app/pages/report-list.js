@@ -419,12 +419,22 @@ class ReportListView {
 
 
     // bind event on click column daily
-    $('body').on('click', '.data-activity-daily tr', function(e) {
-      var text = $(this).find('td').map((i, td) => $(td).text().trim()).toArray().join(' ')
+    // $('body').on('click', '.data-activity-daily tr', function(e) {
+    //   var text = $(this).find('td').map((i, td) => $(td).text().trim()).toArray().join(' ')
+    //   copyTextToClipboard(text).then(() => {
+    //     alertHelper.showSnackBar(`Copied: ${text}`, 1)
+    //   })
+    // })
+
+    $('body').on('click', '.doCopyAllText', function(e) {
+      var text = $('.data-activity-daily').find('tr').map((i, el) => {
+        return $(el).find('td').map((i, td) => $(td).text().trim()).toArray().join(' ');
+      }).toArray().join("\n");
+
       copyTextToClipboard(text).then(() => {
-        alertHelper.showSnackBar(`Copied: ${text}`, 1)
+        alertHelper.showSnackBar('Copied !');
       })
-    })
+    });
   }
 }
 

@@ -146,7 +146,12 @@ export default class FormView {
       $(formContainer).find("input[name=target]").val(this.defaultValue.target);
       $(formContainer).find("input[name=description]").val(this.defaultValue.description);
       $(formContainer).find("input[name=is_editable]").prop("checked", false);
-      // $(formContainer).find("input[name=is_use_textfield]").prop("checked", false);
+      $(formContainer).find("input[name=is_use_textfield]").prop("checked", false);
+      $(formContainer).find("input[name=is_ms_enable]").prop("checked", true).trigger('change');
+      $(formContainer).find("input[name=hour]").val('');
+      $(formContainer).find("input[name=minute]").val('');
+      $(formContainer).find("input[name=second]").val('');
+      $(formContainer).find("input[name=millisecond]").val('');
       colorHelper.updateColorOfInput("#color", this.defaultValue.color);
 
       if(typeof options.callbackSuccess == 'function') {
@@ -233,6 +238,7 @@ export default class FormView {
     const modalEdit = $("#modalEdit");
 
     if(activityData.type == 'speedrun') {
+      modalEdit.find('input[name=is_ms_enable]').prop('checked', Boolean(activityData.is_ms_enable)).trigger('change');
       modalEdit.find("input[name=hour]").val(activityData.speedrun_parsed.h);
       modalEdit.find("input[name=minute]").val(activityData.speedrun_parsed.m);
       modalEdit.find("input[name=second]").val(activityData.speedrun_parsed.s);
@@ -341,6 +347,7 @@ export default class FormView {
       attributes.value = `${hour}h ${minute}m ${second}s ${millisecond}ms`;
 
       attributes.criteria = $(formContainer).find("select[name=criteria]").val();
+      attributes.is_ms_enable = $(formContainer).find('input[name=is_ms_enable]').prop('checked') ? 1 : 0;
     }
 
     if(type == 'alarm') {
@@ -445,11 +452,12 @@ export default class FormView {
         handleChange(this)
       })
 
-      $('body').on('change', `${formContainer} input[name=is_ms_enable]`, function() {
+      $('body').on('change ready', `${formContainer} input[name=is_ms_enable]`, function() {
         const isEnableMS = $(this).prop('checked');
-        const formContainer = $(this).closest('value-speedrun-container');
-
-        formContainer.find('input[name=hour]').prop('disabled', isEnableMS)
+        const formContainer = $(this).closest('.value-speedrun-container');
+        
+        formContainer.find('input[name=hour]').val('').prop('disabled', isEnableMS)
+        formContainer.find('input[name=millisecond]').val('').prop('disabled', !isEnableMS)
       })
   }
 
