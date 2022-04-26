@@ -9,6 +9,7 @@ import HistoryDataProxy from "../data_proxy/historyDataProxy";
 class HistoryView {
   constructor() {
     this.historyService = new HistoryService(new HistoryDataProxy());
+    this.tempData = [];
   }
 
   async fetchHistoriesData() {
@@ -17,6 +18,8 @@ class HistoryView {
     if (command.success) {
       const result = command.value;
 
+      // save response to tempData
+      this.tempData = result.response.data;
       this.showHistoriesData(result.response.data);
       loadingHelper.toggleLoading(false);
       $(".table-responsive").show();
@@ -252,11 +255,45 @@ class HistoryView {
         alertHelper.showSnackBar("successfully deleted !");
         this.handleClickButtonCancelBulkDelete();
         this.fetchHistoriesData();
-        
       }
     }
   }
 
+  openModalEditHistory(historyid) {
+    const selected = this.tempData.filter(d => d.id == historyid)[0];
+    var modal = $('#modalEditHistory');
+    
+    modal.find('input[name=id]').val(selected.id);
+    modal.find('input[name=activity_id]').val(selected.activity_id);
+    modal.find('input[name=title]').val(selected.activity_title);
+    modal.find('input[name=date]').val(selected.date);
+    modal.find('input[name=time]').val(selected.time);
+    modal.find('input[name=value]').val(selected.value).prop('disabled', !selected.activity_can_change);
+    modal.modal('show');
+  }
+
+  async saveEditHistory() {
+    var modal = $('#modalEditHistory');
+    const body = {
+      id: modal.find('input[name=id]').val(),
+      activity_id: modal.find('input[name=activity_id]').val(),
+      date: modal.find('input[name=date]').val(),
+      time: modal.find('input[name=time]').val(),
+      value: modal.find('input[name=value]').val(),
+    };
+    const command = await this.historyService.updateCommand(body).execute();
+    if (command.success) {
+      const result = command.value;
+      if (result.success) {
+        alertHelper.showSnackBar("Successfully Updated");
+
+        modal.modal('hide');
+
+        this.fetchHistoriesData();
+      }
+    }
+  }
+  
   initialize() {
     this.fetchHistoriesData();
 
@@ -265,17 +302,17 @@ class HistoryView {
       this.handleClickButtonDelete(evt.target)
     );
 
-    $("body").on("click", ".table-responsive td", (evt) =>
-      this.handleClickRowTable(evt)
-    );
+    // $("body").on("click", ".table-responsive td", (evt) =>
+    //   this.handleClickRowTable(evt)
+    // );
 
-    $("body").on("click", ".btn-cancel-editable", (evt) =>
-      this.handleClickButtonCancelEdit(evt)
-    );
+    // $("body").on("click", ".btn-cancel-editable", (evt) =>
+    //   this.handleClickButtonCancelEdit(evt)
+    // );
 
-    $("body").on("click", ".btn-save-editable", (evt) =>
-      this.handleClickButtonSaveEdit(evt)
-    );
+    // $("body").on("click", ".btn-save-editable", (evt) =>
+    //   this.handleClickButtonSaveEdit(evt)
+    // );
 
     $("body").on('click', '.btn-select-bulk-delete', (evt) => 
       this.handleClickButtonSelectBulkDelete(evt)
@@ -288,6 +325,15 @@ class HistoryView {
     $("body").on('click', '.btn-confirm-bulk-delete', (evt) => 
       this.handleClickButtonConfirmBulkDelete(evt)
     );
+
+    $("body").on("click", ".table-responsive td", (evt) => {
+      const historyid = $(evt.target).closest('tr').data('historyid')
+      this.openModalEditHistory(historyid)
+    });
+
+    $('body').on('click', '#btnSaveEditHistory', (evt) => {
+      this.saveEditHistory();
+    })
   }
 }
 
