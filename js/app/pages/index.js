@@ -87,10 +87,13 @@ class HomeView {
           title: activityData.title,
           activity_id: activityData.id,
           placeholder: activityData.type == 'speedrun' ? 'TAST' : 'Text Field',
-          score_target: `${activityData.score} / ${activityData.target}`,
+          score_target: activityData.score_target,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
+          order_number: activityData.position,
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -125,10 +128,13 @@ class HomeView {
           activity_id: activityData.id,
           value: activityData.value,
           increase_value: activityData.increase_value,
-          score_target: `${activityData.score} / ${activityData.target}`,
+          score_target: activityData.score_target,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
+          order_number: activityData.position,
         };
 
         if(activityData.type == 'badhabit' && activityData.is_red) {
@@ -145,10 +151,13 @@ class HomeView {
           title: activityData.title,
           activity_id: activityData.id,
           value_activity_html: valueActivityHtml,
-          score_target: `${activityData.score} / ${activityData.target}`,
+          score_target: activityData.score_target,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
+          order_number: activityData.position,
         };
   
         // modify template change color of button
@@ -170,10 +179,13 @@ class HomeView {
         let contentActivityRowSpeedrun = {
           title: activityData.title,
           activity_id: activityData.id,
-          score_target: `${activityData.score} / ${activityData.target}`,
+          score_target: activityData.score_target,
+          is_red: activityData.is_red ? 'true' : 'false',
           color: activityData.color,
           colorBtnHide: Number(activityData.is_hide) ? 'text-primary' : '',
           titleBtnHide: Number(activityData.is_hide) ? 'Show' : 'Hide',
+          iconBtnHide: Number(activityData.is_hide) ? 'fa-eye' : 'fa-eye-slash',
+          order_number: activityData.position,
         };
   
         // modify template change color of button
@@ -183,6 +195,9 @@ class HomeView {
           .attr("data-activityId", activityData["id"]);
         changeColorBtnActivity(activityData["color"], rowActivitySpeedrunTpl);
   
+        rowActivitySpeedrunTpl.find('input[name=hour]').prop('disabled', activityData.is_ms_enable);
+        rowActivitySpeedrunTpl.find('input[name=millisecond]').prop('disabled', !activityData.is_ms_enable);
+        
         // get html script from modified template
         rowActivitySpeedrunTpl = rowActivitySpeedrunTpl[0].outerHTML;
   
@@ -200,11 +215,14 @@ class HomeView {
   }
 
   getValuePositionOfActivities() {
-    const values = $(".row-activity").map(function () {
+    const values = $(".row-activity").map(function (i) {
       const btnPos = $(this).find(".changepos-btn-wrapper");
       const activityId = btnPos.data("activityid");
 
-      return activityId;
+      return {
+        activity_id: activityId,
+        position: i+1,
+      };
     });
 
     return values.toArray();
@@ -221,12 +239,14 @@ class HomeView {
       var temp = children[newIndex];
       children[newIndex] = children[currentIndex];
       children[currentIndex] = temp;
+
+      const newValue = $(children[newIndex]).find('.input-activity-position').val();
+      const currentValue = $(children[currentIndex]).find('.input-activity-position').val();
+
+      $(children[newIndex]).find('.input-activity-position').val(currentValue);
+      $(children[currentIndex]).find('.input-activity-position').val(newValue);
     }
     $(parentEl).html(children);
-
-    // update position to server
-    const value = this.getValuePositionOfActivities();
-    await this.activityService.updatePositionCommand(value).execute();
   }
 
   handleClickButtonChangePosition(direction, el) {
@@ -347,20 +367,23 @@ class HomeView {
       // $('.activity-target-container').hide();
       this.toggleActivityPage('input', true)
       $('#targetBtn').html('Target');
+      $('#titleSection').hide();
     } else {
       // $('.activity-input-container').hide();
       // $('.activity-target-container').show();
       this.toggleActivityPage('target', true)
       $('#targetBtn').html('Hide Target');
+      $('#titleSection').html('<i class="fas fa-info-circle mr-2"></i>Tap for more detail').show();
     }
   }
 
   handleClickEditButton(evt) {
-    $('#titleSection').find('h3').html('Edit');
+    $('#titleSection').html('<h3 class="font-weight-bold text-dark">Edit</h3>');
     $('#titleSection').show();
     
     $('.btn-section-action').hide();
     $('#doneAction').show();
+    $('#doneAction').data('activepage', 'edit');
 
     this.showActivitiesData(this.tempData)
 
@@ -369,7 +392,28 @@ class HomeView {
     this.toggleActivityPage('edit', true)
   }
 
-  handleClickDoneButton(evt) {
+  async handleClickDoneButton(evt) {
+    const activepage = $('#doneAction').data('activepage');
+    if(activepage === 'edit') {
+      // $('.input-activity-position')
+      const value = $('.input-activity-position').map((i, e) => ({position: Number(e.value), activity_id: Number($(e).closest('.activity-edit-container').attr('activityId'))})).toArray()
+
+      if(value.length) {
+          const resp = await this.activityService.updatePositionCommand(value).execute();
+          if(resp.success) {
+            this.tempData = this.tempData.map(data => {
+              const selected = value.filter((a) => a.activity_id == data.id)[0]
+              
+              return {
+                ...data,
+                position: selected.position,
+              }
+            }).sort((a,b) => a.position - b.position)
+          }
+      }
+      
+    }
+    
     this.disableDraggable();
     $('#titleSection').hide();
     
@@ -385,7 +429,7 @@ class HomeView {
     // $('.activity-edit-container').hide();
     // this.toggleActivityPage('input', true)
     this.is_hide = false;
-    window.asyik = this.tempData
+    $('#doneAction').data('activepage', '');
     this.handleClickSeeAllButton();
   }
 
@@ -494,11 +538,6 @@ class HomeView {
         ...data,
         position: value.indexOf(data.id) < 0 ? data.position : value.indexOf(data.id),
       })).sort((a,b) => a.position - b.position)
-
-      window.hasilUpdate = ({
-        value,
-        tempData: this.tempData,
-      })
     }
   }
   
@@ -514,35 +553,15 @@ class HomeView {
     }
 
     if(!$('.row-activity').hasClass('sortable-initialized')) {
-      $('#float-wrapper').sortable({ 
-        accept: '*',
-        activeClass: '',
-        cancel: '',
-        connectWith: false,
-        disabled: false,
-        forcePlaceholderSize: false,
-        handle: false,
-        initialized: false,
-        items: 'div.draggable-item',
-        placeholder: 'placeholder',
-        placeholderTag: null,
-        receiveHandler: null
-      }).off('sortable:update').on('sortable:update', (...args) => this.updateAfterDrag('#float-wrapper'))
+      $('#float-wrapper').sortable({
+        handle: '#float-wrapper div.draggable-item',
+        onSort: (e) => this.updateAfterDrag('#float-wrapper'),
+      });
 
-      $('#text-wrapper').sortable({ 
-        accept: '*',
-        activeClass: '',
-        cancel: '',
-        connectWith: false,
-        disabled: false,
-        forcePlaceholderSize: false,
-        handle: false,
-        initialized: false,
-        items: 'div.draggable-item',
-        placeholder: 'placeholder',
-        placeholderTag: null,
-        receiveHandler: null
-      }).off('sortable:update').on('sortable:update', (...args) => this.updateAfterDrag('#text-wrapper'))
+      $('#text-wrapper').sortable({
+        handle: '#text-wrapper div.draggable-item',
+        onSort: (e) => this.updateAfterDrag('#text-wrapper'),
+      });
 
       $('.row-activity').addClass('sortable-initialized')
     }
@@ -562,11 +581,11 @@ class HomeView {
   }
 
   async handleClickRearrangeButton(evt) {
-    $('#titleSection').find('h3').html('Rearrange');
+    $('#titleSection').html('<h3 class="font-weight-bold text-dark">Rearrange</h3>');
     $('#titleSection').show();
     
     $('.btn-section-action').hide();
-    $('#doneAction').show();
+    $('#doneAction').data('activepage', 'rearrange').show();
 
     this.showActivitiesData(this.tempData)
 
@@ -702,9 +721,34 @@ class HomeView {
       //     containerSelector: 'div.draggable',
       //     itemSelector: 'div.draggable-item',
       // })
+
+      // limit stopwatch input, after type two char, the focus will change to next input
+      $('body').on('keyup', '.speedrun-container .input-activity-value', function(event){
+        var value = $(this).val();
+        var key = event.keyCode || event.charCode;
+  
+        if(value.length >= 2) {
+          $(this).next().focus();
+          $(this).next().val(value.substring(2));
+        }
+
+        if(!value && (key == 8 || key == 46)) {
+          $(this).prev().focus();
+        }
+        
+        $(this).val(value.substring(0, 2));
+      })
     })
 
+    $('body').on('click', '.activity-target-container', function(event) {
+      const dateObject = new Date();
+      const currentMonth = dateObject.getMonth() + 1;
+      const currentYear = dateObject.getFullYear();
+      const activityid = $(this).closest('.row-activity').attr('activityid');
 
+      const link = `/report/list.html?year=${currentYear}&month=${currentMonth}&tab=month&activityid=${activityid}`;
+      window.location.replace(link);
+    })
   }
 }
 

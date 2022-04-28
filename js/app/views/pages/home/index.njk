@@ -7,11 +7,11 @@
     <div class="d-flex justify-content-between">
         <div>
             <div id="titleSection" style="display:none">
-                <h3 class="font-weight-bold text-dark">Edit</h3>
+                
             </div>
         </div>
         <div id="buttonSection" class="mb-3 text-right" style="white-space: nowrap;">
-            <button class="btn btn-link btn-section-action" id="rearrangeBtn" type="button">Rearrange</button>
+            {# <button class="btn btn-link btn-section-action" id="rearrangeBtn" type="button">Rearrange</button> #}
             <button class="btn btn-link btn-section-action" id="editBtn" type="button">Edit</button>
             <button class="btn btn-link btn-section-action" id="targetBtn" type="button">Target</button>
             <button class="btn btn-link btn-section-action" id="seeAllActivity" type="button">See All</button>
@@ -41,6 +41,7 @@
                 <button class="btn btn-danger rounded-circle" data-toggle="modal" data-target="#modalFormMediaCamera"><i class="fa fa-camera"></i></button>
                 <button id="btnMediaImage" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-image"></i></button>
                 <button id="btnMediaVideo" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fa fa-video"></i></button>
+                <button id="btnMediaYoutube" class="btn btn-secondary rounded-circle" data-toggle="modal" data-target="#modalFormMedia"><i class="fab fa-youtube"></i></button>
                 <div class="modal fade" id="modalFormMedia" tabindex="-1" role="dialog" aria-labelledby="modalFormMediaLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -73,18 +74,7 @@
                                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                     <div class="form-media-wrapper">
                                         <div class="modal-body">
-                                            <div class="video-type" style="display:none">
-                                                <div class="form-group">
-                                                    <label>Type</label>
-                                                    <select name="type" class="form-control">
-                                                        <option value="video" selected>Video</option>
-                                                        <option value="youtube">Youtube</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="image-type" style="display: none">
-                                                <input type="hidden" name="type" value="image" />
-                                            </div>
+                                            <input type="hidden" name="type" value="image" />
                                             <div class="form-group">
                                                 <label>Category</label>
                                                 <select name="category_id" class="form-control">
@@ -399,6 +389,23 @@
 .vjs-record-canvas canvas {
     width: 100%;
 }
+.is-red-true, .is-red-false {
+    border-left-style: solid !important;
+    border-left-width: 6px !important;
+}
+
+.is-red-true {
+    border-left-color: #ff9899 !important;
+}
+
+.is-red-false {
+    border-left-color: #6ace6b !important;
+}
+.activity-target-container *, .activity-target-container {
+    color: #4e73df;
+    font-weight: 700;
+    cursor: pointer;
+}
 </style>
 <link rel="stylesheet" href="vendor/videojs/video-js.min.css">
 <link rel="stylesheet" href="vendor/videojs-record/css/videojs.record.min.css">
@@ -408,7 +415,7 @@
 <!-- Template -->
 
 <script type="text/template" data-template="row-activity-float">
-    <div class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
+    <div activityId='${activity_id}' class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center">
                 <div class="input-group input-activity-group">
@@ -417,10 +424,12 @@
                         <button type="button" class="btn btn-primary btn-add-value border-0" role="button">${title}</button>
                     </div>
                 </div>
-                {# <div class="changepos-btn-wrapper">
-                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
-                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div> #}
+                <div class="activity-edit-container" style="display:none">
+                    <div class="changepos-btn-wrapper">
+                        <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                        <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -428,7 +437,7 @@
 
 
 <script type="text/template" data-template="row-activity-speedrun">
-    <div class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
+    <div activityId='${activity_id}' class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center">
                 <div class="input-group input-activity-group">
@@ -442,16 +451,16 @@
                             </div>
                         </div>
                         <div class="activity-target-container h-100" style="display:none">
-                            <input class="form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled>
+                            <input class="form-control border border-1 input-activity-value h-100 text-center is-red-${is_red}" value='${score_target}' type="text" disabled>
                         </div>
                         <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
                             <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
                                 <div>
-                                    ${value}
+                                    <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                                        <i class="fa fa-eye-slash"></i>
+                                        <i class="fa ${iconBtnHide}"></i>
                                     </button>
                                     <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                                         <i class="fa fa-pencil-alt"></i>
@@ -470,31 +479,33 @@
                         <button type="button" class="btn btn-primary w-100 btn-add-value border-0 pt-2" role="button">${title}</button>
                     </div>
                 </div>
-                {# <div class="changepos-btn-wrapper">
-                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
-                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div> #}
+                <div class="activity-edit-container" style="display:none">
+                    <div class="changepos-btn-wrapper">
+                        <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                        <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </script>
 
 <script type="text/template" data-template="row-activity-textfield">
-    <div class="row mb-3 row-activity row-activity-textfield" data-id="${activity_id}">
+    <div activityId='${activity_id}' class="row mb-3 row-activity row-activity-textfield" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center"> 
                 <div class="input-group input-activity-group">
                     <input type="text" class="activity-input-container form-control border border-1 input-activity-value h-100" activityId='${activity_id}' placeholder="${placeholder}" aria-label="" style="${style}">
-                    <input class="activity-target-container form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled style="display:none">
+                    <input class="activity-target-container form-control border border-1 input-activity-value h-100 text-center is-red-${is_red}" value='${score_target}' type="text" disabled style="display:none">
                     
                     <div class="activity-edit-container form-control border border-1 input-activity-value text-center" activityId='${activity_id}' style="display:none">
                         <div class="h-100 d-flex align-items-center justify-content-between">
                             <div>
-                                ${value}
+                                <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
                             </div>
                             <div class="d-flex align-items-center">
                                 <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                                    <i class="fa fa-eye-slash"></i>
+                                    <i class="fa ${iconBtnHide}"></i>
                                 </button>
                                 <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                                     <i class="fa fa-pencil-alt"></i>
@@ -510,10 +521,12 @@
                         <button class="btn btn-primary btn-add-value border-0" type="button">${title}</button>
                     </div>
                 </div>
-                {# <div class="changepos-btn-wrapper">
-                    <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
-                    <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
-                </div> #}
+                <div class="activity-edit-container" style="display:none">
+                    <div class="changepos-btn-wrapper">
+                        <i class="btn-up fa fa-caret-up" aria-hidden="true"></i>
+                        <i class="btn-down fa fa-caret-down" aria-hidden="true"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -527,16 +540,16 @@
             <button class="btn-step step-down shadow" type="button">-</button>
         </div>
         <div class="activity-target-container h-100" style="display:none">
-            <input class="form-control border border-1 input-activity-value h-100 text-center" value='${score_target}' type="text" disabled>
+            <input class="form-control border border-1 input-activity-value h-100 text-center is-red-${is_red}" value='${score_target}' type="text" disabled>
         </div>
         <div class="activity-edit-container" activityId='${activity_id}' style="display:none">
             <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
                 <div>
-                    ${value}
+                    <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
                 </div>
                 <div class="d-flex align-items-center">
                     <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                        <i class="fa fa-eye-slash"></i>
+                        <i class="fa ${iconBtnHide}"></i>
                     </button>
                     <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                         <i class="fa fa-pencil-alt"></i>
@@ -558,16 +571,16 @@
         <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center" activityId='${activity_id}' value='${value}' style="${style}">${value}</div>
     </div>
     <div class="activity-target-container w-50" style="flex: 1 1 auto; display:none">
-        <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center">${score_target}</div>
+        <div class="form-control border border-0 bg-gray-200 input-activity-value h-100 p-0 d-flex align-items-center text-center justify-content-center is-red-${is_red}">${score_target}</div>
     </div>
     <div class="activity-edit-container" activityId='${activity_id}' style="flex: 1 1 auto; display:none">
         <div class="form-control border border-1 input-activity-value text-center d-flex align-items-center justify-content-between">
             <div>
-                ${value}
+                <input class="form-control border border-0 input-activity-position h-100" value='${order_number}' type="number" style="height: auto !important;">
             </div>
             <div class="d-flex align-items-center">
                 <button type="button" class="btn btn-edit-hide ${colorBtnHide}" data-toggle="tooltip" data-placement="top" title="${titleBtnHide} Activity">
-                    <i class="fa fa-eye-slash"></i>
+                    <i class="fa ${iconBtnHide}"></i>
                 </button>
                 <button type="button" class="btn btn-edit-update text-primary btn-edit-activity" activityId="${id}" data-toggle="tooltip" data-placement="top" title="Edit Activity">
                     <i class="fa fa-pencil-alt"></i>
