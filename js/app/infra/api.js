@@ -22,12 +22,9 @@ axios.interceptors.response.use((response) => response, (error) => {
     }
     return Promise.reject(error)
   })
-// export const server = "https://backendrecord.gofitness.club";
 // export const server = "https://backend.myrecord.club";
-// export const server = "https://stagingbackendrecord.gofitness.club";
-// export const server = "https://activityapi.demo.masuk.id";
-// export const server = "https://stagingbackend.myrecord.club";
-export const server = "http://localhost:8000";
+export const server = "https://stagingbackend.myrecord.club";
+// export const server = "http://localhost:8000";
 
 var listApi = {
     "activity.get": {
@@ -38,6 +35,11 @@ var listApi = {
     "activity.getByMonthAndYear" : {
         method : "GET",
         url: server + "/api/activities/getUsingMonthYear",
+        withToken: false,
+    },
+    "activity.getDailyReport" : {
+        method : "GET",
+        url: server + "/api/activities/getDailyUsingMonthYear",
         withToken: false,
     },
     "activity.add" : {

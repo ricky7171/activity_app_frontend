@@ -1,12 +1,15 @@
 import * as templateHelper from "./../core/template_helper";
 import * as alertHelper from "./../core/alert_helper";
 import * as loadingHelper from "./../core/loading_helper";
+import * as arrayHelper from "./../core/array_helper";
+import * as dateHelper from "./../core/datetime_helper";
 import HistoryService from "../business_logic/service/historyService";
 import HistoryDataProxy from "../data_proxy/historyDataProxy";
 
 class HistoryView {
   constructor() {
     this.historyService = new HistoryService(new HistoryDataProxy());
+    this.tempData = [];
   }
 
   async fetchHistoriesData() {
@@ -15,6 +18,8 @@ class HistoryView {
     if (command.success) {
       const result = command.value;
 
+      // save response to tempData
+      this.tempData = result.response.data;
       this.showHistoriesData(result.response.data);
       loadingHelper.toggleLoading(false);
       $(".table-responsive").show();
@@ -38,28 +43,49 @@ class HistoryView {
     //prepare template
     var rowHistoriesTpl = $('script[data-template="row-history"').text();
 
+    const addMonthYear = histories.map(data => ({...data, monthYear: data.date.substr(0, data.date.lastIndexOf('-'))}));
+    const groupByMonth = arrayHelper.groupBy(addMonthYear, data => data.monthYear);
+    const _this = this;
     //generate row history, then put it on .list-history
     $(".list-history").append(
-      histories.map(function (historyData, i) {
-        var value = null;
-        if (historyData["value"] != null) {
-          value = historyData["value"];
-        } else if (historyData["value_textfield"] != null) {
-          value = historyData["value_textfield"];
-        } else {
-          value = 0;
-        }
-        return templateHelper.render(rowHistoriesTpl, {
-          activity_id: historyData["activity_id"],
-          id: historyData["id"],
-          date: historyData["date"],
-          time: historyData["time"],
-          activity_title: historyData["activity_title"],
-          value: value,
-          history_id: historyData["id"],
-          useTextField: historyData["value_textfield"] ? 'true' : 'false',
-          is_value_editable: historyData['activity_can_change'] ? 'true' : 'false',
-        });
+      Object.keys(groupByMonth).map(monthYear => {
+        const dataHistories = groupByMonth[monthYear] || [];
+        const [year, month] = monthYear.split('-');
+
+        const title = `${dateHelper.monthToText(Number(month))} ${year}`;
+        const titleElement = `
+        <tr style="background-color: #ffe6cd">
+          <td class="text-left py-1" colspan="5"><span class="font-weight-bold">${title}</span></td>
+        </tr>
+        `
+        
+        const dataElement = dataHistories.map(function (historyData, i) {
+          var value = null;
+          if (historyData["value"] != null) {
+            value = historyData["value"];
+          } else if (historyData["value_textfield"] != null) {
+            value = historyData["value_textfield"];
+          } else {
+            value = 0;
+          }
+
+          value = _this.addStyleToValue(historyData['activity_type'], value)
+          
+          return templateHelper.render(rowHistoriesTpl, {
+            activity_id: historyData["activity_id"],
+            activity_type: historyData["activity_type"],
+            id: historyData["id"],
+            date: historyData["date"],
+            time: historyData["time"],
+            activity_title: historyData["activity_title"],
+            value: value,
+            history_id: historyData["id"],
+            useTextField: historyData["value_textfield"] ? 'true' : 'false',
+            is_value_editable: historyData['activity_can_change'] ? 'true' : 'false',
+          });
+        })
+        
+        return [titleElement, ...dataElement];
       })
     );
   }
@@ -100,14 +126,13 @@ class HistoryView {
   handleClickRowTable(evt) {
     evt.stopPropagation();
     const el = $(evt.target);
-    const value = $(el).html();
+    const value = $(el).text();
     const isEditable = $(el).data("editable");
     const hasInput = $(el).find(".input-editable").length;
 
     if (isEditable && !hasInput) {
       // save default content
-      $(el).data("defaultcontent", value);
-
+      $(el).data("defaultcontent", $(el).html());
       const rowEditable = $('script[data-template="row-editable"').text();
       const content = templateHelper.render(rowEditable, {
         name: $(el).data("name"),
@@ -125,6 +150,26 @@ class HistoryView {
     td.html(defaultContent);
   }
 
+  addStyleToValue(type, value) {
+    if(type === 'count') {
+      value = `<small><i>${value}</i></small>`;
+    } else if(type === 'speedrun') {
+      value = value.split(' ').map((str) => {
+          let [num, unit] = str.match(/\D+|\d+/g);
+          if(Number(num) > 1) {
+              return `<span class="font-weight-bold" style="color: #00cbab">${num}${unit}</span>`
+          }
+          return `<span class="font-weight-bold">${num}${unit}</span>`
+      }).join(' ');
+    } else if(type === 'badhabit') {
+      value = `<span class="font-weight-bold" style="color: #fc8790">${value}</span>`;
+    } else if(type === 'value') {
+      value = `<span class="font-weight-bold" style="color: #00cbab">${value}</span>`;
+    }
+
+    return value;
+  }
+  
   async handleClickButtonSaveEdit(evt) {
     evt.stopPropagation();
     const el = $(evt.target);
@@ -133,6 +178,7 @@ class HistoryView {
     const td = $(el).closest("td");
     const id = $(el).closest("tr").data("historyid");
     const activity_id = $(el).closest("tr").data("activityid");
+    const activity_type = $(el).closest("tr").data("activitytype");
     let name = td.data("name");
     // const useTextField = td.data("usetextfield");
 
@@ -148,7 +194,7 @@ class HistoryView {
     if (command.success) {
       const result = command.value;
       if (result.success) {
-        td.html(value);
+        td.html(this.addStyleToValue(activity_type, value));
         alertHelper.showSnackBar("Successfully Updated");
       }
     }
@@ -209,11 +255,45 @@ class HistoryView {
         alertHelper.showSnackBar("successfully deleted !");
         this.handleClickButtonCancelBulkDelete();
         this.fetchHistoriesData();
-        
       }
     }
   }
 
+  openModalEditHistory(historyid) {
+    const selected = this.tempData.filter(d => d.id == historyid)[0];
+    var modal = $('#modalEditHistory');
+    
+    modal.find('input[name=id]').val(selected.id);
+    modal.find('input[name=activity_id]').val(selected.activity_id);
+    modal.find('input[name=title]').val(selected.activity_title);
+    modal.find('input[name=date]').val(selected.date);
+    modal.find('input[name=time]').val(selected.time);
+    modal.find('input[name=value]').val(selected.value).prop('disabled', !selected.activity_can_change);
+    modal.modal('show');
+  }
+
+  async saveEditHistory() {
+    var modal = $('#modalEditHistory');
+    const body = {
+      id: modal.find('input[name=id]').val(),
+      activity_id: modal.find('input[name=activity_id]').val(),
+      date: modal.find('input[name=date]').val(),
+      time: modal.find('input[name=time]').val(),
+      value: modal.find('input[name=value]').val(),
+    };
+    const command = await this.historyService.updateCommand(body).execute();
+    if (command.success) {
+      const result = command.value;
+      if (result.success) {
+        alertHelper.showSnackBar("Successfully Updated");
+
+        modal.modal('hide');
+
+        this.fetchHistoriesData();
+      }
+    }
+  }
+  
   initialize() {
     this.fetchHistoriesData();
 
@@ -222,17 +302,17 @@ class HistoryView {
       this.handleClickButtonDelete(evt.target)
     );
 
-    $("body").on("click", ".table-responsive td", (evt) =>
-      this.handleClickRowTable(evt)
-    );
+    // $("body").on("click", ".table-responsive td", (evt) =>
+    //   this.handleClickRowTable(evt)
+    // );
 
-    $("body").on("click", ".btn-cancel-editable", (evt) =>
-      this.handleClickButtonCancelEdit(evt)
-    );
+    // $("body").on("click", ".btn-cancel-editable", (evt) =>
+    //   this.handleClickButtonCancelEdit(evt)
+    // );
 
-    $("body").on("click", ".btn-save-editable", (evt) =>
-      this.handleClickButtonSaveEdit(evt)
-    );
+    // $("body").on("click", ".btn-save-editable", (evt) =>
+    //   this.handleClickButtonSaveEdit(evt)
+    // );
 
     $("body").on('click', '.btn-select-bulk-delete', (evt) => 
       this.handleClickButtonSelectBulkDelete(evt)
@@ -245,6 +325,15 @@ class HistoryView {
     $("body").on('click', '.btn-confirm-bulk-delete', (evt) => 
       this.handleClickButtonConfirmBulkDelete(evt)
     );
+
+    $("body").on("click", ".table-responsive td", (evt) => {
+      const historyid = $(evt.target).closest('tr').data('historyid')
+      this.openModalEditHistory(historyid)
+    });
+
+    $('body').on('click', '#btnSaveEditHistory', (evt) => {
+      this.saveEditHistory();
+    })
   }
 }
 

@@ -9,47 +9,85 @@
         <a id="btnBack" style="display:none" href="/report/index.html" class="btn btn-primary mb-4"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
     <div>
-        <select id="monthSelection" class="form-control" style="display:none">
-        </select>
+        {# <select id="monthSelection" class="form-control" style="display:none">
+        </select> #}
+        <div class="input-group">
+            <input class="form-control" type="text" id="monthPicker"/>
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary datepicker-trigger">
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
 <h3 id="titleContent">Report</h3>
 
- <!-- report sumary activity section -->
-<div class="report-summary-activity" style="display:none">
-    <!-- Data Table New -->
-    <div class="table-responsive">
-        <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
-            <thead>
-                <tr>
-                    <th>Activity</th>
-                    <th>Target</th>
-                    <th>Score</th>
-                    <th>Count</th>
-                    <th class="section-point-menu" style="display:none">Point</th>
-                </tr>
-            </thead>
-            <tbody class="data-activity-summary">
-                <!-- template row activity summary -->
-            </tbody>
-        </table>
+
+<ul class="nav nav-tabs" id="reportTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <a class="nav-link active" id="daily-tab" data-toggle="tab" href="#dailyContent" role="tab" aria-controls="dailyContent" aria-selected="true">Daily</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="monthly-tab" data-toggle="tab" href="#monthlyContent" role="tab" aria-controls="monthlyContent" aria-selected="false">Monthly</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="dailyContent" role="tabpanel" aria-labelledby="daily-tab">
+    <div class="report-daily-activity" style="display:none">
+        <p role="button" class="mt-4 doCopyAllText"><i class="fas fa-copy mr-2"></i>Copy All Text.</p>
+
+        <div class="table-responsive mt-2">
+            <table class="table table-bordered data-table" id="dataTable4" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody class="data-activity-daily">
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
-            <thead>
-                <tr>
-                    <th>Activity</th>
-                    <th>Target</th>
-                    <th>Avg/month</th>
-                    <th>Score</th>
-                    <th class="section-point-menu" style="display:none">Point</th>
-                </tr>
-            </thead>
-            <tbody class="data-activity-speedrun-summary">
-                <!-- template row activity summary -->
-            </tbody>
-        </table>
+  </div>
+  <div class="tab-pane fade" id="monthlyContent" role="tabpanel" aria-labelledby="monthly-tab">
+    <!-- report sumary activity section -->
+    <div class="report-summary-activity" style="display:none">
+        <!-- Data Table New -->
+        <div class="table-responsive">
+            <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Target</th>
+                        <th>Score</th>
+                        <th>Count</th>
+                        <th class="section-point-menu" style="display:none">Point</th>
+                    </tr>
+                </thead>
+                <tbody class="data-activity-summary">
+                    <!-- template row activity summary -->
+                </tbody>
+            </table>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered data-table" id="dataTable1" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Target</th>
+                        <th>Avg/month</th>
+                        <th>Score</th>
+                        <th class="section-point-menu" style="display:none">Point</th>
+                    </tr>
+                </thead>
+                <tbody class="data-activity-speedrun-summary">
+                    <!-- template row activity summary -->
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="table-responsive">
         <table class="table table-bordered data-table" id="dataTable3" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
@@ -69,29 +107,32 @@
     </div>
 </div>
 
-<!-- report detail activity section -->
-<!-- this report detail show after user click one of activity on summary -->
-<div class="report-detail-activity" style="display:none">
-    <!-- template report Heading -->
-    <!-- Data Table New -->
-    <div class="table-responsive">
-        <table class="table table-bordered data-table" id="detail_table" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody class="data-report-detail-activity">
-                <!-- template row data report detail activity -->
-            </tbody>
-            <tfoot class="total-report-detail-activity">
-                <!-- template row footer report detail activity -->
-            </tfoot>
-        </table>
+    <!-- report detail activity section -->
+    <!-- this report detail show after user click one of activity on summary -->
+    <div class="report-detail-activity" style="display:none">
+        <!-- template report Heading -->
+        <!-- Data Table New -->
+        <div class="table-responsive">
+            <table class="table table-bordered data-table" id="detail_table" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody class="data-report-detail-activity">
+                    <!-- template row data report detail activity -->
+                </tbody>
+                <tfoot class="total-report-detail-activity">
+                    <!-- template row footer report detail activity -->
+                </tfoot>
+            </table>
+        </div>
     </div>
+  </div>
 </div>
+
 </div>
 {% endblock content %}
 {% block header %}
@@ -112,7 +153,7 @@
 </script>
 
 <script type="text/template" data-template="report-heading">
-    <div class="report-heading d-flex align-items-center mb-2">
+    <div class="report-heading d-flex align-items-center mb-2 mt-4">
         <h2 class="report-name h3 mr-4 text-gray-800">${activity_name}</h2>
         <p class="report-period mb-0">
             <span class="year">${year}</span>
@@ -175,6 +216,14 @@
     <tr class='section-point-menu' style="display:none">
         <th colspan="2">Point</th>
         <th>${point}</th>
+    </tr>
+</script>
+<script type="text/template" data-template="row-activity-daily">
+    <tr>
+        <td>
+            ${activity_name}
+        </td>
+        <td>${score_value}</td>
     </tr>
 </script>
 <script src="vendor/footable-bootstrap/js/footable.min.js"></script>

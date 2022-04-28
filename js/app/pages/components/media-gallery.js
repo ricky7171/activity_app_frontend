@@ -154,6 +154,7 @@ export default class MediaGalleryComponent {
   }
   
   handleChangeType(evt) {
+    console.log('triggered');
     const el = evt.target;
     const value = $(el).val();
     const wrapper = $(el).closest('.form-media-wrapper');
@@ -162,10 +163,11 @@ export default class MediaGalleryComponent {
       wrapper.find('.youtube-link-input').show();
       wrapper.find('.media-input-dropzone').hide();
     } else {
+      console.log('video');
       wrapper.find('.file-media').show();
       wrapper.find('.youtube-link-input').hide();
       wrapper.find('.media-input-dropzone').show();
-      wrapper.find('input[type=file]').find('input[name=file]').prop('accept', `${value}/*`)
+      wrapper.find('input[type=file]').prop('accept', `${value}/*`)
     }
   }
 
@@ -175,11 +177,7 @@ export default class MediaGalleryComponent {
       category_id: wrapper.find('select[name=category_id]').val(),
     }
 
-    if(wrapper.find('select[name=type]:visible').length) {
-      attributes.type = wrapper.find('select[name=type]').val()
-    } else {
-      attributes.type = wrapper.find('input[name=type]').val()
-    }
+    attributes.type = wrapper.find('input[name=type]').val()
 
     const modalType = wrapper.find('[name=modal_type]').val();
     
@@ -209,7 +207,7 @@ export default class MediaGalleryComponent {
   }
 
   resetForm(wrapper) {
-    wrapper.find('select[name=type]').val('image').trigger('change');
+    wrapper.find('input[name=type]').val('image').trigger('change');
     wrapper.find('input[name=file]').val('').trigger('change');
     wrapper.find('input[name=file]').prop('files', null);
     wrapper.find('.preview-area').css('background-image', '');
@@ -526,7 +524,6 @@ export default class MediaGalleryComponent {
   
   initiate() {
     const thisObject = this;
-    this.handleChangeType($('.form-media-wrapper select[name=type]')[0]);
     $('.form-media-wrapper [name=type]').on('change', this.handleChangeType)
     $('.form-media-wrapper input[name=file]').on('change', (evt) => this.generatePreview(evt.target))
     $('.form-media-wrapper input[name=youtube_link]').on('keyup change', (evt) => this.generatePreview(evt.target))
@@ -564,18 +561,17 @@ export default class MediaGalleryComponent {
 
     $('#btnMediaImage').on('click', function() {
       $('#modalFormMedia').find('#home-tab .modal-title').html('Upload Image');
-      $('#modalFormMedia').find('.video-type').hide();
-      $('#modalFormMedia').find('.image-type').show();
-
-      $('#modalFormMedia').find('input[name=type]').trigger('change');
+      $('#modalFormMedia').find('input[name=type]').val('image').trigger('change');
     })
 
     $('#btnMediaVideo').on('click', function() {
       $('#modalFormMedia').find('#home-tab .modal-title').html('Upload Video');
-      $('#modalFormMedia').find('.video-type').show();
-      $('#modalFormMedia').find('.image-type').hide();
+      $('#modalFormMedia').find('input[name=type]').val('video').trigger('change');
+    })
 
-      $('#modalFormMedia').find('select[name=type]').val('video').trigger('change');
+    $('#btnMediaYoutube').on('click', function() {
+      $('#modalFormMedia').find('#home-tab .modal-title').html('Upload Youtube');
+      $('#modalFormMedia').find('input[name=type]').val('youtube').trigger('change');
     })
 
     // assign event to category actions

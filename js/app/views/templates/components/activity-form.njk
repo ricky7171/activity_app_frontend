@@ -41,10 +41,18 @@
     <div class="form-group d-flex flex-nowrap align-items-center">
         <label for="value">Target Duration</label>
         <div class="d-flex">
-            <input type="number" placeholder="h" name="hour" class="form-control" style="width: 70px">
+            <input type="number" placeholder="h" name="hour" class="form-control" style="width: 70px" disabled>
             <input type="number" placeholder="m" name="minute" class="form-control" style="width: 70px">
             <input type="number" placeholder="s" name="second" class="form-control" style="width: 70px">
             <input type="number" placeholder="ms" name="millisecond" class="form-control" style="width: 70px">
+        </div>
+    </div>
+    <div class="form-group d-flex flex-nowrap align-items-center">
+        <div style="min-width: 150px">
+        </div>
+        <div class="form-group form-check form-check-inline checkbox-lg">
+            <input type="checkbox" name="is_ms_enable" class="form-check-input" checked>
+            <label class="form-check-label" for="is_ms_enable" >Enable MS Field</label>
         </div>
     </div>
     <div class="form-group d-flex flex-nowrap align-items-center">

@@ -113,6 +113,18 @@ class ActivityService extends BusinessService {
       },
     })
   }
+
+  
+  getDailyReportCommand(params = {}) {
+    const dataProxy = this.dataProxy;
+
+    return new Command({
+      _onValidationSuccess() {
+        return dataProxy.getDailyReport(params);
+      },
+    });
+    
+  }
 }
 
 export default ActivityService;

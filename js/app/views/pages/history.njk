@@ -6,16 +6,68 @@
 <!-- Data Talbe New -->
 
 <div class="table-responsive" style="display:none">
-    <div class="d-flex justify-content-between mb-3">
-        <p><i class="fas fa-info-circle mr-2"></i>Tap on Date, Time, and Value to edit</p>
-        <div class='delete-btn-group'>
+    <div class="d-flex justify-content-between mb-3 align-items-center">
+        <p class="mt-3"><i class="fas fa-info-circle mr-2"></i>Tap on any row to edit</p>
+        <div class='text-right delete-btn-group'>
             <div class='btn btn-danger btn-select-bulk-delete'>Bulk Delete</div>
             <div class='btn btn-secondary btn-cancel-bulk-delete' style='display:none'>Cancel</div>
             <div class='btn btn-danger btn-confirm-bulk-delete' style='display:none'>Delete Now</div>
-        </div>    
+        </div>
     </div>
     
-    <table class="table data-table table-bordered" id="history_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
+    <table class="table" id="history_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true" style="border: 1px solid #e3e6f0">
+        <thead>
+            <tr>
+                <th style='display:none' class='table-header-checkbox'></th>
+                <th>Days</th>
+                <th data-breakpoints="xs">Activities</th>
+                <th class="text-right" data-breakpoints="xs">Input</th>
+                <th class="action"></th>
+            </tr>
+        </thead>
+        <tbody class="list-history">
+            <!-- template row history -->
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="modalEditHistory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit History</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" />
+                    <input type="hidden" name="activity_id" />
+                    <div class="form-group d-flex flex-nowrap align-items-center">
+                        <label for="title">Activity Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="Activity Title" disabled>
+                    </div>
+                    <div class="form-group d-flex flex-nowrap align-items-center">
+                        <label for="title">Date</label>
+                        <input type="text" name="date" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group d-flex flex-nowrap align-items-center">
+                        <label for="title">Time</label>
+                        <input type="text" name="time" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group d-flex flex-nowrap align-items-center">
+                        <label for="title">Value</label>
+                        <input type="text" name="value" class="form-control" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="btnSaveEditHistory" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {# <table class="table data-table table-bordered" id="history_table" data-show-toggle="true" data-expand-first="false" data-paging="true" data-paging-size="10" data-paging-position="center" data-filtering="true" data-sorting="true">
         <thead>
             <tr>
                 <th style='display:none' class='table-header-checkbox'></th>
@@ -29,17 +81,22 @@
         <tbody class="list-history">
             <!-- template row history -->
         </tbody>
-    </table>
+    </table> #}
 </div>
 {% endblock content %}
 
 {% block header %}
 <!-- Page level plugin style -->
 <link href="vendor/footable-bootstrap/css/footable.bootstrap.min.css" rel="stylesheet">
+<style>
+    #history_table td {
+        vertical-align: middle;
+    }
+</style>
 {% endblock header %}
 
 {% block footer %}
-<script type="text/template" data-template="row-history">
+{# <script type="text/template" data-template="row-history">
     <tr data-historyid="${id}" data-activityid="${activity_id}">
         <td style='display:none' class='table-row-checkbox'><input type="checkbox"></td>
         <td data-editable="true" data-name="date">${date}</td>
@@ -48,6 +105,22 @@
         <td data-editable="${is_value_editable}" data-name="value" data-usetextfield="${useTextField}">${value}</td>
         <td class="action">
             <button class="btn-delete-history" historyId="${history_id}">Delete</button>
+        </td>
+    </tr>
+</script> #}
+<script type="text/template" data-template="row-history">
+    <tr role="button" data-historyid="${id}" data-activityid="${activity_id}" data-activitytype="${activity_type}">
+        <td style='display:none' class='table-row-checkbox'><input type="checkbox"></td>
+        <td data-editable="true" data-name="date">
+            <div class="text-center">
+                <span class="h4" style="font-weight: 800">21</span><br/>
+                <span>${time}</span>
+            </div>
+        </td>
+        <td class="h6" style="font-weight: 800">${activity_title}</td>
+        <td class="text-right" data-editable="${is_value_editable}" data-name="value" data-usetextfield="${useTextField}">${value}</td>
+        <td class="action">
+            <button class="btn text-danger btn-delete-history" historyId="${history_id}"><i class="fa fa-trash"></i></button>
         </td>
     </tr>
 </script>
@@ -70,5 +143,5 @@
     </div>
 </script>
 <script src="vendor/footable-bootstrap/js/footable.min.js"></script>
-<script src="js/app/pages/history.js"></script>
+<script src="js/app/pages/history.js?v=1"></script>
 {% endblock footer %}

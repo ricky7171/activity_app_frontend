@@ -1,6 +1,7 @@
 import * as templateHelper from "./../core/template_helper";
 import * as loadingHelper from "./../core/loading_helper";
 import * as dateTimeHelper from "./../core/datetime_helper";
+import * as alertHelper from "./../core/alert_helper";
 import ActivityService from "../business_logic/service/activityService";
 import ActivityDataProxy from "../data_proxy/activityDataProxy";
 import HistoryService from "../business_logic/service/historyService";
@@ -8,6 +9,7 @@ import HistoryDataProxy from "../data_proxy/historyDataProxy";
 import AuthService from "../business_logic/service/authService";
 import AuthDataProxy from "../data_proxy/authDataProxy";
 import { parseQueryString } from "../core/url_helper";
+import { copyTextToClipboard } from '../core/copy_helper';
 
 class ReportListView {
   constructor() {
@@ -32,45 +34,6 @@ class ReportListView {
     }
   }
 
-  getActivitiesSummaryFromResult(result) {
-    return result;
-    // // - gathering information about created at on last history of each activities (this information used to sort activities)
-    // for( let i = 0;i < result.length;i++) { //iterate over activities
-    //   // o get created_at attribute on last history on this activity
-    //   let historyCount = result[i]['histories'].length;
-    //   if(historyCount <= 0) continue;
-    //   let created_at_on_last_history = result[i]['histories'][historyCount - 1]['created_at'];
-    //   result[i]['created_at_on_last_history'] = Date.parse(created_at_on_last_history);
-    // }
-
-    // // - sort activities by 'created_at_on_last_history'
-    // result.sort(function(a,b){
-    //   return new Date(b['created_at_on_last_history']) - new Date(a['created_at_on_last_history']);
-    // });
-
-    // // - store all activity summary to "activitySummary" variable
-    // const activitySummary = [];
-    // for (let i = 0; i < result.length; i++) {
-    //   let score = 0;
-    //   let count = result[i]["histories"].length;
-    //   if (result[i]["use_textfield"]) {
-    //     score = count;
-    //   } else {
-    //     for (let j = 0; j < count; j++) {
-    //       score += result[i]["histories"][j]["value"];
-    //     }
-    //   }
-    //   activitySummary.push({
-    //     id: result[i]["id"],
-    //     title: result[i]["title"],
-    //     target: result[i]["target"],
-    //     score: score,
-    //     count: count,
-    //   });
-    // }
-    // return activitySummary;
-  }
-
   getDetailActivityFromResult(result, id, dataMonthAndYear) {
     //find activity detail
     let detailActivity = {};
@@ -81,29 +44,6 @@ class ReportListView {
       }
     }
 
-    // //fill year and month
-    // detailActivity["year"] = dataMonthAndYear["year"];
-    // detailActivity["month"] = dataMonthAndYear["month"];
-
-    // //get score
-    // let score = 0;
-    // const count = detailActivity["histories"].length;
-    // if (detailActivity["use_textfield"]) {
-    //   score = count;
-    // } else {
-    //   for (let i = 0; i < count; i++) {
-    //     score += detailActivity["histories"][i]["value"];
-    //   }
-    // }
-
-    // //fill score
-    // detailActivity["score"] = score;
-
-    // //get left
-    // const left = detailActivity["target"] - score;
-
-    // //fill left
-    // detailActivity["left"] = left;
     return detailActivity;
   }
 
@@ -116,9 +56,7 @@ class ReportListView {
     if (command.success) {
       const result = command.value;
       if (result.success) {
-        const activitySummary = this.getActivitiesSummaryFromResult(
-          result.response.data.filter(v => v.type !== 'speedrun')
-        );
+        const activitySummary = result.response.data.filter(v => v.type !== 'speedrun')
         this._reportData = result.response.data;
         this.showActivitiesSummary(activitySummary);
 
@@ -130,10 +68,14 @@ class ReportListView {
         $('.content-container').show();
       }
     }
+
+    const queryParams = parseQueryString(window.location.search);
+    if(queryParams.activityid) {
+      $(`.activity_button[activityid=${queryParams.activityid}]`).click();
+    }
   }
 
   async fetchHistoryRange(params) {
-    console.log("🚀 ~ file: report-list.js ~ line 136 ~ ReportListView ~ fetchHistoryRange ~ params", params)
     const command = await this.historyService.getHistoryRangeCommand(params).execute();
 
     if(command.success) {
@@ -155,6 +97,26 @@ class ReportListView {
           }
 
           $('#monthSelection').html(options.toString());
+
+          const firstRangeIndex = ranges[0];
+          const lastRangesIndex = ranges[ranges.length-1];
+          
+          const endDate = firstRangeIndex ? new Date(firstRangeIndex.year, firstRangeIndex.month-1, new Date().getDate()) : new Date(params.year, params.month-1, new Date().getDate());
+          const startDate = lastRangesIndex ? new Date(lastRangesIndex.year, lastRangesIndex.month-1) : new Date(params.year, params.month-1);
+          
+          const optionsMonthPicker = {
+            autoHide: true,
+            autoPick: true,
+            date: new Date(params.year, params.month-1, params.date || new Date().getDate()),
+            startDate,
+            endDate,
+            trigger: '.datepicker-trigger',
+          };
+          console.log("🚀 ~ file: report-list.js ~ line 106 ~ ReportListView ~ fetchHistoryRange ~ optionsMonthPicker", {
+            optionsMonthPicker,
+            ranges,
+          })
+          $('#monthPicker').datepicker(optionsMonthPicker)
         }
       }
     }
@@ -318,13 +280,95 @@ class ReportListView {
     }
   }
   
+  async fetchDailyReport(params) {
+    loadingHelper.toggleLoading(true);
+
+    const command = await this.activityService
+      .getDailyReportCommand(params)
+      .execute();
+    if (command.success) {
+      const result = command.value;
+      if (result.success) {
+        const activitySummary = result.response.data;
+        this.showActivitiesDailyReport(activitySummary);
+
+        loadingHelper.toggleLoading(false);
+        $(".report-daily-activity").show();
+        $('.content-container').show();
+      }
+    }
+  }
+  
+  showActivitiesDailyReport(activities) {
+    const tbodyClassName = '.data-activity-daily';
+    $(".report-daily-activity").show();
+
+    //clear histories
+    $(`.report-daily-activity ${tbodyClassName}`).empty();
+
+    //prepare template
+    var rowActivitySummaryTpl = $(
+      'script[data-template="row-activity-daily"'
+    ).text();
+
+    if(!activities.length) {
+      $(`.report-daily-activity ${tbodyClassName}`).html(`
+        <tr>
+          <td colspan="2" class="text-center">No Data</td>
+        </tr>
+      `)
+    }
+    
+    //render html
+    $(`.report-daily-activity ${tbodyClassName}`).append(activities.map(function(activity) {
+        // var redScore = activity["score"] < activity["target"];
+        let title = activity["title"];
+        if(activity.type == 'speedrun') {
+          title += '<br/>' + activity.value;
+        }
+        let score_value = '';
+
+        if(activity.score && activity.type !== 'speedrun') {
+          score_value = `+${activity.score} (${activity.percent}%)`;
+        } else if(activity.score && activity.type == 'speedrun') {
+          const stopwatchValue = activity.stopwatch_value.map((val) => `(${val})`).join(' ');
+          score_value = `+${activity.score} ${stopwatchValue} (${activity.percent}%)`;
+        }
+        
+        return templateHelper.render(rowActivitySummaryTpl, {
+            "activity_id" : activity["id"],
+            "activity_name" : title,
+            "score_value": score_value
+        });
+      })
+
+      );
+    if(Number(window.setting.point_system)) {
+      $('.section-point-menu').show();
+    }
+  }
+  
   initialize() {
     const params = parseQueryString(window.location.search);
     this.fetchActivities(params);
     this.fetchHistoryRange(params);
 
+    if($('#dailyContent').length) {
+      this.fetchDailyReport(params)
+    }
+    
     if(params.student_id) {
       this.fetchDetailStudent(params.student_id);
+    }
+
+    // if has params tab, set active tab base on query param
+    if(['month', 'daily'].indexOf(params.tab) >= 0) {
+      const idEl = {
+        month: '#monthly-tab',
+        daily: '#daily-tab'
+      }
+
+      $(idEl[params.tab]).click();
     }
 
     // event handler
@@ -361,6 +405,51 @@ class ReportListView {
         window.location.replace(newUrl);
       }
     })
+
+    $('#monthPicker').on('pick.datepicker', function(e) {
+      const params = {
+        month: e.date.getMonth()+1,
+        date: e.date.getDate(),
+        year: e.date.getFullYear(),
+      };
+      
+      const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set('month', params.month);
+      searchParams.set('year', params.year);
+      searchParams.set('date', params.date);
+      
+      const newUrl = `${url}?${searchParams.toString()}`;
+
+      if(history.pushState) {
+
+        _this.fetchActivities(params);
+        _this.fetchDailyReport(params)
+        history.pushState({path: newUrl}, '', newUrl)
+        $('#titleContent').html(`Report of ${dateTimeHelper.monthToText(params.month)} ${params.year}`)
+      } else {
+        window.location.replace(newUrl);
+      }
+    })
+
+
+    // bind event on click column daily
+    // $('body').on('click', '.data-activity-daily tr', function(e) {
+    //   var text = $(this).find('td').map((i, td) => $(td).text().trim()).toArray().join(' ')
+    //   copyTextToClipboard(text).then(() => {
+    //     alertHelper.showSnackBar(`Copied: ${text}`, 1)
+    //   })
+    // })
+
+    $('body').on('click', '.doCopyAllText', function(e) {
+      var text = $('.data-activity-daily').find('tr').map((i, el) => {
+        return $(el).find('td').map((i, td) => $(td).text().trim()).toArray().join(' ');
+      }).toArray().join("\n");
+
+      copyTextToClipboard(text).then(() => {
+        alertHelper.showSnackBar('Copied !');
+      })
+    });
   }
 }
 

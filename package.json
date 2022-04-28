@@ -41,6 +41,7 @@
         "@babel/polyfill": "^7.12.1",
         "@babel/preset-env": "^7.14.2",
         "@babel/runtime": "^7.14.0",
+        "@chenfengyuan/datepicker": "^1.0.10",
         "@fortawesome/fontawesome-free": "5.15.3",
         "axios": "^0.21.1",
         "babel-core": "^6.26.3",
@@ -74,6 +75,7 @@
         "nunjucks": "^3.2.3",
         "peasy-js": "^2.3.0",
         "recordrtc": "^5.6.2",
+        "sortablejs": "^1.15.0",
         "spectrum-colorpicker": "^1.8.1",
         "sweetalert2": "^11.0.19",
         "tinycolor2": "^1.4.2",
@@ -91,6 +93,7 @@
         "gulp-nunjucks": "^5.1.0",
         "jest": "^27.0.6",
         "jest-mock-axios": "^4.4.0",
+        "jquery-sortablejs": "^1.0.1",
         "watchify": "^4.0.0"
     },
     "@babel": {

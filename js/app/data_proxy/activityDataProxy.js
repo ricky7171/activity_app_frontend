@@ -23,7 +23,7 @@ class ActivityDataProxy extends HttpDataProxy {
 
   updatePosition(values) {
     const body = {
-      position: values,
+      position: values
     };
     return this._handleResponseFrom(
       this._api.requestApi("activity.updatePosition", body)
@@ -33,6 +33,15 @@ class ActivityDataProxy extends HttpDataProxy {
   import(values) {
     return this._handleResponseFrom(
       this._api.requestApi("activity.import")
+    );
+  }
+
+  getDailyReport(params = {}) {
+    return this._handleResponseFrom(
+      this._api.requestApi(
+        "activity.getDailyReport",
+        params,
+      )
     );
   }
 }
