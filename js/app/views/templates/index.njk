@@ -48,13 +48,18 @@
         position: fixed;
         background-color: #f8f9fc;
         z-index: 999;
-        left: 0;
+        {# left: 0; #}
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         color: #b3b2b2;
-        padding-top: 70px;
+        {# padding-top: 70px; #}
+        top: 0;
+    }
+
+    nav.navbar {
+        z-index: 99999;
     }
 
     #loading-container .loading-icon,
@@ -296,15 +301,15 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
-                    <div id="loading-container" style="display:none">
-                        <div class="loading-icon">
-                            <i class="fa fa-spin fa-spinner"></i>
-                        </div>
-                        <div class="loading-caption">
-                            Fetching Data
-                        </div>
+                <div id="loading-container" style="display:none">
+                    <div class="loading-icon">
+                        <i class="fa fa-spin fa-spinner"></i>
                     </div>
+                    <div class="loading-caption">
+                        Fetching Data
+                    </div>
+                </div>
+                <div class="container-fluid">
                     {% block content %}
                     {% endblock content %}
 

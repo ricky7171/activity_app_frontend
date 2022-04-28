@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between">
         <div>
             <div id="titleSection" style="display:none">
-                <h3 class="font-weight-bold text-dark">Edit</h3>
+                
             </div>
         </div>
         <div id="buttonSection" class="mb-3 text-right" style="white-space: nowrap;">
@@ -401,6 +401,11 @@
 .is-red-false {
     border-left-color: #6ace6b !important;
 }
+.activity-target-container *, .activity-target-container {
+    color: #4e73df;
+    font-weight: 700;
+    cursor: pointer;
+}
 </style>
 <link rel="stylesheet" href="vendor/videojs/video-js.min.css">
 <link rel="stylesheet" href="vendor/videojs-record/css/videojs.record.min.css">
@@ -410,7 +415,7 @@
 <!-- Template -->
 
 <script type="text/template" data-template="row-activity-float">
-    <div class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
+    <div activityId='${activity_id}' class="row mb-3 row-activity row-activity-float" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center">
                 <div class="input-group input-activity-group">
@@ -432,7 +437,7 @@
 
 
 <script type="text/template" data-template="row-activity-speedrun">
-    <div class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
+    <div activityId='${activity_id}' class="row mb-3 row-activity row-activity-textfield" style="padding-left: 0; padding-right: 0" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center">
                 <div class="input-group input-activity-group">
@@ -486,7 +491,7 @@
 </script>
 
 <script type="text/template" data-template="row-activity-textfield">
-    <div class="row mb-3 row-activity row-activity-textfield" data-id="${activity_id}">
+    <div activityId='${activity_id}' class="row mb-3 row-activity row-activity-textfield" data-id="${activity_id}">
         <div class="col-12"  style="padding-left: 0; padding-right: 0">
             <div class="d-flex flex-nowrap text-center"> 
                 <div class="input-group input-activity-group">

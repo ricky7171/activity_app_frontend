@@ -68,6 +68,11 @@ class ReportListView {
         $('.content-container').show();
       }
     }
+
+    const queryParams = parseQueryString(window.location.search);
+    if(queryParams.activityid) {
+      $(`.activity_button[activityid=${queryParams.activityid}]`).click();
+    }
   }
 
   async fetchHistoryRange(params) {
@@ -354,6 +359,16 @@ class ReportListView {
     
     if(params.student_id) {
       this.fetchDetailStudent(params.student_id);
+    }
+
+    // if has params tab, set active tab base on query param
+    if(['month', 'daily'].indexOf(params.tab) >= 0) {
+      const idEl = {
+        month: '#monthly-tab',
+        daily: '#daily-tab'
+      }
+
+      $(idEl[params.tab]).click();
     }
 
     // event handler

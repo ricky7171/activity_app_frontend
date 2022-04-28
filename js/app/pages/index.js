@@ -367,16 +367,18 @@ class HomeView {
       // $('.activity-target-container').hide();
       this.toggleActivityPage('input', true)
       $('#targetBtn').html('Target');
+      $('#titleSection').hide();
     } else {
       // $('.activity-input-container').hide();
       // $('.activity-target-container').show();
       this.toggleActivityPage('target', true)
       $('#targetBtn').html('Hide Target');
+      $('#titleSection').html('<i class="fas fa-info-circle mr-2"></i>Tap for more detail').show();
     }
   }
 
   handleClickEditButton(evt) {
-    $('#titleSection').find('h3').html('Edit');
+    $('#titleSection').html('<h3 class="font-weight-bold text-dark">Edit</h3>');
     $('#titleSection').show();
     
     $('.btn-section-action').hide();
@@ -579,7 +581,7 @@ class HomeView {
   }
 
   async handleClickRearrangeButton(evt) {
-    $('#titleSection').find('h3').html('Rearrange');
+    $('#titleSection').html('<h3 class="font-weight-bold text-dark">Rearrange</h3>');
     $('#titleSection').show();
     
     $('.btn-section-action').hide();
@@ -736,6 +738,16 @@ class HomeView {
         
         $(this).val(value.substring(0, 2));
       })
+    })
+
+    $('body').on('click', '.activity-target-container', function(event) {
+      const dateObject = new Date();
+      const currentMonth = dateObject.getMonth() + 1;
+      const currentYear = dateObject.getFullYear();
+      const activityid = $(this).closest('.row-activity').attr('activityid');
+
+      const link = `/report/list.html?year=${currentYear}&month=${currentMonth}&tab=month&activityid=${activityid}`;
+      window.location.replace(link);
     })
   }
 }
