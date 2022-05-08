@@ -8,7 +8,7 @@ import HistoryService from "../business_logic/service/historyService";
 import HistoryDataProxy from "../data_proxy/historyDataProxy";
 import AuthService from "../business_logic/service/authService";
 import AuthDataProxy from "../data_proxy/authDataProxy";
-import { parseQueryString } from "../core/url_helper";
+import { parseQueryString, updateUrl } from "../core/url_helper";
 import { copyTextToClipboard } from '../core/copy_helper';
 
 class ReportListView {
@@ -413,23 +413,10 @@ class ReportListView {
         year: e.date.getFullYear(),
       };
       
-      const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('month', params.month);
-      searchParams.set('year', params.year);
-      searchParams.set('date', params.date);
+      updateUrl(params);
       
-      const newUrl = `${url}?${searchParams.toString()}`;
-
-      if(history.pushState) {
-
-        _this.fetchActivities(params);
-        _this.fetchDailyReport(params)
-        history.pushState({path: newUrl}, '', newUrl)
-        $('#titleContent').html(`Report of ${dateTimeHelper.monthToText(params.month)} ${params.year}`)
-      } else {
-        window.location.replace(newUrl);
-      }
+      _this.fetchActivities(params);
+      _this.fetchDailyReport(params)
     })
 
 
@@ -450,6 +437,14 @@ class ReportListView {
         alertHelper.showSnackBar('Copied !');
       })
     });
+
+    $('[data-toggle=tab]').on('click', function() {
+      const tabkey = $(this).data('tabkey')
+
+      updateUrl({
+        tab: tabkey
+      })
+    })
   }
 }
 

@@ -14,3 +14,20 @@ export const parseQueryString = (queryString) => {
     // return object
     return query;
 };
+
+export const updateUrl = (queryParam = {}, replaceOrAddParam = false) => {
+    const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    const searchParams = new URLSearchParams(window.location.search);
+
+    Object.keys(queryParam).forEach(keyName => {
+        searchParams.set(keyName, queryParam[keyName]);
+    })
+    
+    const newUrl = `${url}?${searchParams.toString()}`;
+
+    if(history.pushState) {
+        history.pushState({path: newUrl}, '', newUrl)
+    } else {
+        window.location.replace(newUrl);
+    }
+}
