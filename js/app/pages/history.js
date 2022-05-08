@@ -70,12 +70,13 @@ class HistoryView {
           }
 
           value = _this.addStyleToValue(historyData['activity_type'], value)
+          const dateNumber = historyData["date"].substr(historyData["date"].lastIndexOf('-')+1)
           
           return templateHelper.render(rowHistoriesTpl, {
             activity_id: historyData["activity_id"],
             activity_type: historyData["activity_type"],
             id: historyData["id"],
-            date: historyData["date"],
+            date: dateNumber,
             time: historyData["time"],
             activity_title: historyData["activity_title"],
             value: value,
@@ -91,6 +92,7 @@ class HistoryView {
   }
 
   async handleClickButtonDelete(btn) {
+    console.log("🚀 ~ file: history.js ~ line 94 ~ HistoryView ~ handleClickButtonDelete ~ btn", btn)
     // - show confirmation popup
     var result = await alertHelper.showConfirmation("Your history will be delete and cannot be restore");
 
@@ -102,7 +104,8 @@ class HistoryView {
     loadingHelper.toggleLoading(true);
 
     // o get history id
-    const historyId = $(btn).attr("historyId");
+    const historyId = $(btn).attr("historyid");
+    console.log("🚀 ~ file: history.js ~ line 106 ~ HistoryView ~ handleClickButtonDelete ~ historyId", historyId)
 
     // o run command
     const command = await this.historyService
@@ -296,11 +299,13 @@ class HistoryView {
   
   initialize() {
     this.fetchHistoriesData();
+    const thisObject = this;
 
     // event handler
-    $("body").on("click", ".btn-delete-history", (evt) =>
-      this.handleClickButtonDelete(evt.target)
-    );
+    $("body").on("click", ".btn-delete-history", function (evt)  {
+      evt.stopPropagation();
+      thisObject.handleClickButtonDelete(this)
+    });
 
     // $("body").on("click", ".table-responsive td", (evt) =>
     //   this.handleClickRowTable(evt)
@@ -327,6 +332,7 @@ class HistoryView {
     );
 
     $("body").on("click", ".table-responsive td", (evt) => {
+      evt.stopPropagation();
       const historyid = $(evt.target).closest('tr').data('historyid')
       this.openModalEditHistory(historyid)
     });
